@@ -16,4 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <include layout="@layout/activity_user_events_screen" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
