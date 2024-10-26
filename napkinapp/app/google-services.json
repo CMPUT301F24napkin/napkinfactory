@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "122303571872",
+    "project_id": "napkinfactory-ddb96",
+    "storage_bucket": "napkinfactory-ddb96.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122303571872:android:53a972c5969bb8607ba6c5",
+        "android_client_info": {
+          "package_name": "com.example.napkinapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCG6F58zeCgoSvkoUGcch352D45lMuL2rY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

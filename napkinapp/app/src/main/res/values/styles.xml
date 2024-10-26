@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<style name="cr16">
+	<style name="rounded_corners">
 		<item name="cornerSize">16dp</item>
 	</style>
 </resources>
