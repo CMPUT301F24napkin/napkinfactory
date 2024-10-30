@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Napkin App</string>
+    <string name="caption_eventsBtn">Events</string>
+    <string name="caption_Btnregistered_events">Registered Events</string>
+    <string name="caption_Btnmap">Map</string>
+    <string name="caption_Btnscan_qr">Scan QR</string>
+    <string name="caption_Btnmy_events">My Events</string>
 </resources>
