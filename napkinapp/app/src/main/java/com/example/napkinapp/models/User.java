@@ -16,6 +16,18 @@ public class User {
         email = "";
         address = "";
         enNotifications = false;
+        isOrganizer = false;
+        isAdmin = false;
+    }
+
+    public User (String name, String phoneNumber, String email, String address, Boolean enNotifications, Boolean isAdmin, Boolean isOrganizer){
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.address = address;
+        this.enNotifications = enNotifications;
+        this.isAdmin = isAdmin;
+        this.isOrganizer = isOrganizer;
     }
 
     public void setName(String name) {
