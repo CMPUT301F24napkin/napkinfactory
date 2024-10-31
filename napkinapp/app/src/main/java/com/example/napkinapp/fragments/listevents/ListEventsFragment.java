@@ -1,5 +1,6 @@
 package com.example.napkinapp.fragments.listevents;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.R;
 
@@ -21,9 +23,21 @@ public class ListEventsFragment extends Fragment {
     private ListView eventslist;
     private ArrayList<Event> events;
     private EventArrayAdapter eventArrayAdapter;
+    private TitleUpdateListener titleUpdateListener;
 
     public ListEventsFragment(){
         // Required null constructor
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if(context instanceof TitleUpdateListener){
+            titleUpdateListener = (TitleUpdateListener) context;
+        }else{
+            throw new RuntimeException(context + " needs to implement TitleUpdateListener");
+        }
     }
 
     @Nullable
@@ -33,6 +47,9 @@ public class ListEventsFragment extends Fragment {
 
         eventslist = view.findViewById(R.id.events_list_view);
         events = new ArrayList<>();
+
+        //Update title
+        titleUpdateListener.updateTitle("Event List");
 
         // Add sample events
         for (int i = 0; i < 5; i++) {
