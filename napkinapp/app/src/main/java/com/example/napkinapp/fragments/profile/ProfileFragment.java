@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
+import com.example.napkinapp.models.NapkinNotification;
 import com.example.napkinapp.models.User;
 
 public class ProfileFragment extends Fragment {
@@ -29,10 +30,7 @@ public class ProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-
         View view = inflater.inflate(R.layout.user_edit, container, false);
-
 
         TextView nameText = view.findViewById(R.id.editTextName);
         TextView emailText = view.findViewById(R.id.editTextEmailAddress);

@@ -7,4 +7,7 @@
     <string name="caption_Btnmy_events">My Events</string>
     <string name="caption_add_to_waitlist">Add to Waitlist</string>
     <string name="caption_remove_from_waitlist">Remove from Waitlist</string>
+    <string name="channel_name">Napkin App Notifications</string>
+    <string name="channel_description">Notifications for event updates and profile alerts</string>
+
 </resources>
