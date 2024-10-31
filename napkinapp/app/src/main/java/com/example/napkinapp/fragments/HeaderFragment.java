@@ -6,12 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
+import com.example.napkinapp.TitleUpdateListener;
 
 public class HeaderFragment extends Fragment {
     public interface OnHeaderButtonClick {
@@ -20,9 +22,14 @@ public class HeaderFragment extends Fragment {
     }
 
     private OnHeaderButtonClick listener;
+    private TextView headerTitle;
 
     public HeaderFragment(){
         // Required empty public constructor
+    }
+
+    public void setHeaderTitle(String title){
+        headerTitle.setText(title);
     }
 
     @Override
@@ -43,6 +50,7 @@ public class HeaderFragment extends Fragment {
 
         ImageButton profileBtn = view.findViewById(R.id.btn_profile);
         ImageButton hamburgerBtn = view.findViewById(R.id.btn_hamburger);
+        headerTitle = view.findViewById(R.id.header_title);
 
         profileBtn.setOnClickListener((v) -> {
             listener.handleProfileButtonClick();

@@ -12,7 +12,17 @@ import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
 
-public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick {
+public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick, TitleUpdateListener {
+
+    private HeaderFragment header;
+    private FooterFragment footer;
+
+    @Override
+    public void updateTitle(String title) {
+        if(header != null){
+            header.setHeaderTitle(title);
+        }
+    }
 
     @Override
     public void handleProfileButtonClick() {
@@ -51,8 +61,9 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         setContentView(R.layout.activity_main);
 
         // Load header fragment
+        header = new HeaderFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.header_fragmentcontainer, new HeaderFragment())
+                .replace(R.id.header_fragmentcontainer, header)
                 .commit();
 
         // Load content fragment
@@ -61,8 +72,11 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                         .commit();
 
         // Load footer fragment
+        footer = new FooterFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.footer_fragmentcontainer, new FooterFragment())
+                .replace(R.id.footer_fragmentcontainer, footer)
                 .commit();
     }
+
+
 }

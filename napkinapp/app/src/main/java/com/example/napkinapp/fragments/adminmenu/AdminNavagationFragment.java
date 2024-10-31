@@ -1,5 +1,7 @@
 package com.example.napkinapp.fragments.adminmenu;
 
+import android.content.Context;
+import android.icu.text.CaseMap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,11 +14,25 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
+import com.example.napkinapp.TitleUpdateListener;
 
 public class AdminNavagationFragment extends Fragment {
 
     public AdminNavagationFragment() {
         // Required empty constructor
+    }
+
+    private TitleUpdateListener titleUpdateListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if(context instanceof TitleUpdateListener){
+            titleUpdateListener = (TitleUpdateListener) context;
+        }else{
+            throw new RuntimeException(context + " needs to implement TitleUpdateListener");
+        }
     }
 
     @Nullable
@@ -30,6 +46,9 @@ public class AdminNavagationFragment extends Fragment {
         Button eventSearchButton = view.findViewById(R.id.button_event_search);
         Button facilitiesMapButton = view.findViewById(R.id.button_facilities_map);
         Button browseImagesButton = view.findViewById(R.id.button_browse_images);
+
+        // Update header title
+        titleUpdateListener.updateTitle("Admin Navigation");
 
         // Set up click listeners for each button
         userSearchButton.setOnClickListener(v -> {
