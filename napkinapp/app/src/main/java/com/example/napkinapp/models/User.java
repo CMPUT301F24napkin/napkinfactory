@@ -7,7 +7,8 @@ public class User {
     private String email;
     private String address;
     private Boolean enNotifications;
-
+    private Boolean isAdmin;
+    private Boolean isOrganizer;
 
     public User () {
         name = "";
@@ -49,11 +50,27 @@ public class User {
         return email;
     }
 
-    public Boolean wantsNotifications() {
+    public Boolean getEnNotifications() {
         return enNotifications;
     }
 
     public void setEnNotifications(Boolean enNotifications) {
         this.enNotifications = enNotifications;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
+    }
+
+    public Boolean getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setOrganizer(Boolean organizer) {
+        isOrganizer = organizer;
+    }
+
+    public Boolean getIsOrganizer() {
+        return isOrganizer;
     }
 }
