@@ -1,16 +1,48 @@
 package com.example.napkinapp;
 
 import android.os.Bundle;
-import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
+
+import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick {
+
+    @Override
+    public void handleProfileButtonClick() {
+        Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
+
+        if(currFrag instanceof ProfileFragment){
+            // do nothing if profile already opened
+            return;
+        }
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_fragmentcontainer, new ProfileFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void handleHamburgerButtonClick() {
+        Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
+
+        if(currFrag instanceof AdminNavagationFragment){
+            // do nothing if already in admin screen
+            return;
+        }
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_fragmentcontainer, new AdminNavagationFragment())
+                .addToBackStack(null)
+                .commit();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -49,6 +49,7 @@ public class AdminNavagationFragment extends Fragment {
         });
 
         Log.d("AdminNavagationFragment", "Navigation buttons initialized.");
+
         return view;
     }
 }
