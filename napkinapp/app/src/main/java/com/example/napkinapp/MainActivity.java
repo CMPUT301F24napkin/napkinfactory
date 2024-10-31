@@ -2,11 +2,11 @@ package com.example.napkinapp;
 
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
+import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +22,9 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
 
         // Load content fragment
-
+        getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content_fragmentcontainer, new ListEventsFragment())
+                        .commit();
 
         // Load footer fragment
         getSupportFragmentManager().beginTransaction()

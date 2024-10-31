@@ -5,4 +5,6 @@
     <string name="caption_Btnmap">Map</string>
     <string name="caption_Btnscan_qr">Scan QR</string>
     <string name="caption_Btnmy_events">My Events</string>
+    <string name="caption_add_to_waitlist">Add to Waitlist</string>
+    <string name="caption_remove_from_waitlist">Remove from Waitlist</string>
 </resources>
