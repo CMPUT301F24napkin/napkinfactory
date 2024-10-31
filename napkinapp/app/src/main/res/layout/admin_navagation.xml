@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="top"
+    android:background="#FAF5FF"> <!-- Light purple background -->
+
+    <!-- User Search Button -->
+    <Button
+        android:id="@+id/button_user_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:text="User Search"
+        android:textColor="#000"
+        android:gravity="start"
+        android:padding="16dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="16sp" />
+
+    <!-- Divider Line -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
+
+    <!-- Event Search Button -->
+    <Button
+        android:id="@+id/button_event_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:text="Event Search"
+        android:textColor="#000"
+        android:gravity="start"
+        android:padding="16dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="16sp" />
+
+    <!-- Divider Line -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
+
+    <!-- Facilities Map Button -->
+    <Button
+        android:id="@+id/button_facilities_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:text="Facilities Map"
+        android:textColor="#000"
+        android:gravity="start"
+        android:padding="16dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="16sp" />
+
+    <!-- Divider Line -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
+
+    <!-- Browse Images Button -->
+    <Button
+        android:id="@+id/button_browse_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:text="Browse Images"
+        android:textColor="#000"
+        android:gravity="start"
+        android:padding="16dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="16sp" />
+
+    <!-- Final Divider Line -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
+
+</LinearLayout>
