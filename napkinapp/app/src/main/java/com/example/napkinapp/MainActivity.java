@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
+import com.example.napkinapp.fragments.createevent.CreateEventFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 
 public class MainActivity extends AppCompatActivity {
