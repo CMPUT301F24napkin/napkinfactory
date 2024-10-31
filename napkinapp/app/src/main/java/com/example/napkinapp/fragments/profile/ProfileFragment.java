@@ -45,6 +45,7 @@ public class ProfileFragment extends Fragment {
         addressText.setText(user.getAddress());
 
         Switch notificationSwitch = view.findViewById(R.id.notification_switch);
+        notificationSwitch.setChecked(user.getEnNotifications());
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
 

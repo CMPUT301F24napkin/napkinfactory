@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Load content fragment
         getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content_fragmentcontainer, new ProfileFragment())
+                        .replace(R.id.content_fragmentcontainer, new ListEventsFragment())
                         .commit();
 
         // Load footer fragment
