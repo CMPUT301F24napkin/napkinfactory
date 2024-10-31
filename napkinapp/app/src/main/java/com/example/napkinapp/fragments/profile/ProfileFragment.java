@@ -1,4 +1,4 @@
-package com.example.napkinapp.fragments;
+package com.example.napkinapp.fragments.profile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,16 +10,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
+import com.example.napkinapp.models.User;
 
-public class HeaderFragment extends Fragment {
-    public HeaderFragment(){
-        // Required empty public constructor
+public class ProfileFragment extends Fragment {
+    private User user;
+
+    public ProfileFragment(){
+        // Required null constructor
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.main_header, container, false);
-
+        return inflater.inflate(R.layout.user_edit, container, false);
     }
+
 }
