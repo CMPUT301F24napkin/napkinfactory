@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:gravity="top"
-    android:background="#FAF5FF"> <!-- Light purple background -->
+    android:gravity="top">
 
     <!-- User Search Button -->
     <Button
