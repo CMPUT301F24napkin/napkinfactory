@@ -1,12 +1,14 @@
 package com.example.napkinapp;
 
 import android.os.Bundle;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
+import com.example.napkinapp.fragments.profile.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity {
 
