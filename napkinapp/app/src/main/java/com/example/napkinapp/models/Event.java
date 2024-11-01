@@ -14,7 +14,6 @@ public class Event {
     }
 
     public Event(String name, Date date) {
-        this.id = id;
         this.name = name;
         this.date = date;
     }
@@ -42,6 +41,4 @@ public class Event {
     public void setDate(Date date) {
         this.date = date;
     }
-
-
 }

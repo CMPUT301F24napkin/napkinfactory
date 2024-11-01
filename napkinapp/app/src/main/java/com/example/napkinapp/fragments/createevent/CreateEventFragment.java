@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class CreateEventFragment extends Fragment {
     private EditText eventName, eventDate, lotteryDate, eventDescription, registeredEntrantLimit, participantLimit;
@@ -84,21 +85,23 @@ public class CreateEventFragment extends Fragment {
         }
 
         // Create the Event object with the Date
-        Event testEvent = new Event(eventName.getText().toString(), date);
+        Event event = new Event(eventName.getText().toString(), date);
 
         db.count("Events", null, new DB_Client.DatabaseCallback<Integer>() {
             @Override
             public void onSuccess(@Nullable Integer data) {
                 assert data != null;
-                db.writeData("Events", String.valueOf(data), testEvent, new DB_Client.DatabaseCallback<Void>() {
+
+                event.setId(String.valueOf(data));
+                db.writeData("Events", String.valueOf(data), event, new DB_Client.DatabaseCallback<Void>() {
                     @Override
                     public void onSuccess(@Nullable Void data) {
-                        System.out.println("Successfully made event");
+                        Log.i("TAG", "Successfully made event");
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        System.err.println(e.getMessage());
+                        Log.e("TAG", Objects.requireNonNull(e.getMessage()));
                     }
                 });
             }
