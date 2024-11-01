@@ -13,6 +13,12 @@ public class Event {
         this.date = date;
     }
 
+    public Event(String name, Date date) {
+        this.id = id;
+        this.name = name;
+        this.date = date;
+    }
+
     public String getId() {
         return id;
     }
@@ -36,4 +42,6 @@ public class Event {
     public void setDate(Date date) {
         this.date = date;
     }
+
+
 }
