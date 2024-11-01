@@ -2,7 +2,6 @@ package com.example.napkinapp.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +36,6 @@ public class FooterFragment extends Fragment {
         }else{
             throw new RuntimeException(context + " must implement FooterNavigationListener");
         }
-
-        Log.d("FooterNavFrag", "attach!");
     }
 
     @Nullable

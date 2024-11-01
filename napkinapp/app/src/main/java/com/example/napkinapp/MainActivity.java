@@ -1,7 +1,6 @@
 package com.example.napkinapp;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
     @Override
     public void handleProfileButtonClick() {
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
-        Log.d("handleProfileClick", String.valueOf(currFrag instanceof ProfileFragment));
+
         if(currFrag instanceof ProfileFragment){
             // do nothing if profile already opened
             return;
