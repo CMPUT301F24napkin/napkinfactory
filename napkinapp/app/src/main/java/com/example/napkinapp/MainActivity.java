@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
 
         // Load content fragment
         getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content_fragmentcontainer, new ListEventsFragment())
+                        .replace(R.id.content_fragmentcontainer, new MyEventsFragment())
                         .commit();
 
         // To properly update footer buttons on back button press
