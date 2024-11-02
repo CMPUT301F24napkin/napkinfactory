@@ -8,8 +8,7 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
 import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
-import com.example.napkinapp.fragments.createevent.CreateEventFragment;
-import com.example.napkinapp.fragments.listevents.ListEventsFragment;
+import com.example.napkinapp.fragments.myevents.MyEventsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick, TitleUpdateListener {
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
 
         // Load content fragment
         getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content_fragmentcontainer, new ListEventsFragment())
+                        .replace(R.id.content_fragmentcontainer, new MyEventsFragment())
                         .commit();
 
         // Load footer fragment
