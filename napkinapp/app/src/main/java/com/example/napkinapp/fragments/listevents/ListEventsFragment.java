@@ -20,10 +20,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class ListEventsFragment extends Fragment {
-    private ListView eventslist;
-    private ArrayList<Event> events;
-    private EventArrayAdapter eventArrayAdapter;
     private TitleUpdateListener titleUpdateListener;
+    private Context mContext;
 
     public ListEventsFragment(){
         // Required null constructor
@@ -38,12 +36,17 @@ public class ListEventsFragment extends Fragment {
         }else{
             throw new RuntimeException(context + " needs to implement TitleUpdateListener");
         }
+
+        mContext = context;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.event_list, container, false);
+        ListView eventslist;
+        ArrayList<Event> events;
+        EventArrayAdapter eventArrayAdapter;
 
         eventslist = view.findViewById(R.id.events_list_view);
         events = new ArrayList<>();
@@ -61,12 +64,10 @@ public class ListEventsFragment extends Fragment {
             Event event = (Event)v.getTag();
             Log.i("Button", String.format("Clicked on event %s\n", event.getName()));
         });
+
         eventslist.setAdapter(eventArrayAdapter);
 
         Log.d("ListEventsFragment", "Event list loaded with " + events.size() + " items.");
         return view;
     }
-
-
-
 }
