@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "583872936142",
+    "project_id": "napkin-d16df",
+    "storage_bucket": "napkin-d16df.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583872936142:android:366728c1537cb5fe06f89f",
+        "android_client_info": {
+          "package_name": "com.example.napkinapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUUtmrYAVOpr0D_rx5oEWZK_OFG6gownk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

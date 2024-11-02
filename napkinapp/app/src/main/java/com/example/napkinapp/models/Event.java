@@ -13,6 +13,11 @@ public class Event {
         this.date = date;
     }
 
+    public Event(String name, Date date) {
+        this.name = name;
+        this.date = date;
+    }
+
     public String getId() {
         return id;
     }
