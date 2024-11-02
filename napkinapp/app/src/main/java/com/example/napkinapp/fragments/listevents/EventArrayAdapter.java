@@ -21,31 +21,29 @@ import java.util.ArrayList;
  */
 public class EventArrayAdapter extends ArrayAdapter<Event> {
 
-    private ArrayList<Event> events;
-    private Context context;
+    public interface EventListCustomizer {
+        void CustomizeEventCardButton(Button button);
+    }
 
-    private String buttonText;
-    private int drawableIcon;
-    private View.OnClickListener onClickListener;
+    private final ArrayList<Event> events;
+    private final Context context;
+
+    private final EventListCustomizer eventListCustomizer;
     /**
      *
-     * @param context
-     * @param events
-     * @param buttonText The text that we want to display on the buttons
-     * @param drawableIcon The drawable id of the icon we want to display on the left. Do 0 for no icon.
+     * @param eventListCustomizer The drawable id of the icon we want to display on the left. Do 0 for no icon.
      */
-    public EventArrayAdapter(@NonNull Context context, ArrayList<Event> events, String buttonText, int drawableIcon, View.OnClickListener onClickListener) {
+    public EventArrayAdapter(@NonNull Context context, ArrayList<Event> events, EventListCustomizer eventListCustomizer) {
         super(context, 0, events);
         this.context = context;
         this.events = events;
-        this.buttonText = buttonText;
-        this.drawableIcon = drawableIcon;
-        this.onClickListener = onClickListener;
+        this.eventListCustomizer = eventListCustomizer;
+
     }
 
 
     /**
-     * @brief copied from Listy City lab 5 (Firestore integration)
+     * copied from Listy City lab 5 (Firestore integration)
      * @param position The position of the item within the adapter's data set of the item whose view
      *        we want.
      * @param convertView The old view to reuse, if possible. Note: You should check that this view
@@ -73,15 +71,12 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         TextView text1 = view.findViewById(R.id.text1);
         TextView text2 = view.findViewById(R.id.text2);
 
+        Button button = view.findViewById(R.id.button);
+
         text1.setText(event.getName());
         text2.setText(event.getDate().toString());
 
-        Button button = view.findViewById(R.id.button);
-        button.setText(buttonText);
-        if(drawableIcon != 0) {
-            button.setCompoundDrawablesWithIntrinsicBounds(drawableIcon, 0, 0, 0);
-        }
-        button.setOnClickListener(onClickListener);
+        eventListCustomizer.CustomizeEventCardButton(button);
 
         button.setTag(event); // store the event on this button so the event listener can grab it!
 

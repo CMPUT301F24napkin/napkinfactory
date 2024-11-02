@@ -5,12 +5,14 @@
 
 package com.example.napkinapp.fragments.myevents;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -26,14 +28,20 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MyEventsFragment extends Fragment {
-    private ListView eventslist;
-    private ArrayList<Event> events;
-    private EventArrayAdapter eventArrayAdapter;
     private TitleUpdateListener titleUpdateListener;
+    private Context mContext;
 
     public MyEventsFragment() {
 
     }
+
+    EventArrayAdapter.EventListCustomizer customizer = button -> {
+        button.setText("View");
+        button.setOnClickListener(v->{
+            Event event = (Event)v.getTag();
+            Log.i("Button", String.format("My Events: Clicked on event %s\n", event.getName()));
+        });
+    };
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -44,30 +52,36 @@ public class MyEventsFragment extends Fragment {
         }else{
             throw new RuntimeException(context + " needs to implement TitleUpdateListener");
         }
+        mContext = context;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.event_list, container, false);
-
-        eventslist = view.findViewById(R.id.events_list_view);
-        events = new ArrayList<>();
+        ListView eventsList = view.findViewById(R.id.events_list_view);
+        ArrayList<Event> events = new ArrayList<>();
 
         //Update title
         titleUpdateListener.updateTitle("My Events");
 
         // Add sample events
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 4; i++) {
             events.add(new Event(String.valueOf(i), "Event " + i, new Date()));
         }
 
-        // Attach EventArrayAdapter to ListView
-        eventArrayAdapter = new EventArrayAdapter(getContext(), events, "View", 0, v -> {
-            Event event = (Event)v.getTag();
-            Log.i("Button", String.format("Clicked on event %s\n", event.getName()));
+        // set callback on trailing button
+        @SuppressLint("InflateParams") // if root is set to container, the app crashes, if null, get warning. so supress.
+        View footerView = inflater.inflate(R.layout.event_list_footer_button, null, false);
+        Button trailingButton = footerView.findViewById(R.id.trailing_button);
+        trailingButton.setOnClickListener(v-> {
+            Log.i("Button", "My Events: Clicked on the create event button!");
         });
-        eventslist.setAdapter(eventArrayAdapter);
+        eventsList.addFooterView(footerView);
+
+        // Attach EventArrayAdapter to ListView
+        EventArrayAdapter eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer);
+        eventsList.setAdapter(eventArrayAdapter);
 
         Log.d("MyEventsFragment", "Event list loaded with " + events.size() + " items.");
         return view;

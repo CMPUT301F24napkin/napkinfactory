@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,15 @@ public class ListEventsFragment extends Fragment {
     public ListEventsFragment(){
         // Required null constructor
     }
+
+    EventArrayAdapter.EventListCustomizer customizer = button -> {
+        button.setText("Add to Watchlist");
+        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.add, 0, 0, 0);
+        button.setOnClickListener(v->{
+            Event event = (Event)v.getTag();
+            Log.i("Button", String.format("List Events: Clicked on event %s\n", event.getName()));
+        });
+    };
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -60,10 +70,7 @@ public class ListEventsFragment extends Fragment {
         }
 
         // Attach EventArrayAdapter to ListView
-        eventArrayAdapter = new EventArrayAdapter(mContext, events, "Add to Watchlist", R.drawable.add, v -> {
-            Event event = (Event)v.getTag();
-            Log.i("Button", String.format("Clicked on event %s\n", event.getName()));
-        });
+        eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer);
 
         eventslist.setAdapter(eventArrayAdapter);
 
