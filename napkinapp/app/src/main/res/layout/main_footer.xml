@@ -14,17 +14,20 @@
 
         <Button
             android:id="@+id/btn_EventList"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00000000"
             android:drawableTop="@drawable/event"
             android:gravity="center"
+            android:padding="5dp"
             android:text="@string/caption_eventsBtn"
             android:textColor="@color/black"
             android:textSize="11sp" />
 
         <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btn_RegisteredEvents"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -39,6 +42,7 @@
             android:textSize="11sp" />
 
         <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btn_Map"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -46,11 +50,13 @@
             android:background="#00000000"
             android:drawableTop="@drawable/location"
             android:gravity="center"
+            android:padding="5dp"
             android:text="@string/caption_Btnmap"
             android:textColor="@color/black"
             android:textSize="11sp" />
 
         <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btn_QRScanner"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -58,11 +64,13 @@
             android:background="#00000000"
             android:drawableTop="@drawable/qr_code_scanner"
             android:gravity="center"
+            android:padding="5dp"
             android:text="@string/caption_Btnscan_qr"
             android:textColor="@color/black"
             android:textSize="11sp" />
 
         <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btn_MyEvents"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -70,6 +78,7 @@
             android:background="#00000000"
             android:drawableTop="@drawable/my_events"
             android:gravity="center"
+            android:padding="5dp"
             android:text="@string/caption_Btnmy_events"
             android:textColor="@color/black"
             android:textSize="11sp" />

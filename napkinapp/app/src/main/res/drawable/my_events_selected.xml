@@ -1,0 +1,13 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Pill background shape -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/highlight_purple"/>
+            <corners android:radius="12dp" /> <!-- Adjusted to be more pill-like -->
+            <size android:height="24dp" android:width="50dp"/> <!-- Controls the width of the pill background -->
+        </shape>
+    </item>
+
+    <!-- Centered icon drawable -->
+    <item android:drawable="@drawable/my_events" android:gravity="center"/>
+</layer-list>
