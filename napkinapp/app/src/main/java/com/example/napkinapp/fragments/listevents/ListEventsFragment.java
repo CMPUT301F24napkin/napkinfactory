@@ -64,7 +64,6 @@ public class ListEventsFragment extends Fragment {
             Event event = (Event)v.getTag();
             Log.i("Button", String.format("Clicked on event %s\n", event.getName()));
         });
-==
 
         eventslist.setAdapter(eventArrayAdapter);
 
