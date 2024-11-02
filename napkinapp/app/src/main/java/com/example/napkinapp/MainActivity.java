@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 break;
             case 4:
                 // Myevents
+                selectedFragment = new MyEventsFragment();
                 break;
         }
 
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
 
         // Load content fragment
         getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content_fragmentcontainer, new MyEventsFragment())
+                        .replace(R.id.content_fragmentcontainer, new ListEventsFragment())
                         .commit();
 
         // To properly update footer buttons on back button press
@@ -125,9 +126,10 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 footer.setSelectedButtonById(2);
             } else if (currentFragment instanceof QRScannerFragment) {
                 footer.setSelectedButtonById(3);
-            } else if (currentFragment instanceof MyEventsFragment) {
+            } */
+            else if (currentFragment instanceof MyEventsFragment) {
                 footer.setSelectedButtonById(4);
-            }*/
+            }
         });
 
         // Load footer fragment
