@@ -51,4 +51,8 @@ dependencies {
 
     implementation(platform(libs.firebase.bom.v3271))
     implementation(libs.firebase.firestore)
+
+    implementation(libs.zxing.android.embedded)
+    implementation(libs.zxing)
+
 }
