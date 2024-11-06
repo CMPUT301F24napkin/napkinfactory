@@ -1,5 +1,7 @@
 package com.example.napkinapp.models;
 
+import java.util.List;
+
 public class User {
     // Need to add some way to store and add photos later
     private String androidId;
@@ -11,6 +13,13 @@ public class User {
     private Boolean isAdmin;
     private Boolean isOrganizer;
 
+    private List<Notification> notifications;
+
+    private List<String> waitlist;
+    private List<String> chosen;
+    private List<String> cancelled;
+    private List<String> registered;
+
     public User () {
         name = "";
         phoneNumber = "";
@@ -21,7 +30,10 @@ public class User {
         isAdmin = false;
     }
 
-    public User (String name, String phoneNumber, String email, String address, Boolean enNotifications, Boolean isAdmin, Boolean isOrganizer){
+    // New user
+    public User (String androidId, String name, String phoneNumber, String email,
+                 String address, Boolean enNotifications, Boolean isAdmin, Boolean isOrganizer){
+        this.androidId = androidId;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
@@ -29,6 +41,28 @@ public class User {
         this.enNotifications = enNotifications;
         this.isAdmin = isAdmin;
         this.isOrganizer = isOrganizer;
+    }
+
+    // User from database
+    public User (String androidId, String name, String phoneNumber, String email,
+                 String address, Boolean enNotifications, Boolean isAdmin, Boolean isOrganizer,
+                 List<Notification> notifications, List<String> waitlist, List<String> chosen,
+                 List<String> cancelled, List<String> registered){
+        this.androidId = androidId;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.address = address;
+        this.enNotifications = enNotifications;
+        this.isAdmin = isAdmin;
+        this.isOrganizer = isOrganizer;
+
+        this.notifications = notifications;
+
+        this.waitlist = waitlist;
+        this.chosen = chosen;
+        this.cancelled = cancelled;
+        this.registered = registered;
     }
 
     public void setName(String name) {
@@ -86,4 +120,6 @@ public class User {
     public Boolean getIsOrganizer() {
         return isOrganizer;
     }
+
+
 }

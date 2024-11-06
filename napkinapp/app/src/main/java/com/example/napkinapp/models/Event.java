@@ -8,7 +8,7 @@ public class Event {
     private String id;
 
     // On creation
-    private User organizer;
+    private String organizerId;
     private String name;
     private Date eventDate;
     private Date lotteryDate;
@@ -25,15 +25,43 @@ public class Event {
 
     private List<Tag> tags;
 
-    private List<User> waitlist;
-    private List<User> chosen;
-    private List<User> cancelled;
-    private List<User> registered;
+    private List<String> waitlist;
+    private List<String> chosen;
+    private List<String> cancelled;
+    private List<String> registered;
 
     // New event being created
-    public Event(User organizer, String name, Date eventDate, Date lotteryDate, String description,
+    public Event(String organizerId, String name, Date eventDate, Date lotteryDate, String description,
                  int entrantLimit, int participantLimit, boolean requireGeolocation) {
+        this.organizerId = organizerId;
+        this.name = name;
+        this.eventDate = eventDate;
+        this.lotteryDate = lotteryDate;
+        this.description = description;
+        this.entrantLimit = entrantLimit;
+        this.participantLimit = participantLimit;
+        this.requireGeolocation = requireGeolocation;
+    }
 
+    // Event from database
+    public Event(String id, String organizerId, String name, Date eventDate, Date lotteryDate, String description,
+                 int entrantLimit, int participantLimit, boolean requireGeolocation, String QRHashCode,
+                 List<String> waitlist, List<String> chosen, List<String> cancelled, List<String> registered) {
+        this.id = id;
+        this.organizerId = organizerId;
+        this.name = name;
+        this.eventDate = eventDate;
+        this.lotteryDate = lotteryDate;
+        this.description = description;
+        this.entrantLimit = entrantLimit;
+        this.participantLimit = participantLimit;
+        this.requireGeolocation = requireGeolocation;
+
+        this.QRHashCode = QRHashCode;
+        this.waitlist = waitlist;
+        this.chosen = chosen;
+        this.cancelled = cancelled;
+        this.registered = registered;
     }
 
     public String getId() {
@@ -44,8 +72,8 @@ public class Event {
         this.id = id;
     }
 
-    public User getOrganizer(){
-        return organizer;
+    public String getOrganizerId(){
+        return organizerId;
     }
 
     public String getName() {
