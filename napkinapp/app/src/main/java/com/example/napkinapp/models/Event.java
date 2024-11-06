@@ -1,21 +1,39 @@
 package com.example.napkinapp.models;
 
 import java.util.Date;
+import java.util.List;
 
 public class Event {
-    private String id; // the key of the event. must be string by Firestore
+    // From firestore
+    private String id;
+
+    // On creation
+    private User organizer;
     private String name;
-    private Date date;
+    private Date eventDate;
+    private Date lotteryDate;
+    private Image poster_image;
+    private String description;
+    private int entrantLimit;
+    private int participantLimit;
+    private boolean requireGeolocation;
+    private Facility facility;
 
-    public Event(String id, String name, Date date) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-    }
 
-    public Event(String name, Date date) {
-        this.name = name;
-        this.date = date;
+
+    private String QRHashCode;
+
+    private List<Tag> tags;
+
+    private List<User> waitlist;
+    private List<User> chosen;
+    private List<User> cancelled;
+    private List<User> registered;
+
+    // New event being created
+    public Event(User organizer, String name, Date eventDate, Date lotteryDate, String description,
+                 int entrantLimit, int participantLimit, boolean requireGeolocation) {
+
     }
 
     public String getId() {
@@ -26,6 +44,10 @@ public class Event {
         this.id = id;
     }
 
+    public User getOrganizer(){
+        return organizer;
+    }
+
     public String getName() {
         return name;
     }
@@ -34,11 +56,33 @@ public class Event {
         this.name = name;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getEventDate() {
+        return eventDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public Date getLotteryDate() {
+        return lotteryDate;
     }
+
+    public String getDescription(){
+        return  description;
+    }
+
+    public int getEntrantLimit() {
+        return entrantLimit;
+    }
+
+    public int getParticipantLimit() {
+        return participantLimit;
+    }
+
+    public boolean isRequireGeolocation(){
+        return requireGeolocation;
+    }
+
+    public void setRequireGeolocation(boolean requireGeolocation) {
+        this.requireGeolocation = requireGeolocation;
+    }
+
+
 }

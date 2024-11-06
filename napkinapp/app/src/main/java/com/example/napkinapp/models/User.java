@@ -2,6 +2,7 @@ package com.example.napkinapp.models;
 
 public class User {
     // Need to add some way to store and add photos later
+    private String androidId;
     private String name;
     private String phoneNumber;
     private String email;
