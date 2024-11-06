@@ -4,9 +4,9 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <!-- Camera preview for QR scanning -->
-    <SurfaceView
-        android:id="@+id/camera_preview"
+    <!-- BarcodeView for QR scanning with camera preview -->
+    <com.journeyapps.barcodescanner.BarcodeView
+        android:id="@+id/barcode_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

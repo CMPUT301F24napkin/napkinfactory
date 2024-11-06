@@ -10,6 +10,7 @@ import com.example.napkinapp.fragments.HeaderFragment;
 import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
+import com.example.napkinapp.fragments.qrscanner.QRScannerFragment;
 
 public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick,
         FooterFragment.FooterNavigationListener, TitleUpdateListener {
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 break;
             case 3:
                 // QRscanner
+                selectedFragment = new QRScannerFragment();
                 break;
             case 4:
                 // Myevents
