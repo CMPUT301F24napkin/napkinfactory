@@ -60,7 +60,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         TextView text2 = view.findViewById(R.id.text2);
 
         text1.setText(event.getName());
-        text2.setText(event.getDate().toString());
+        text2.setText(event.getEventDate().toString());
 
         return view;
     }
