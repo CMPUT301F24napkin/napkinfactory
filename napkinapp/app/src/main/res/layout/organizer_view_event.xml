@@ -115,10 +115,10 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginBottom="16dp"
+                android:theme="@style/ThemeOverlay.Material3.Button.ElevatedButton"
                 android:foreground="@drawable/baseline_edit_24"
                 android:foregroundGravity="center"
                 android:foregroundTint="@color/text_secondary"
-                android:theme="@style/ThemeOverlay.Material3.Button.ElevatedButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
@@ -198,7 +198,7 @@
                 android:id="@+id/edit_event_date"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:foreground="@drawable/baseline_edit_24"
+                android:foreground="@drawable/baseline_edit_calendar_24"
                 android:foregroundGravity="center"
                 android:foregroundTint="@color/text_secondary"
                 android:theme="@style/ThemeOverlay.Material3.Button.ElevatedButton"
@@ -239,7 +239,7 @@
                 android:id="@+id/edit_lottery_date"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:foreground="@drawable/baseline_edit_24"
+                android:foreground="@drawable/baseline_edit_calendar_24"
                 android:foregroundGravity="center"
                 android:foregroundTint="@color/text_secondary"
                 android:theme="@style/ThemeOverlay.Material3.Button.ElevatedButton"
@@ -256,15 +256,16 @@
 
             <ImageView
                 android:id="@+id/qr_code"
+                android:src="@mipmap/qrcode_foreground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="200dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@tools:sample/avatars" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <Button
-                android:id="@+id/download_qr_code"
+                android:id="@+id/share_qr_code"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginBottom="16dp"
@@ -296,7 +297,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switch_require_geolocation"
+                android:id="@+id/require_geolocation"
                 android:layout_width="wrap_content"
                 android:layout_height="18dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -316,35 +317,96 @@
             tools:srcCompat="@tools:sample/avatars" />
 
 
+<!--        Chip Carousel-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <HorizontalScrollView
+                android:id="@+id/chip_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleLine="true">
+
+                    <!-- Chips can be declared here, or added dynamically. -->
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_waitlist"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Waitlist"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_chosen"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chosen"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_cancelled"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cancelled"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_registered"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Registered"/>
+
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <ListView
+                android:id="@+id/entrants_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/chip_group"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/message_text_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Message to waitlisters"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/entrants_list_view">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lorem_ipsum"
+                    app:endIconMode="custom"
+                    app:endIconDrawable="@drawable/baseline_send_24"
+                    app:endIconContentDescription="Send Button"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/send_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send Message"
+                app:icon="@drawable/baseline_send_24"
+                app:iconGravity="end"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/message_text_field" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     </LinearLayout>
     </ScrollView>
-    <!-- Button Section at the Bottom -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="end"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/event_apply"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableTint="#ffff0000"
-            android:text="Apply"
-            android:textColor="#FFFFFF" />
-
-        <Button
-            android:id="@+id/event_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:backgroundTint="#FFFFFF"
-            android:text="Cancel"
-            android:textColor="#664FA3"
-            app:strokeColor="#6A6868"
-            app:strokeWidth="1dp" />
-    </LinearLayout>
-
 </LinearLayout>
