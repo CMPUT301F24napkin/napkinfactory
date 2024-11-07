@@ -96,6 +96,7 @@ public class MyEventsFragment extends Fragment {
             Log.i("Button", "My Events: Clicked on the create event button!");
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_fragmentcontainer, new CreateEventFragment())
+                    .addToBackStack(null)
                     .commit();
         });
 
