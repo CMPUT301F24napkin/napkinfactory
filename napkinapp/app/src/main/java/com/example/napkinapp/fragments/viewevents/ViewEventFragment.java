@@ -3,6 +3,7 @@ package com.example.napkinapp.fragments.viewevents;
 import android.content.Context;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -70,11 +72,15 @@ public class ViewEventFragment extends Fragment {
 
         // database queries
         HashMap<String,Object> filter = new HashMap<>();
-        filter.put("id", event.getOrganizerId());
+        filter.put("androidId", event.getOrganizerId());
         db.findOne("Users", filter, new DB_Client.DatabaseCallback<User>() {
 
             @Override
             public void onSuccess(@Nullable User data) {
+                if (data == null){
+                    Log.e("Database Issue", "Organizer not found in Database for the specified event: " + filter);
+                    return;
+                }
                 organizerName.setText(data.getName());
                 organization.setText(data.getPhoneNumber());
             }

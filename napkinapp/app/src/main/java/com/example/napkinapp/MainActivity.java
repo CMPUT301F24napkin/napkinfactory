@@ -1,7 +1,9 @@
 package com.example.napkinapp;
 
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -10,6 +12,9 @@ import com.example.napkinapp.fragments.HeaderFragment;
 import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
+import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
+import com.example.napkinapp.models.Event;
+import com.example.napkinapp.utils.DB_Client;
 
 public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick,
         FooterFragment.FooterNavigationListener, TitleUpdateListener {
@@ -24,7 +29,17 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         switch(btnid) {
             // Not using actual button id's as apparently they're non final
             case 0:
-                selectedFragment = new ListEventsFragment();
+                DB_Client dbClient = new DB_Client();
+                dbClient.findOne("Events", null, new DB_Client.DatabaseCallback<Event>() {
+                    @Override
+                    public void onSuccess(@Nullable Event data) {
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.content_fragmentcontainer, new ViewEventFragment(data))
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                }, Event.class);
+
                 break;
             case 1:
                 // Registered events
