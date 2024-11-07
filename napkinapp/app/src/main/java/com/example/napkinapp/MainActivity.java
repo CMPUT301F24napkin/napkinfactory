@@ -10,6 +10,10 @@ import com.example.napkinapp.fragments.HeaderFragment;
 import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
+import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
+import com.example.napkinapp.models.Event;
+
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick,
         FooterFragment.FooterNavigationListener, TitleUpdateListener {
@@ -24,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         switch(btnid) {
             // Not using actual button id's as apparently they're non final
             case 0:
-                selectedFragment = new ListEventsFragment();
+                selectedFragment = new ViewEventFragment(new Event("Test Event", new Date()));
                 break;
             case 1:
                 // Registered events
