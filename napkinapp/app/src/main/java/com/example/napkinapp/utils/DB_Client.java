@@ -111,12 +111,23 @@ public class DB_Client {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         String generatedId = task.getResult().getId();
-                        callback.onSuccess(generatedId);
+
+                        // Add the "id" field to the document
+                        database.collection(collection).document(generatedId)
+                                .update("id", generatedId)
+                                .addOnCompleteListener(updateTask -> {
+                                    if (updateTask.isSuccessful()) {
+                                        callback.onSuccess(generatedId);
+                                    } else {
+                                        callback.onFailure(updateTask.getException());
+                                    }
+                                });
                     } else {
                         callback.onFailure(task.getException());
                     }
                 });
     }
+
 
 
     /**
