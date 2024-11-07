@@ -1,7 +1,9 @@
 package com.example.napkinapp;
 
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -10,6 +12,9 @@ import com.example.napkinapp.fragments.HeaderFragment;
 import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
+import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
+import com.example.napkinapp.models.Event;
+import com.example.napkinapp.utils.DB_Client;
 
 public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick,
         FooterFragment.FooterNavigationListener, TitleUpdateListener {

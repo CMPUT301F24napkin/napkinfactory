@@ -6,6 +6,7 @@ public class Notification {
     String eventId;
     String text;
 
+
     public Notification(){
 
     }
