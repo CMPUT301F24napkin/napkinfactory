@@ -23,9 +23,13 @@ import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.fragments.listevents.EventArrayAdapter;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.utils.DB_Client;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MyEventsFragment extends Fragment {
     private TitleUpdateListener titleUpdateListener;
@@ -58,17 +62,27 @@ public class MyEventsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //Update title
+        titleUpdateListener.updateTitle("My Events");
+
         View view = inflater.inflate(R.layout.event_list, container, false);
         ListView eventsList = view.findViewById(R.id.events_list_view);
         ArrayList<Event> events = new ArrayList<>();
 
-        //Update title
-        titleUpdateListener.updateTitle("My Events");
+        // Attach EventArrayAdapter to ListView
+        EventArrayAdapter eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer);
+        eventsList.setAdapter(eventArrayAdapter);
+
 
         // Add sample events
-        for (int i = 0; i < 4; i++) {
-            events.add(new Event(String.valueOf(i), "Event " + i, new Date()));
-        }
+        DB_Client db = new DB_Client();
+        db.findAll("Events", null, (objects)->{
+            Log.i("Firestore", String.format("Got %d objects", objects.size()));
+
+            events.clear();
+            events.addAll(objects);
+            eventArrayAdapter.notifyDataSetChanged();
+        }, Event.class);
 
         // set callback on trailing button
         @SuppressLint("InflateParams") // if root is set to container, the app crashes, if null, get warning. so supress.
@@ -78,12 +92,6 @@ public class MyEventsFragment extends Fragment {
             Log.i("Button", "My Events: Clicked on the create event button!");
         });
         eventsList.addFooterView(footerView);
-
-        // Attach EventArrayAdapter to ListView
-        EventArrayAdapter eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer);
-        eventsList.setAdapter(eventArrayAdapter);
-
-        Log.d("MyEventsFragment", "Event list loaded with " + events.size() + " items.");
         return view;
     }
 }

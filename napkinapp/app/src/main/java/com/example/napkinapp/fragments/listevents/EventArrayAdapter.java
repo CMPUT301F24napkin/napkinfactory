@@ -38,7 +38,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         this.context = context;
         this.events = events;
         this.eventListCustomizer = eventListCustomizer;
-
     }
 
 

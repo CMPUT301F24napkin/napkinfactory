@@ -19,8 +19,6 @@ public class Event {
     private boolean requireGeolocation;
     private Facility facility;
 
-
-
     private String QRHashCode;
 
     private List<Tag> tags;
@@ -29,6 +27,9 @@ public class Event {
     private List<String> chosen;
     private List<String> cancelled;
     private List<String> registered;
+
+    // Default constructor (required for Firestore deserialization)
+    public Event() {}
 
     // New event being created
     public Event(String organizerId, String name, Date eventDate, Date lotteryDate, String description,

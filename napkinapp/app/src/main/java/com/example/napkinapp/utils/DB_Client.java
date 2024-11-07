@@ -34,7 +34,7 @@ public class DB_Client {
          *
          * @param e The exception thrown during the query.
          */
-        void onFailure(Exception e);
+        default void onFailure(Exception e) {}
     }
 
     private final FirebaseFirestore database;

@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.R;
+import com.example.napkinapp.utils.DB_Client;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,8 +67,16 @@ public class ListEventsFragment extends Fragment {
 
         // Attach EventArrayAdapter to ListView
         eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer);
-
         eventslist.setAdapter(eventArrayAdapter);
+
+        DB_Client db = new DB_Client();
+        db.findAll("Events", null, (objects)->{
+            Log.i("Firestore", String.format("Got %d objects", objects.size()));
+
+            events.clear();
+            events.addAll(objects);
+            eventArrayAdapter.notifyDataSetChanged();
+        }, Event.class);
 
         Log.d("ListEventsFragment", "Event list loaded with " + events.size() + " items.");
         return view;
