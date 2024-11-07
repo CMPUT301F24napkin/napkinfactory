@@ -1,5 +1,7 @@
 package com.example.napkinapp.utils;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -9,8 +11,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A utility class for handling CRUD operations with Firebase Firestore.
@@ -27,14 +31,19 @@ public class DB_Client {
          *
          * @param data The result of the query, or null if the return type is Void.
          */
-        void onSuccess(@Nullable T data);
+        default void onSuccess(@Nullable T data) {
+            Log.i("DB", "Successfully ran query");
+        }
 
         /**
          * Called when the query fails during execution.
          *
          * @param e The exception thrown during the query.
          */
-        void onFailure(Exception e);
+        default void onFailure(Exception e) {
+            Log.e("DB", Objects.requireNonNull(e.getMessage()));
+            Log.e("DB", Arrays.toString(e.getStackTrace()));
+        }
     }
 
     private final FirebaseFirestore database;
