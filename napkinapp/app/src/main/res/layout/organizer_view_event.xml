@@ -9,9 +9,10 @@
     android:padding="16dp">
 
     <!-- Main Content Section with Weight -->
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -371,7 +372,8 @@
             <ListView
                 android:id="@+id/entrants_list_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="150dp"
+                android:nestedScrollingEnabled="true"
                 app:layout_constraintTop_toBottomOf="@+id/chip_group"/>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -404,9 +406,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/message_text_field" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
     </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>>
 </LinearLayout>
