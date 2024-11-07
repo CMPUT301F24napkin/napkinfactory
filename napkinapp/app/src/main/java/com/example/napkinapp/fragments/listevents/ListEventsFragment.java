@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -19,7 +18,7 @@ import com.example.napkinapp.R;
 import com.example.napkinapp.utils.DB_Client;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 
 public class ListEventsFragment extends Fragment {
     private TitleUpdateListener titleUpdateListener;
@@ -70,12 +69,13 @@ public class ListEventsFragment extends Fragment {
         eventslist.setAdapter(eventArrayAdapter);
 
         DB_Client db = new DB_Client();
-        db.findAll("Events", null, (objects)->{
-            Log.i("Firestore", String.format("Got %d objects", objects.size()));
-
-            events.clear();
-            events.addAll(objects);
-            eventArrayAdapter.notifyDataSetChanged();
+        db.findAll("Events", null, new DB_Client.DatabaseCallback<List<Event>>() {
+            @Override
+            public void onSuccess(@Nullable List<Event> data) {
+                events.clear();
+                events.addAll(data);
+                eventArrayAdapter.notifyDataSetChanged();
+            }
         }, Event.class);
 
         Log.d("ListEventsFragment", "Event list loaded with " + events.size() + " items.");

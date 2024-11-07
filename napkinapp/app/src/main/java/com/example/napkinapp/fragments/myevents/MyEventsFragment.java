@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.createevent.CreateEventFragment;
 import com.example.napkinapp.fragments.listevents.EventArrayAdapter;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.utils.DB_Client;
@@ -76,21 +77,29 @@ public class MyEventsFragment extends Fragment {
 
         // Add sample events
         DB_Client db = new DB_Client();
-        db.findAll("Events", null, (objects)->{
-            Log.i("Firestore", String.format("Got %d objects", objects.size()));
-
-            events.clear();
-            events.addAll(objects);
-            eventArrayAdapter.notifyDataSetChanged();
+        db.findAll("Events", null, new DB_Client.DatabaseCallback<List<Event>>() {
+            @Override
+            public void onSuccess(@Nullable List<Event> data) {
+                events.clear();
+                events.addAll(data);
+                eventArrayAdapter.notifyDataSetChanged();
+            }
         }, Event.class);
 
+
         // set callback on trailing button
+
         @SuppressLint("InflateParams") // if root is set to container, the app crashes, if null, get warning. so supress.
         View footerView = inflater.inflate(R.layout.event_list_footer_button, null, false);
         Button trailingButton = footerView.findViewById(R.id.trailing_button);
         trailingButton.setOnClickListener(v-> {
             Log.i("Button", "My Events: Clicked on the create event button!");
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragmentcontainer, new CreateEventFragment())
+                    .commit();
         });
+
+
         eventsList.addFooterView(footerView);
         return view;
     }

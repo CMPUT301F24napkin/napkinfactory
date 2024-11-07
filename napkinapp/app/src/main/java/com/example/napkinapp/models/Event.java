@@ -28,9 +28,6 @@ public class Event {
     private List<String> cancelled;
     private List<String> registered;
 
-    // Default constructor (required for Firestore deserialization)
-    public Event() {}
-
     // New event being created
     public Event(String organizerId, String name, Date eventDate, Date lotteryDate, String description,
                  int entrantLimit, int participantLimit, boolean requireGeolocation) {
