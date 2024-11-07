@@ -64,6 +64,10 @@ public class Event {
         this.registered = registered;
     }
 
+    public Event(){
+
+    }
+
     public String getId() {
         return id;
     }
