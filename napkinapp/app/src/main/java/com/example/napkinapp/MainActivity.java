@@ -29,17 +29,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         switch(btnid) {
             // Not using actual button id's as apparently they're non final
             case 0:
-                DB_Client dbClient = new DB_Client();
-                dbClient.findOne("Events", null, new DB_Client.DatabaseCallback<Event>() {
-                    @Override
-                    public void onSuccess(@Nullable Event data) {
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.content_fragmentcontainer, new ViewEventFragment(data))
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                }, Event.class);
-
+                selectedFragment = new ListEventsFragment();
                 break;
             case 1:
                 // Registered events
