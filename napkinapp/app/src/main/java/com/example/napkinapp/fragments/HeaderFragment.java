@@ -12,14 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.napkinapp.MainActivity;
 import com.example.napkinapp.R;
-import com.example.napkinapp.TitleUpdateListener;
 
 public class HeaderFragment extends Fragment {
+
     public interface OnHeaderButtonClick {
-        void handleProfileButtonClick();
+        void handleNotificationButtonClick();
         void handleHamburgerButtonClick();
     }
+
+    private ImageButton notificationBtn;
 
     private OnHeaderButtonClick listener;
     private TextView headerTitle;
@@ -30,6 +33,14 @@ public class HeaderFragment extends Fragment {
 
     public void setHeaderTitle(String title){
         headerTitle.setText(title);
+    }
+
+    public void updateNotificationIcon(){
+        if (MainActivity.user.allNotificationsRead()){
+            notificationBtn.setImageResource(R.drawable.notification_bell);
+        } else {
+            notificationBtn.setImageResource(R.drawable.notification_bell_active);
+        }
     }
 
     @Override
@@ -48,17 +59,19 @@ public class HeaderFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_header, container, false);
 
-        ImageButton profileBtn = view.findViewById(R.id.btn_profile);
+        notificationBtn = view.findViewById(R.id.btn_notification);
         ImageButton hamburgerBtn = view.findViewById(R.id.btn_hamburger);
         headerTitle = view.findViewById(R.id.header_title);
 
-        profileBtn.setOnClickListener((v) -> {
-            listener.handleProfileButtonClick();
+        notificationBtn.setOnClickListener((v) -> {
+            listener.handleNotificationButtonClick();
         });
 
         hamburgerBtn.setOnClickListener((v) -> {
             listener.handleHamburgerButtonClick();
         });
+
+        updateNotificationIcon();
 
         return view;
 

@@ -1,5 +1,7 @@
 package com.example.napkinapp.models;
 
+import java.util.ArrayList;
+
 public class User {
     // Need to add some way to store and add photos later
     private String name;
@@ -9,6 +11,7 @@ public class User {
     private Boolean enNotifications;
     private Boolean isAdmin;
     private Boolean isOrganizer;
+    private ArrayList<Notification> notifications;
 
     public User () {
         name = "";
@@ -18,6 +21,7 @@ public class User {
         enNotifications = false;
         isOrganizer = false;
         isAdmin = false;
+        notifications = new ArrayList<Notification>();
     }
 
     public User (String name, String phoneNumber, String email, String address, Boolean enNotifications, Boolean isAdmin, Boolean isOrganizer){
@@ -84,5 +88,30 @@ public class User {
 
     public Boolean getIsOrganizer() {
         return isOrganizer;
+    }
+
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+    }
+
+    public void deleteNotification(Notification notification) {
+        notifications.remove(notification);
+    }
+
+    public void setNotifications(ArrayList<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+    public ArrayList<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public Boolean allNotificationsRead(){
+        for (Notification notification: this.notifications) {
+            if (notification.getRead() == Boolean.FALSE) {
+                return Boolean.FALSE;
+            }
+        }
+        return Boolean.TRUE;
     }
 }
