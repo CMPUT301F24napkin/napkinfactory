@@ -84,6 +84,26 @@ public class Event {
         this.name = name;
     }
 
+    public void setEntrantLimit(int entrantLimit) {
+        this.entrantLimit = entrantLimit;
+    }
+
+    public void setDescription(String description){
+        this.description = description;
+    }
+
+    public void setParticipantLimit(int participantLimit){
+        this.participantLimit = participantLimit;
+    }
+
+    public void setLotteryDate(Date date){
+        this.lotteryDate = date;
+    }
+
+    public void setEventDate(Date eventDate) {
+        this.eventDate = eventDate;
+    }
+
     public Date getEventDate() {
         return eventDate;
     }
@@ -111,6 +131,5 @@ public class Event {
     public void setRequireGeolocation(boolean requireGeolocation) {
         this.requireGeolocation = requireGeolocation;
     }
-
 
 }
