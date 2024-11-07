@@ -15,9 +15,10 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.R;
+import com.example.napkinapp.utils.DB_Client;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 
 public class ListEventsFragment extends Fragment {
     private TitleUpdateListener titleUpdateListener;
@@ -26,6 +27,15 @@ public class ListEventsFragment extends Fragment {
     public ListEventsFragment(){
         // Required null constructor
     }
+
+    EventArrayAdapter.EventListCustomizer customizer = button -> {
+        button.setText("Add to Watchlist");
+        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.add, 0, 0, 0);
+        button.setOnClickListener(v->{
+            Event event = (Event)v.getTag();
+            Log.i("Button", String.format("List Events: Clicked on event %s\n", event.getName()));
+        });
+    };
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -55,8 +65,18 @@ public class ListEventsFragment extends Fragment {
         titleUpdateListener.updateTitle("Event List");
 
         // Attach EventArrayAdapter to ListView
-        eventArrayAdapter = new EventArrayAdapter(mContext, events);
+        eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer);
         eventslist.setAdapter(eventArrayAdapter);
+
+        DB_Client db = new DB_Client();
+        db.findAll("Events", null, new DB_Client.DatabaseCallback<List<Event>>() {
+            @Override
+            public void onSuccess(@Nullable List<Event> data) {
+                events.clear();
+                events.addAll(data);
+                eventArrayAdapter.notifyDataSetChanged();
+            }
+        }, Event.class);
 
         Log.d("ListEventsFragment", "Event list loaded with " + events.size() + " items.");
         return view;
