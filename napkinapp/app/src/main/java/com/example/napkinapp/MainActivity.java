@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
 import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
+import com.example.napkinapp.fragments.myevents.MyEventsFragment;
+import com.example.napkinapp.fragments.myevents.MyEventsFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
 import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 break;
             case 4:
                 // Myevents
+                selectedFragment = new MyEventsFragment();
                 break;
         }
 
@@ -129,9 +132,10 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 footer.setSelectedButtonById(2);
             } else if (currentFragment instanceof QRScannerFragment) {
                 footer.setSelectedButtonById(3);
-            } else if (currentFragment instanceof MyEventsFragment) {
+            } */
+            else if (currentFragment instanceof MyEventsFragment) {
                 footer.setSelectedButtonById(4);
-            }*/
+            }
         });
 
         // Load footer fragment
