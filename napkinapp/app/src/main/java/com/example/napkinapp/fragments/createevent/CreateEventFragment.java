@@ -10,29 +10,27 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
-import com.example.napkinapp.fragments.listevents.EventArrayAdapter;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.utils.DB_Client;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 public class CreateEventFragment extends Fragment {
     private EditText eventName, eventDate, lotteryDate, eventDescription, registeredEntrantLimit, participantLimit;
     private CheckBox participantLimitCheckbox;
     private ImageButton eventDatePickerButton, lotteryDatePickerButton;
+    private SwitchCompat geolocationSwitch;
     private Button createButton;
 
     public CreateEventFragment(){
@@ -54,6 +52,7 @@ public class CreateEventFragment extends Fragment {
         participantLimit = view.findViewById(R.id.participant_limit);
         participantLimitCheckbox = view.findViewById(R.id.participant_limit_checkbox);
         createButton = view.findViewById(R.id.create_button);
+        geolocationSwitch = view.findViewById(R.id.geolocation_switch);
 
         participantLimitCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             participantLimit.setEnabled(isChecked);
@@ -78,42 +77,34 @@ public class CreateEventFragment extends Fragment {
 
         // Parse the date string into a Date object
         Date date = null;
+        Date lottery = null;
         try {
             date = dateFormat.parse(eventDate.getText().toString());
+            lottery = dateFormat.parse(lotteryDate.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
+        int limit = (participantLimitCheckbox.isChecked()) ? Integer.parseInt(participantLimit.getText().toString()) : -1;
+
+
         // Create the Event object with the Date
-        Event event = new Event(eventName.getText().toString(), date);
+        Event event = new Event("placeholder", eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
+        Integer.parseInt(registeredEntrantLimit.getText().toString()), limit, geolocationSwitch.isChecked());
 
-        db.count("Events", null, new DB_Client.DatabaseCallback<Integer>() {
+        db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {
             @Override
-            public void onSuccess(@Nullable Integer data) {
-                assert data != null;
-
-                event.setId(String.valueOf(data));
-                db.writeData("Events", String.valueOf(data), event, new DB_Client.DatabaseCallback<Void>() {
-                    @Override
-                    public void onSuccess(@Nullable Void data) {
-                        Log.i("TAG", "Successfully made event");
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        Log.e("TAG", Objects.requireNonNull(e.getMessage()));
-                    }
-                });
+            public void onSuccess(@Nullable String data) {
+                Log.i("TAG", "Successfully made event");
             }
 
             @Override
             public void onFailure(Exception e) {
-
+                Log.e("TAG", Objects.requireNonNull(e.getMessage()));
             }
         });
-
-
     }
+
 
     private void showDatePickerDialog(EditText targetEditText) {
         // Get the current date to set as the default date in the DatePickerDialog
