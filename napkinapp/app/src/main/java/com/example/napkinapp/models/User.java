@@ -4,7 +4,7 @@ import java.util.List;
 
 public class User {
     // Need to add some way to store and add photos later
-    private String androidId;
+        private String androidId;
     private String name;
     private String phoneNumber;
     private String email;
@@ -21,6 +21,7 @@ public class User {
     private List<String> registered;
 
     public User () {
+        androidId = "";
         name = "";
         phoneNumber = "";
         email = "";
@@ -63,6 +64,10 @@ public class User {
         this.chosen = chosen;
         this.cancelled = cancelled;
         this.registered = registered;
+    }
+
+    public String getAndroidId() {
+        return this.androidId;
     }
 
     public void setName(String name) {

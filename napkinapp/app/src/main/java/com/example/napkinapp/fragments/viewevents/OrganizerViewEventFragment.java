@@ -2,9 +2,7 @@ package com.example.napkinapp.fragments.viewevents;
 
 import static androidx.core.content.FileProvider.getUriForFile;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,10 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,27 +23,23 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import com.example.napkinapp.EditTextPopupFragment;
+import com.example.napkinapp.fragments.EditTextPopupFragment;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
-import com.example.napkinapp.fragments.listevents.EventArrayAdapter;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.User;
+import com.example.napkinapp.utils.DB_Client;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OrganizerViewEventFragment extends Fragment {
     private Context mContext;
@@ -95,6 +86,8 @@ public class OrganizerViewEventFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.organizer_view_event, container, false);
 
+        DB_Client db = new DB_Client();
+
         // TODO get QR code from database
 
         // Update title
@@ -125,13 +118,33 @@ public class OrganizerViewEventFragment extends Fragment {
         Chip registeredChip = view.findViewById(R.id.chip_registered);
 
         ListView entrantsListView = view.findViewById(R.id.entrants_list_view);
-
         TextInputLayout messageTextField = view.findViewById(R.id.message_text_field);
-
         Button sendMessage = view.findViewById(R.id.send_message);
 
+        HashMap<String,Object> filter = new HashMap<>();
+        filter.put("id", event.getOrganizerId());
+        db.findOne("Users", filter, new DB_Client.DatabaseCallback<User>() {
+
+            @Override
+            public void onSuccess(@Nullable User data) {
+                organizerName.setText(data.getName());
+                organization.setText(data.getPhoneNumber());
+            }
+        }, User.class);
+
+        eventName.setText(event.getName());
+        eventDetails.setText(event.getDescription());
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        eventDate.setText(formatter.format(event.getEventDate()));
+        lotteryDate.setText(formatter.format(event.getLotteryDate()));
+
         editEventName.setOnClickListener(v-> {
-            EditTextPopupFragment popup = new EditTextPopupFragment("Edit Event Name",  eventName.getText().toString(), eventName::setText);
+            EditTextPopupFragment popup = new EditTextPopupFragment("Edit Event Name",  eventName.getText().toString(), text -> {
+                event.setName(text);
+                eventName.setText(text);
+                db.writeData("Events", event.getId(), event,  new DB_Client.DatabaseCallback<Void>(){});
+            });
             popup.show(getActivity().getSupportFragmentManager(), "popup");
         });
 
@@ -153,7 +166,6 @@ public class OrganizerViewEventFragment extends Fragment {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month - 1, dayOfMonth); // Month is 0-based
                 Date date = calendar.getTime();
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                 eventDate.setText(formatter.format(date));
             }, 2024, 9, 11);
             popup.show();
@@ -165,7 +177,6 @@ public class OrganizerViewEventFragment extends Fragment {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month - 1, dayOfMonth); // Month is 0-based
                 Date date = calendar.getTime();
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                 lotteryDate.setText(formatter.format(date));
             }, 2024, 9, 11);
             popup.show();
@@ -241,10 +252,10 @@ public class OrganizerViewEventFragment extends Fragment {
         // TODO get list of entrants from database
 
         ArrayList<User> users = new ArrayList<>();
-        users.add(new User("Bob Smith", "9384830293", "bob@smith.com", "388 022 street", true, false, false));
-        users.add(new User("Ruby Goldberg", "9384830293", "bob@smith.com", "388 022 street", true, false, false));
-        users.add(new User("Richard P. McKnob", "9384830293", "bob@smith.com", "388 022 street", true, false, false));
-        users.add(new User("John Thomas", "9384830293", "bob@smith.com", "388 022 street", true, false, false));
+        users.add(new User("placeholder", "Bob Smith", "9384830293", "bob@smith.com", "388 022 street", true, false, false));
+        users.add(new User("placeholder", "Ruby Goldberg", "9384830293", "bob@smith.com", "388 022 street", true, false, false));
+        users.add(new User("placeholder", "Richard P. McKnob", "9384830293", "bob@smith.com", "388 022 street", true, false, false));
+        users.add(new User("placeholder", "John Thomas", "9384830293", "bob@smith.com", "388 022 street", true, false, false));
 
         UserArrayAdapter userArrayAdapter = new UserArrayAdapter(mContext, users);
         entrantsListView.setAdapter(userArrayAdapter);

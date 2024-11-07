@@ -1,4 +1,4 @@
-package com.example.napkinapp;
+package com.example.napkinapp.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.EditText;
 
 import androidx.fragment.app.DialogFragment;
+
+import com.example.napkinapp.R;
 
 public class EditTextPopupFragment extends DialogFragment {
 

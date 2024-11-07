@@ -3,6 +3,7 @@ package com.example.napkinapp;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -16,6 +17,7 @@ import com.example.napkinapp.fragments.profile.ProfileFragment;
 import com.example.napkinapp.fragments.viewevents.OrganizerViewEventFragment;
 import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.utils.DB_Client;
 
 import java.util.Date;
 
@@ -32,7 +34,17 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         switch(btnid) {
             // Not using actual button id's as apparently they're non final
             case 0:
-                selectedFragment = new OrganizerViewEventFragment(new Event("Test Event", new Date()));
+                DB_Client db = new DB_Client();
+                db.findOne("Events", null, new DB_Client.DatabaseCallback<Event>() {
+                    @Override
+                    public void onSuccess(@Nullable Event data) {
+                        DB_Client.DatabaseCallback.super.onSuccess(data);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.content_fragmentcontainer, new OrganizerViewEventFragment(data))
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                }, Event.class);
                 break;
             case 1:
                 // Registered events
