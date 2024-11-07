@@ -20,6 +20,9 @@ import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.User;
+import com.example.napkinapp.utils.DB_Client;
+
+import java.util.HashMap;
 
 public class ViewEventFragment extends Fragment {
     private Event event;
@@ -46,6 +49,7 @@ public class ViewEventFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.view_events, container, false);
+        DB_Client db = new DB_Client();
 
         // Update title
         titleUpdateListener.updateTitle("Event Details");
@@ -60,6 +64,22 @@ public class ViewEventFragment extends Fragment {
         ImageView organizerProfile = view.findViewById(R.id.organizer_profile);
 
         // TODO: properly populate all data
+        eventName.setText(event.getName());
+        eventDate.setText(event.getEventDate().toString());
+        eventDetails.setText(event.getDescription());
+
+        // database queries
+        HashMap<String,Object> filter = new HashMap<>();
+        filter.put("id", event.getOrganizerId());
+        db.findOne("Users", filter, new DB_Client.DatabaseCallback<User>() {
+
+            @Override
+            public void onSuccess(@Nullable User data) {
+                organizerName.setText(data.getName());
+                organization.setText(data.getPhoneNumber());
+            }
+        }, User.class);
+
 
         Button apply = view.findViewById(R.id.event_apply);
         Button cancel = view.findViewById(R.id.event_cancel);

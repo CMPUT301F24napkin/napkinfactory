@@ -42,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Header"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_primary"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Subhead"
-                    android:textColor="#666666"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="EventName"
-            android:textColor="#000000"
+            android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -90,7 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="EventDate"
-            android:textColor="#666666"
+            android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
         <!-- Description Text -->
@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
-            android:textColor="#666666" />
+            android:textColor="@color/text_primary" />
 
     </LinearLayout>
 
@@ -116,19 +116,19 @@
             android:id="@+id/event_apply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableTint="#ffff0000"
+            android:backgroundTint="@color/design_default_color_primary"
             android:text="Apply"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/event_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:backgroundTint="#FFFFFF"
+            android:backgroundTint="@color/white"
             android:text="Cancel"
-            android:textColor="#664FA3"
-            app:strokeColor="#6A6868"
+            android:textColor="@color/text_primary"
+            app:strokeColor="@color/text_secondary"
             app:strokeWidth="1dp" />
     </LinearLayout>
 
