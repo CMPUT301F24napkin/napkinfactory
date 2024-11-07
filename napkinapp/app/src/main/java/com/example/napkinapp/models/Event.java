@@ -84,6 +84,10 @@ public class Event {
         this.name = name;
     }
 
+    public void setOrganizerId(String organizerId){
+        this.organizerId = organizerId;
+    }
+
     public void setEntrantLimit(int entrantLimit) {
         this.entrantLimit = entrantLimit;
     }
