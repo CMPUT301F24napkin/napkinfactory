@@ -64,11 +64,6 @@ public class ListEventsFragment extends Fragment {
         //Update title
         titleUpdateListener.updateTitle("Event List");
 
-        // Add sample events
-        for (int i = 0; i < 5; i++) {
-            events.add(new Event(String.valueOf(i), "Event " + i, new Date()));
-        }
-
         // Attach EventArrayAdapter to ListView
         eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer);
 

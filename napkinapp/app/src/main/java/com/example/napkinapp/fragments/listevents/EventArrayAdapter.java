@@ -74,7 +74,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         Button button = view.findViewById(R.id.button);
 
         text1.setText(event.getName());
-        text2.setText(event.getDate().toString());
+        text2.setText(event.getEventDate().toString());
 
         eventListCustomizer.CustomizeEventCardButton(button);
 
