@@ -208,7 +208,6 @@ public class ListEventsFragment extends Fragment {
     private void loadChips(@NonNull LayoutInflater inflater) {
         ArrayList<String> tags = new ArrayList<>();
         tags.add("Waitlist");
-        tags.add("Chosen");
 
         // Grab tags from tag object
 
@@ -265,25 +264,7 @@ public class ListEventsFragment extends Fragment {
             }
         }
 
-        // not else if. additionally, if chosen, add these events to events as well.
-        if(selectedCategories.contains("Chosen")) {
-            if(!loggedInUser.getChosen().isEmpty()) {
-                db.findAllIn("Events", "id", new ArrayList<>(loggedInUser.getChosen()), new DB_Client.DatabaseCallback<List<Event>>() {
-                @Override
-                public void onSuccess(@Nullable List<Event> data) {
-                    if (data != null) {
-                        events.addAll(data);
-                        eventArrayAdapter.notifyDataSetChanged();
-                        Log.i("Chip Query", "Filter by Chosen Success");
-                    }
-                }
-            }, Event.class);
-            }
-        }
-
         // Implement when tags are added
-
-
     }
 
     private void displayAllEvents() {

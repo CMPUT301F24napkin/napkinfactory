@@ -18,6 +18,8 @@ import com.example.napkinapp.fragments.notifications.ListNotificationsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
 
 import com.example.napkinapp.fragments.qrscanner.QRScannerFragment;
+import com.example.napkinapp.fragments.registeredevents.RegisteredEventsFragment;
+import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 selectedFragment = new ListEventsFragment(user);
                 break;
             case 1:
+                selectedFragment = new RegisteredEventsFragment(user);
                 break;
             case 2:
                 // map
@@ -145,13 +148,13 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
             // Update the selected button in footer based on the current fragment
             if (currentFragment instanceof ListEventsFragment) {
                 footer.setSelectedButtonById(0);
-            } /*else if (currentFragment instanceof RegisteredEventsFragment) {
+            } else if (currentFragment instanceof RegisteredEventsFragment) {
                 footer.setSelectedButtonById(1);
-            } else if (currentFragment instanceof MapFragment) {
+            } /*else if (currentFragment instanceof MapFragment) {
                 footer.setSelectedButtonById(2);
-            } else if (currentFragment instanceof QRScannerFragment) {
+            }*/ else if (currentFragment instanceof QRScannerFragment) {
                 footer.setSelectedButtonById(3);
-            } */
+            }
             else if (currentFragment instanceof MyEventsFragment) {
                 footer.setSelectedButtonById(4);
             }

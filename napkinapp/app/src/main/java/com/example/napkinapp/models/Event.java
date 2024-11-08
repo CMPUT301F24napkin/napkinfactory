@@ -47,7 +47,7 @@ public class Event {
     // Event from database
     public Event(String id, String organizerId, String name, Date eventDate, Date lotteryDate, String description,
                  int entrantLimit, int participantLimit, boolean requireGeolocation, String qrHashCode,
-                 List<String> waitlist, List<String> chosen, List<String> cancelled, List<String> registered) {
+                 ArrayList<String> waitlist, ArrayList<String> chosen, ArrayList<String> cancelled, ArrayList<String> registered) {
         init(); // provide sensible defaults
 
         this.id = id;
@@ -61,10 +61,10 @@ public class Event {
         this.requireGeolocation = requireGeolocation;
 
         this.qrHashCode = qrHashCode;
-        this.waitlist = (ArrayList<String>) waitlist;
-        this.chosen = (ArrayList<String>) chosen;
-        this.cancelled = (ArrayList<String>) cancelled;
-        this.registered = (ArrayList<String>) registered;
+        this.waitlist = waitlist;
+        this.chosen = chosen;
+        this.cancelled = cancelled;
+        this.registered = registered;
     }
 
     // provide sensible defaults for members to avoid bugs

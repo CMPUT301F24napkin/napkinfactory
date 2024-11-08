@@ -1,5 +1,5 @@
 /**
- * This file is literally the same as ListEventsFragment.java however the parameters to the constructor
+ * This file is literally the same as RegisteredEventsFragment.java however the parameters to the constructor
  * of the EventArrayAdapter are different to allow for different button look and functionality.
  */
 

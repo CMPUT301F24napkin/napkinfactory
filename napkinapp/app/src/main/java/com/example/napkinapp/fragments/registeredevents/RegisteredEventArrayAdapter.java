@@ -1,13 +1,12 @@
-package com.example.napkinapp.fragments.listevents;
+package com.example.napkinapp.fragments.registeredevents;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,25 +19,25 @@ import java.util.ArrayList;
 /**
  * Adapter class which allows Events to be displayed in lists.
  */
-public class EventArrayAdapter extends ArrayAdapter<Event> {
+public class RegisteredEventArrayAdapter extends ArrayAdapter<Event> {
 
-    public interface EventListCustomizer {
-        void CustomizeEventCardButton(Button button, Event event);
+    public interface RegisteredEventListCustomizer {
+        void CustomizeEventCardButton(Button button1, Button button2, TextView text3, Event event);
     }
 
     private final ArrayList<Event> events;
     private final Context context;
 
-    private final EventListCustomizer eventListCustomizer;
+    private final RegisteredEventListCustomizer registeredEventListCustomizer;
     /**
      *
      * @param eventListCustomizer The drawable id of the icon we want to display on the left. Do 0 for no icon.
      */
-    public EventArrayAdapter(@NonNull Context context, ArrayList<Event> events, EventListCustomizer eventListCustomizer) {
+    public RegisteredEventArrayAdapter(@NonNull Context context, ArrayList<Event> events, RegisteredEventListCustomizer eventListCustomizer) {
         super(context, 0, events);
         this.context = context;
         this.events = events;
-        this.eventListCustomizer = eventListCustomizer;
+        this.registeredEventListCustomizer = eventListCustomizer;
     }
 
 
@@ -60,23 +59,25 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view;
 
+        Event event = events.get(position);
+
         if(convertView == null){
-            view = LayoutInflater.from(context).inflate(R.layout.event_card, parent,false);
+            view = LayoutInflater.from(context).inflate(R.layout.register_event_card, parent,false);
         }else {
             view = convertView;
         }
 
-        Event event = events.get(position);
-
         TextView eventName = view.findViewById(R.id.eventName);
         TextView eventDate = view.findViewById(R.id.eventDate);
+        TextView waitForLotteryText = view.findViewById(R.id.waitForLotteryText);
 
-        Button button = view.findViewById(R.id.button);
-        Log.d("EventArrayAdapter", "Got event " + event.getName());
+        Button btnAccept = view.findViewById(R.id.btnAccept);
+        Button btnDecline = view.findViewById(R.id.btnDecline);
+
         eventName.setText(event.getName());
         eventDate.setText(event.getEventDate().toString());
 
-        eventListCustomizer.CustomizeEventCardButton(button, event);
+        registeredEventListCustomizer.CustomizeEventCardButton(btnAccept, btnDecline, waitForLotteryText, event);
 
         return view;
     }

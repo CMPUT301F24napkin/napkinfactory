@@ -16,7 +16,6 @@ public class User {
     private ArrayList<String> waitlist;
     private ArrayList<String> chosen;
     private ArrayList<String> registered;
-    private ArrayList<String> cancelled;
 
     public User () {
         androidId = "";
@@ -26,11 +25,10 @@ public class User {
         address = "";
         enNotifications = false;
         isAdmin = false;
-
-        notifications = new ArrayList<Notification>();
-        waitlist = new ArrayList<String>();
-        chosen = new ArrayList<String>();
-        registered = new ArrayList<String>();
+        notifications = new ArrayList<>();
+        waitlist = new ArrayList<>();
+        chosen = new ArrayList<>();
+        registered = new ArrayList<>();
     }
 
     // New user
@@ -45,10 +43,10 @@ public class User {
         this.isAdmin = isAdmin;
 
         // Initialize the rest to defaults
-        this.notifications = new ArrayList<Notification>();
-        this.waitlist = new ArrayList<String>();
-        this.chosen = new ArrayList<String>();
-        this.registered = new ArrayList<String>();
+        this.notifications = new ArrayList<>();
+        this.waitlist = new ArrayList<>();
+        this.chosen = new ArrayList<>();
+        this.registered = new ArrayList<>();
     }
 
     // User from database
@@ -65,6 +63,10 @@ public class User {
         this.isAdmin = isAdmin;
 
         this.notifications = notifications;
+
+        this.waitlist = waitlist;
+        this.chosen = chosen;
+        this.registered = registered;
     }
 
     public void setAndroidId(String id) { this.androidId = id; }
@@ -164,7 +166,7 @@ public class User {
     }
 
     public void addEventToChosen(String eventId){
-        if(chosen == null || chosen.contains(eventId)) {
+        if(chosen.contains(eventId)){
             // Don't double add
             return;
         }
@@ -181,5 +183,25 @@ public class User {
         if(chosen == null)
             return new ArrayList<>();
         return chosen;
+    }
+
+    public void addEventToRegistered(String eventId){
+        if(registered.contains(eventId)){
+            // Don't double add
+            return;
+        }
+        registered.add(eventId);
+    }
+
+    public void removeEventFromRegistered(String eventId){
+        if(registered == null)
+            return;
+        registered.remove(eventId);
+    }
+
+    public ArrayList<String> getRegistered(){
+        if(registered == null)
+            return new ArrayList<>();
+        return registered;
     }
 }
