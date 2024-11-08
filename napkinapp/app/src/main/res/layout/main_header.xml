@@ -25,12 +25,12 @@
         android:layout_marginTop="8dp"
         android:text="TextView"
         android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_profile"
+        app:layout_constraintEnd_toStartOf="@+id/btn_notification"
         app:layout_constraintStart_toEndOf="@+id/btn_hamburger"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/btn_profile"
+        android:id="@+id/btn_notification"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:layout_marginTop="8dp"
@@ -40,5 +40,5 @@
         android:background="#00000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/blank_profile" />
+        app:srcCompat="@drawable/notification_bell" />
 </androidx.constraintlayout.widget.ConstraintLayout>
