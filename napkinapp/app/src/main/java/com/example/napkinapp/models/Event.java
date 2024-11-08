@@ -144,4 +144,19 @@ public class Event {
         this.requireGeolocation = requireGeolocation;
     }
 
+    public List<String> getWaitlist() {
+        return waitlist;
+    }
+
+    public List<String> getChosen() {
+        return chosen;
+    }
+
+    public List<String> getCancelled() {
+        return cancelled;
+    }
+
+    public List<String> getRegistered() {
+        return registered;
+    }
 }

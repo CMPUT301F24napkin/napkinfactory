@@ -28,6 +28,9 @@ public class User {
         enNotifications = false;
         isAdmin = false;
         notifications = new ArrayList<Notification>();
+        waitlist = new ArrayList<String>();
+        chosen = new ArrayList<String>();
+        registered = new ArrayList<String>();
     }
 
     // New user
@@ -40,6 +43,12 @@ public class User {
         this.address = address;
         this.enNotifications = enNotifications;
         this.isAdmin = isAdmin;
+
+        // Initialize the rest to defaults
+        this.notifications = new ArrayList<Notification>();
+        this.waitlist = new ArrayList<String>();
+        this.chosen = new ArrayList<String>();
+        this.registered = new ArrayList<String>();
     }
 
     // User from database
