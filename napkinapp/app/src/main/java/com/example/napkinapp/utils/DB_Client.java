@@ -48,6 +48,8 @@ public class DB_Client {
         }
     }
 
+    public static final DB_Client.DatabaseCallback IGNORE = new DB_Client.DatabaseCallback() {};
+
     private final FirebaseFirestore database;
 
     /**

@@ -19,4 +19,5 @@
     <string name="notification_not_chosen_description">Unfortunately, you were not chosen for this event.</string>
     <string name="notification_chosen_name">Hooray, selected!</string>
     <string name="notification_chosen_description">Congratulations, you were chosen for this event!</string>
+    <string name="notification_custom_name">Message from organizer</string>
 </resources>

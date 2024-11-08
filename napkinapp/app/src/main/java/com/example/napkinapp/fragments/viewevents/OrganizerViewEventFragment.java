@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -58,6 +59,27 @@ public class OrganizerViewEventFragment extends Fragment {
         this.event = event;
     };
 
+    private void sendNotification(List<String> androidIds, Notification notification) {
+        for(String androidId : androidIds) {
+            DB_Client db = new DB_Client();
+            HashMap<String, Object> filter = new HashMap<>();
+            filter.put("androidId", androidId);
+            db.findOne("Users", filter, new DB_Client.DatabaseCallback<User>() {
+                @Override
+                public void onSuccess(@Nullable User data) {
+                    data.addNotification(notification);
+                    db.writeData("Users", androidId, data, DB_Client.IGNORE);
+                }
+            }, User.class);
+        }
+        // Get the InputMethodManager system service
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // If the keyboard is open, hide it
+        imm.hideSoftInputFromWindow(getActivity().findViewById(R.id.content_fragmentcontainer).getWindowToken(), 0);
+        Toast.makeText(mContext, String.format("Sent notification to %d users!", androidIds.size()) , Toast.LENGTH_SHORT).show();
+    }
+
     private void doLottery() {
 
         ArrayList<String> waitlistCopy = new ArrayList<>(event.getWaitlist());
@@ -79,31 +101,14 @@ public class OrganizerViewEventFragment extends Fragment {
         event.setChosen(chosenListCopy);
 
         // notify everyone in waitlist. notify everyone in chosenListCopy.
-        for(String androidId : waitlistCopy) {
-            DB_Client db = new DB_Client();
-            HashMap<String, Object> filter = new HashMap<>();
-            db.findOne("Users", filter, new DB_Client.DatabaseCallback<User>() {
-                @Override
-                public void onSuccess(@Nullable User data) {
-                    data.addNotification(new Notification(
-                            getText(R.string.notification_not_chosen_name).toString(),
-                            getText(R.string.notification_not_chosen_description).toString(),false, event.getId(), false));
-                }
-                }, User.class);
-        }
+        sendNotification(waitlistCopy, new Notification(
+                getText(R.string.notification_not_chosen_name).toString(),
+                getText(R.string.notification_not_chosen_description).toString(),false, event.getId(), false));
 
-        for(String androidId : chosenListCopy) {
-            DB_Client db = new DB_Client();
-            HashMap<String, Object> filter = new HashMap<>();
-            db.findOne("Users", filter, new DB_Client.DatabaseCallback<User>() {
-                @Override
-                public void onSuccess(@Nullable User data) {
-                    data.addNotification(new Notification(
-                            getText(R.string.notification_chosen_name).toString(),
-                            getText(R.string.notification_chosen_description).toString(),false, event.getId(), false));
-                }
-            }, User.class);
-        }
+        sendNotification(chosenListCopy, new Notification(
+                getText(R.string.notification_chosen_name).toString(),
+                getText(R.string.notification_chosen_description).toString(),false, event.getId(), false));
+
     }
 
     @Override
@@ -331,15 +336,33 @@ public class OrganizerViewEventFragment extends Fragment {
         sendMessage.setOnClickListener(v -> {
             if(!users.isEmpty()) {
                 if(waitlistChip.isChecked()) {
-                    Toast.makeText(mContext, String.format("Sending message to Waitlist (%d users)", users.size()), Toast.LENGTH_SHORT).show();
+                    sendNotification(event.getWaitlist(), new Notification(
+                            getText(R.string.notification_custom_name).toString(),
+                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
+
                 } else if(chosenChip.isChecked()) {
-                    Toast.makeText(mContext, String.format("Sending message to Chosen (%d users)", users.size()) , Toast.LENGTH_SHORT).show();
+                    sendNotification(event.getChosen(), new Notification(
+                            getText(R.string.notification_custom_name).toString(),
+                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
+
                 } else if(cancelledChip.isChecked()) {
-                    Toast.makeText(mContext, String.format("Sending message to Cancelled (%d users)", users.size()) , Toast.LENGTH_SHORT).show();
+                    sendNotification(event.getCancelled(), new Notification(
+                            getText(R.string.notification_custom_name).toString(),
+                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
+
                 } else if(registeredChip.isChecked()) {
-                    Toast.makeText(mContext, String.format("Sending message to Registered (%d users)", users.size()) , Toast.LENGTH_SHORT).show();
+                    sendNotification(event.getRegistered(), new Notification(
+                            getText(R.string.notification_custom_name).toString(),
+                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
                 } else {
-                    Toast.makeText(mContext, "Sending message to All" , Toast.LENGTH_SHORT).show();
+                    ArrayList<String> arrayList = new ArrayList<>(event.getWaitlist());
+                    arrayList.addAll(event.getChosen());
+                    arrayList.addAll(event.getRegistered());
+                    arrayList.addAll(event.getCancelled());
+
+                    sendNotification(arrayList, new Notification(
+                            getText(R.string.notification_custom_name).toString(),
+                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
                 }
             } else {
                 Toast.makeText(mContext, "No users to send message to!" , Toast.LENGTH_SHORT).show();
