@@ -107,7 +107,7 @@ public class CreateEventFragment extends Fragment {
 
         // Create the Event object with the Date
         Event event = new Event(loggedInUser.getAndroidId(), eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
-                registeredLimitValue, participantLimitValue, geolocationSwitch.isChecked());
+                entrantLimitValue, participantLimitValue, geolocationSwitch.isChecked());
 
 
         db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {

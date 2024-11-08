@@ -249,19 +249,19 @@ public class Event {
         return  cancelled;
     }
 
-    public void setWaitlist(List<String> waitlist) {
+    public void setWaitlist(ArrayList<String> waitlist) {
         this.waitlist = waitlist;
     }
 
-    public void setChosen(List<String> chosen) {
+    public void setChosen(ArrayList<String> chosen) {
         this.chosen = chosen;
     }
 
-    public void setCancelled(List<String> cancelled) {
+    public void setCancelled(ArrayList<String> cancelled) {
         this.cancelled = cancelled;
     }
 
-    public void setRegistered(List<String> registered) {
+    public void setRegistered(ArrayList<String> registered) {
         this.registered = registered;
     }
 }
