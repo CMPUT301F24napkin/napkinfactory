@@ -164,7 +164,7 @@ public class User {
     }
 
     public void addEventToChosen(String eventId){
-        if(chosen == null || chosen.contains(eventId)) {
+        if(chosen.contains(eventId)){
             // Don't double add
             return;
         }
@@ -181,5 +181,25 @@ public class User {
         if(chosen == null)
             return new ArrayList<>();
         return chosen;
+    }
+
+    public void addEventToRegistered(String eventId){
+        if(registered.contains(eventId)){
+            // Don't double add
+            return;
+        }
+        registered.add(eventId);
+    }
+
+    public void removeEventFromRegistered(String eventId){
+        if(registered == null)
+            return;
+        registered.remove(eventId);
+    }
+
+    public ArrayList<String> getRegistered(){
+        if(registered == null)
+            return new ArrayList<>();
+        return registered;
     }
 }

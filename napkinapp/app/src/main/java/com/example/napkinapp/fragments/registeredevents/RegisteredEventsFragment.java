@@ -92,8 +92,8 @@ public class RegisteredEventsFragment extends Fragment {
             Log.d("RegisteredEventsFragment", "Clicked an event at position " + position);
             if(clickedEvent != null) {
                 // Replace fragment
-                getParentFragmentManager().beginTransaction() // ONCE SHAHEER PR MERGED AT USER TO ARGS
-                        .replace(R.id.content_fragmentcontainer, new ViewEventFragment(clickedEvent)) // Use your actual container ID
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.content_fragmentcontainer, new ViewEventFragment(clickedEvent, loggedInUser)) // Use your actual container ID
                         .addToBackStack(null) // Allows user to go back to RegisteredEventsFragment
                         .commit();
             }
@@ -151,8 +151,8 @@ public class RegisteredEventsFragment extends Fragment {
     private void registerUser(Event event){
         // move this event from Chosen to Registered
         // add to this user's copy
-        loggedInUser.addEventToRegistered(event);
-        loggedInUser.removeEventFromChosen(event);
+        loggedInUser.addEventToRegistered(event.getId());
+        loggedInUser.removeEventFromChosen(event.getId());
 
         event.addUserToRegistered(loggedInUser);
         event.removeUserFromChosen(loggedInUser);
@@ -190,7 +190,7 @@ public class RegisteredEventsFragment extends Fragment {
     }
 
     private void declineEvent(Event event){
-        loggedInUser.removeEventFromChosen(event);
+        loggedInUser.removeEventFromChosen(event.getId());
         event.addUserToCancelled(loggedInUser);
 
         DB_Client db = new DB_Client();

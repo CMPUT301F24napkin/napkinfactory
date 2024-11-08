@@ -18,6 +18,7 @@ import com.example.napkinapp.fragments.notifications.ListNotificationsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
 
 import com.example.napkinapp.fragments.qrscanner.QRScannerFragment;
+import com.example.napkinapp.fragments.registeredevents.RegisteredEventsFragment;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 selectedFragment = new ListEventsFragment(user);
                 break;
             case 1:
-                break;
+                selectedFragment = new RegisteredEventsFragment(user);
             case 2:
                 // map
                 break;
