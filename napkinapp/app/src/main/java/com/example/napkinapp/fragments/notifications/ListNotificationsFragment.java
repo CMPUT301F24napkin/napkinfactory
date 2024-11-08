@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.MainActivity;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.models.Notification;
 
 
 public class ListNotificationsFragment extends Fragment {

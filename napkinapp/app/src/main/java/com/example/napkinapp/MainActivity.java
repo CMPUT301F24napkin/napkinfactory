@@ -180,7 +180,10 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 if(data != null){
                     // User exists, retrieve and set them up
                     user = data;
+                    updateHeaderNotificationIcon();
+                    listenForUserUpdates();
                     Toast.makeText(getBaseContext(), "Welcome back " + user.getName(), Toast.LENGTH_SHORT).show();
+
                     // Load list events
                     OpenListEvents();
                 }else {
@@ -193,6 +196,47 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
             @Override
             public void onFailure(Exception e) {
                 Log.e("User Initialization", "Something went wrong initializing user. UserID: "+userID);
+            }
+        }, User.class);
+    }
+
+    /**
+     * Set up a snapshot listener to listen for real-time changes in the user's document.
+     */
+    private void listenForUserUpdates() {
+        DB_Client db = new DB_Client();
+
+        // Set up a listener for changes to the user's document in the "Users" collection
+        db.addDocumentSnapshotListener("Users", user.getAndroidId(), new DB_Client.DatabaseCallback<User>() {
+            @Override
+            public void onSuccess(@Nullable User updatedUser) {
+                if (updatedUser != null) {
+                    if (user.getNotifications().size() < updatedUser.getNotifications().size()){
+                        Toast.makeText(getBaseContext(), "You received a new notification", Toast.LENGTH_SHORT).show();
+                    }
+
+                    user = updatedUser;
+                    updateHeaderNotificationIcon();
+
+                    Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
+
+                    if(currFrag instanceof ListNotificationsFragment){
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.content_fragmentcontainer, new ListNotificationsFragment())
+                                .addToBackStack(null)
+                                .commit();
+                    }
+
+                    Log.i("User Update", "User data updated in real-time: " + user.getName());
+
+                } else {
+                    Log.w("User Update", "User data is null, no changes detected.");
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("User Listener", "Error listening for real-time user updates: " + e.getMessage());
             }
         }, User.class);
     }
