@@ -93,7 +93,7 @@
 
     <!-- Registered Entrant Limit -->
     <EditText
-        android:id="@+id/registered_entrant_limit"
+        android:id="@+id/entrant_limit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Registered Entrant Limit"
