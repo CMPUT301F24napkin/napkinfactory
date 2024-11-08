@@ -2,12 +2,14 @@ package com.example.napkinapp.fragments.profile;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.User;
+import com.example.napkinapp.utils.DB_Client;
 
 public class ProfileFragment extends Fragment {
     private User user;
@@ -72,6 +75,21 @@ public class ProfileFragment extends Fragment {
             user.setPhoneNumber(phoneText.getText().toString());
             user.setAddress(addressText.getText().toString());
             user.setEnNotifications(notificationSwitch.isChecked());
+            DB_Client db = new DB_Client();
+
+            db.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("User update/creation", "Something went wrong updating user");
+                    Toast.makeText(getContext(), "Error updating/creating user! Please try again!", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onSuccess(@Nullable Void data) {
+                    Log.i("User update/creation", "User updated/created");
+                    Toast.makeText(getContext(), "Successfully updated your profile!", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         return view;

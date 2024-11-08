@@ -66,6 +66,10 @@ public class User {
         this.registered = registered;
     }
 
+    public void setAndroidId(String id) { this.androidId = id; };
+
+    public String getAndroidId() { return androidId; }
+
     public void setName(String name) {
         this.name = name;
     }

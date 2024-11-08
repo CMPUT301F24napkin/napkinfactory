@@ -40,10 +40,9 @@ public class MyEventsFragment extends Fragment {
 
     }
 
-    EventArrayAdapter.EventListCustomizer customizer = button -> {
+    EventArrayAdapter.EventListCustomizer customizer = (button, event) -> {
         button.setText("View");
         button.setOnClickListener(v->{
-            Event event = (Event)v.getTag();
             Log.i("Button", String.format("My Events: Clicked on event %s\n", event.getName()));
         });
     };

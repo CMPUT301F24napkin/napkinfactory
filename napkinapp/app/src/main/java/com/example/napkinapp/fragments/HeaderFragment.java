@@ -36,6 +36,7 @@ public class HeaderFragment extends Fragment {
     }
 
     public void updateNotificationIcon(){
+
         if (MainActivity.user.getNotifications().isEmpty()) {
             notificationBtn.setImageResource(R.drawable.notification_bell_empty);
         } else if (MainActivity.user.allNotificationsRead()){
@@ -73,7 +74,7 @@ public class HeaderFragment extends Fragment {
             listener.handleHamburgerButtonClick();
         });
 
-        updateNotificationIcon();
+//        updateNotificationIcon();
 
         return view;
 

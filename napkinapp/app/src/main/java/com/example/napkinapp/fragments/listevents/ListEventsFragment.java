@@ -28,11 +28,10 @@ public class ListEventsFragment extends Fragment {
         // Required null constructor
     }
 
-    EventArrayAdapter.EventListCustomizer customizer = button -> {
+    EventArrayAdapter.EventListCustomizer customizer = (button, event) -> {
         button.setText("Add to Watchlist");
         button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.add, 0, 0, 0);
         button.setOnClickListener(v->{
-            Event event = (Event)v.getTag();
             Log.i("Button", String.format("List Events: Clicked on event %s\n", event.getName()));
         });
     };
