@@ -8,7 +8,6 @@ import com.example.napkinapp.models.Event;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class EventUnitTest {
     private Event event;
@@ -21,10 +20,10 @@ public class EventUnitTest {
     private int participantLimit = 50;
     private boolean requireGeolocation = true;
     private String qrHashCode = "sampleQRHash";
-    private List<String> waitlist = new ArrayList<>();
-    private List<String> chosen = new ArrayList<>();
-    private List<String> cancelled = new ArrayList<>();
-    private List<String> registered = new ArrayList<>();
+    private ArrayList<String> waitlist = new ArrayList<>();
+    private ArrayList<String> chosen = new ArrayList<>();
+    private ArrayList<String> cancelled = new ArrayList<>();
+    private ArrayList<String> registered = new ArrayList<>();
 
     @Test
     public void testConstructorWithRequiredFields() {

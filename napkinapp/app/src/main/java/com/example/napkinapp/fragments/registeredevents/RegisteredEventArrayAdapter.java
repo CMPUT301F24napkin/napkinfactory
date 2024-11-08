@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class RegisteredEventArrayAdapter extends ArrayAdapter<Event> {
 
     public interface RegisteredEventListCustomizer {
-        void CustomizeEventCardButton(Button button1, Button button2, Event event);
+        void CustomizeEventCardButton(Button button1, Button button2, TextView text3, Event event);
     }
 
     private final ArrayList<Event> events;
@@ -59,16 +59,17 @@ public class RegisteredEventArrayAdapter extends ArrayAdapter<Event> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view;
 
+        Event event = events.get(position);
+
         if(convertView == null){
             view = LayoutInflater.from(context).inflate(R.layout.event_card_2_buttons, parent,false);
         }else {
             view = convertView;
         }
 
-        Event event = events.get(position);
-
         TextView text1 = view.findViewById(R.id.text1);
         TextView text2 = view.findViewById(R.id.text2);
+        TextView text3 = view.findViewById(R.id.text3);
 
         Button button1 = view.findViewById(R.id.button1);
         Button button2 = view.findViewById(R.id.button2);
@@ -76,7 +77,7 @@ public class RegisteredEventArrayAdapter extends ArrayAdapter<Event> {
         text1.setText(event.getName());
         text2.setText(event.getEventDate().toString());
 
-        registeredEventListCustomizer.CustomizeEventCardButton(button1, button2, event);
+        registeredEventListCustomizer.CustomizeEventCardButton(button1, button2, text3, event);
 
         return view;
     }
