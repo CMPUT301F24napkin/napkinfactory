@@ -21,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.fragments.EditTextPopupFragment;
@@ -29,6 +30,7 @@ import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
+import com.example.napkinapp.utils.QRCodeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputLayout;
@@ -98,8 +100,6 @@ public class OrganizerViewEventFragment extends Fragment {
 
         DB_Client db = new DB_Client();
 
-        // TODO get QR code from database
-
         // Update title
         titleUpdateListener.updateTitle("Event Details");
 
@@ -134,7 +134,7 @@ public class OrganizerViewEventFragment extends Fragment {
         Button sendMessage = view.findViewById(R.id.send_message);
 
         HashMap<String,Object> organizerFilter = new HashMap<>();
-        organizerFilter.put("id", event.getOrganizerId());
+        organizerFilter.put("androidId", event.getOrganizerId());
         db.findOne("Users", organizerFilter, new DB_Client.DatabaseCallback<User>() {
 
             @Override
@@ -215,7 +215,11 @@ public class OrganizerViewEventFragment extends Fragment {
         // its a function so that we can do unit tests on it!!!
         doLottery.setOnClickListener(v->{doLottery();});
 
-        // Share QR code TODO switch from eventImageURI to actual QR code URI
+        if(event.getQrHashCode() != null) {
+            qrCode.setImageBitmap(QRCodeUtils.generateQRCode(event.getQrHashCode(),150,150));
+        } else {
+            qrCode.setImageResource(R.mipmap.error);
+        }
 
         shareQRCode.setOnClickListener(v->{
             Intent shareIntent = new Intent();

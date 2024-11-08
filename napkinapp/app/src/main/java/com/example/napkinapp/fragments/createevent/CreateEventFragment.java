@@ -2,6 +2,7 @@ package com.example.napkinapp.fragments.createevent;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,9 +99,10 @@ public class CreateEventFragment extends Fragment {
             // TODO what do we want to do?? maybe ask the user to enter it again.
         }
 
+        String userID = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Create the Event object with the Date
-        Event event = new Event("placeholder", eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
+        Event event = new Event(userID, eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
                 registeredLimitValue, participantLimitValue, geolocationSwitch.isChecked());
 
         db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {

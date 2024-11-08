@@ -8,6 +8,7 @@ package com.example.napkinapp.fragments.myevents;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class MyEventsFragment extends Fragment {
@@ -83,7 +85,11 @@ public class MyEventsFragment extends Fragment {
 
         // Add sample events
         DB_Client db = new DB_Client();
-        db.findAll("Events", null, new DB_Client.DatabaseCallback<List<Event>>() {
+
+        HashMap<String, Object> filter = new HashMap<>();
+        String userID = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+        filter.put("organizerId", userID);
+        db.findAll("Events", filter, new DB_Client.DatabaseCallback<List<Event>>() {
             @Override
             public void onSuccess(@Nullable List<Event> data) {
                 events.clear();

@@ -37,6 +37,8 @@ public class Notification {
         this.isOrganizerNotification = isOrganizerNotification;
     }
 
+    public Notification() {}
+
     public void setTitle(String title) {
         this.title = title;
     }
