@@ -1,12 +1,11 @@
-/**
- * Model calss for the notification. includes members like the title, message, a status for
- * if it was read yet, and the whether the notification is for organizers or not.
- */
-
 package com.example.napkinapp.models;
 
 import java.util.UUID;
 
+/**
+ * Model calss for the notification. includes members like the title, message, a status for
+ * if it was read yet, and the whether the notification is for organizers or not.
+ */
 public class Notification {
     private String id;
     private String title;

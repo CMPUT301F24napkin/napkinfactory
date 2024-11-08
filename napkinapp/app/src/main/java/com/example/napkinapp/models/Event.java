@@ -1,15 +1,14 @@
-/**
- * Model class of an Event.
- * it contains all raw the data of an event as well as lists of users (androidId) that are
- * waitlisted, chosen, cancelled, and registered in this event.
- */
-
 package com.example.napkinapp.models;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Model class of an Event.
+ * it contains all raw the data of an event as well as lists of users (androidId) that are
+ * waitlisted, chosen, cancelled, and registered in this event.
+ */
 public class Event {
     // From firestore
     private String id;
@@ -176,6 +175,10 @@ public class Event {
         this.requireGeolocation = requireGeolocation;
     }
 
+    /**
+     * add user to waitlist if waitlist is not null
+     * @param userId user to add
+     */
     public void addUserToWaitlist(String userId){
         if(waitlist.contains(userId)){
             // Don't double add
@@ -184,6 +187,10 @@ public class Event {
         waitlist.add(userId);
     }
 
+    /**
+     * remove user from waitlist if waitlist is not null
+     * @param userId user to remove
+     */
     public void removeUserFromWaitList(String userId){
         if(waitlist == null)
             return;
@@ -197,6 +204,10 @@ public class Event {
         return  waitlist;
     }
 
+    /**
+     * add user to chosen list. prevents double add.
+     * @param userId user to add
+     */
     public void addUserToChosen(String userId){
         if(chosen.contains(userId)) {
             // Don't double add
@@ -213,6 +224,10 @@ public class Event {
         return chosen;
     }
 
+    /**
+     * adds a user to this event's cancelled list if registered is not null.
+     * @param userId the user to add
+     */
     public void addUserToRegistered(String userId){
         if(registered.contains(userId)){
             // Don't double add
@@ -221,6 +236,10 @@ public class Event {
         registered.add(userId);
     }
 
+    /**
+     * removes a user from this event's registered list if registered is not null.
+     * @param userId the user to remove
+     */
     public void removeUserFromRegistered(String userId){
         if(registered == null)
             return;
@@ -234,6 +253,10 @@ public class Event {
         return  registered;
     }
 
+    /**
+     * adds a user to this event's cancelled list if cancelled is not null.
+     * @param userId the user to add
+     */
     public void addUserToCancelled(String userId){
         if(cancelled.contains(userId)){
             // Don't double add
@@ -242,6 +265,10 @@ public class Event {
         cancelled.add(userId);
     }
 
+    /**
+     * removes a user from this event's cancelled list if cancelled is not null.
+     * @param userId the user to remove
+     */
     public void removeUserFromCancelled(String userId){
         if(cancelled == null)
             return;
@@ -249,6 +276,10 @@ public class Event {
         cancelled.remove(userId);
     }
 
+    /**
+     * Returns cancelled. If cancelled is null, construct a default one.
+     * @return cancelled
+     */
     public ArrayList<String> getCancelled(){
         if(cancelled == null)
             return new ArrayList<String>();
