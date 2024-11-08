@@ -77,13 +77,13 @@ public class QRScannerFragment extends Fragment {
             @Override
             public void barcodeResult(BarcodeResult result) {
                 HashMap<String,Object> filter = new HashMap<>();
-                filter.put("qrHashCode", result);
+                filter.put("qrHashCode", result.toString());
                 db.findOne("Events", filter, new DB_Client.DatabaseCallback<Event>() {
 
                     @Override
                     public void onSuccess(@Nullable Event data) {
                         if (data == null){
-                            Log.e("Database Issue", "Event not found in Database for the specified qrHashCode: " + result);
+                            Log.e("Database Issue", "Event not found in Database for the specified qrHashCode: " + result.toString());
                             return;
                         }
                         getParentFragmentManager().beginTransaction()

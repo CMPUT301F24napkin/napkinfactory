@@ -97,7 +97,8 @@ public class ViewEventFragment extends Fragment {
 
         cancel.setOnClickListener((v) -> {
             if (getActivity() != null) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                // TODO: there a is a bug hitting cancel after it loads with a qr code
+                requireActivity().getSupportFragmentManager().popBackStack();
             }
         });
         moreOptions.setOnClickListener((v) -> {
