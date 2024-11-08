@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         switch(btnid) {
             // Not using actual button id's as apparently they're non final
             case 0:
-                selectedFragment = new ListEventsFragment();
+                selectedFragment = new ListEventsFragment(user);
                 break;
             case 1:
                 break;
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
 
     private void OpenListEvents(){
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_fragmentcontainer, new ListEventsFragment())
+                .replace(R.id.content_fragmentcontainer, new ListEventsFragment(user))
                 .commit();
     }
 }

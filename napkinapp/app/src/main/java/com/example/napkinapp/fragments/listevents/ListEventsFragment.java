@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.R;
+import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 
 import java.util.ArrayList;
@@ -23,9 +24,11 @@ import java.util.List;
 public class ListEventsFragment extends Fragment {
     private TitleUpdateListener titleUpdateListener;
     private Context mContext;
+    private User loggedInUser;
 
-    public ListEventsFragment(){
-        // Required null constructor
+    public ListEventsFragment(){}
+    public ListEventsFragment(User user){
+        loggedInUser = user;
     }
 
     EventArrayAdapter.EventListCustomizer customizer = (button, event) -> {
