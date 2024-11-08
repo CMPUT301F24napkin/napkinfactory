@@ -14,6 +14,7 @@ import com.example.napkinapp.fragments.myevents.MyEventsFragment;
 import com.example.napkinapp.fragments.myevents.MyEventsFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
+import com.example.napkinapp.fragments.qrscanner.QRScannerFragment;
 import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.utils.DB_Client;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 break;
             case 3:
                 // QRscanner
+                selectedFragment = new QRScannerFragment();
                 break;
             case 4:
                 // Myevents

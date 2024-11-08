@@ -1,5 +1,6 @@
 [versions]
 agp = "8.6.1"
+core = "3.5.1"
 firebaseAnalytics = "22.1.2"
 firebaseBom = "33.5.1"
 firebaseBomVersion = "32.7.1"
@@ -15,6 +16,7 @@ zxing = "core"
 zxingAndroidEmbedded = "4.3.0"
 
 [libraries]
+core = { module = "com.google.zxing:core", version.ref = "core" }
 firebase-bom-v3271 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
