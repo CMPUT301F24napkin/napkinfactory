@@ -111,7 +111,7 @@ public class CreateEventFragment extends Fragment {
                 db.updateAll("Events", Map.of(
                         "id", data
                 ), Map.of(
-                        "qrHash", hash
+                        "QRHashCode", hash
                 ), new DB_Client.DatabaseCallback<Void>() {});
             }
         });
