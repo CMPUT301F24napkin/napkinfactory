@@ -196,4 +196,46 @@ public class Event {
     public ArrayList<String> getChosen(){
         return chosen;
     }
+
+    public void addUserToRegistered(String userId){
+        if(registered.contains(userId)){
+            // Don't double add
+            return;
+        }
+        registered.add(userId);
+    }
+
+    public void removeUserFromRegistered(String userId){
+        if(registered == null)
+            return;
+        // Already checks for null userid
+        registered.remove(userId);
+    }
+
+    public ArrayList<String> getRegistered(){
+        if(registered == null)
+            return new ArrayList<String>();
+        return  registered;
+    }
+
+    public void addUserToCancelled(String userId){
+        if(cancelled.contains(userId)){
+            // Don't double add
+            return;
+        }
+        cancelled.add(userId);
+    }
+
+    public void removeUserFromCancelled(String userId){
+        if(cancelled == null)
+            return;
+        // Already checks for null userid
+        cancelled.remove(userId);
+    }
+
+    public ArrayList<String> getCancelled(){
+        if(cancelled == null)
+            return new ArrayList<String>();
+        return  cancelled;
+    }
 }
