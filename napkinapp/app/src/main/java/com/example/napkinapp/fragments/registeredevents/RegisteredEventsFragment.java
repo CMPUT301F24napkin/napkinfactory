@@ -197,6 +197,7 @@ public class RegisteredEventsFragment extends Fragment {
     private void declineEvent(Event event) {
         loggedInUser.removeEventFromChosen(event.getId());
         event.addUserToCancelled(loggedInUser.getAndroidId());
+        event.removeUserFromChosen(loggedInUser.getAndroidId());
 
         DB_Client db = new DB_Client();
         db.writeData("Users", loggedInUser.getAndroidId(), loggedInUser, new DB_Client.DatabaseCallback<Void>() {
