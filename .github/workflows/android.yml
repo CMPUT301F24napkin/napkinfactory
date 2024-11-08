@@ -28,3 +28,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
       working-directory: ./napkinapp
+
+    - name: Run Unit Tests
+      run: ./gradlew test
+      working-directory: ./napkinapp

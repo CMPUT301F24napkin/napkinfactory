@@ -46,9 +46,13 @@ dependencies {
     implementation(libs.constraintlayout)
 
     testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
     implementation(platform(libs.firebase.bom.v3271))
     implementation(libs.firebase.firestore)
+
+    implementation(libs.zxing.android.embedded)
+    implementation(libs.core)
 }

@@ -1,8 +1,5 @@
 package com.example.napkinapp.models;
 
-
-import org.checkerframework.common.value.qual.ArrayLen;
-
 import java.util.ArrayList;
 
 public class User {
@@ -14,27 +11,31 @@ public class User {
     private String address;
     private Boolean enNotifications;
     private Boolean isAdmin;
-    private Boolean isOrganizer;
     private ArrayList<Notification> notifications;
 
     private ArrayList<String> waitlist;
     private ArrayList<String> chosen;
     private ArrayList<String> registered;
+    private ArrayList<String> cancelled;
 
     public User () {
+        androidId = "";
         name = "";
         phoneNumber = "";
         email = "";
         address = "";
         enNotifications = false;
-        isOrganizer = false;
         isAdmin = false;
-        notifications = new ArrayList<>();
+
+        notifications = new ArrayList<Notification>();
+        waitlist = new ArrayList<String>();
+        chosen = new ArrayList<String>();
+        registered = new ArrayList<String>();
     }
 
     // New user
     public User (String androidId, String name, String phoneNumber, String email,
-                 String address, Boolean enNotifications, Boolean isAdmin, Boolean isOrganizer){
+                 String address, Boolean enNotifications, Boolean isAdmin){
         this.androidId = androidId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -42,12 +43,17 @@ public class User {
         this.address = address;
         this.enNotifications = enNotifications;
         this.isAdmin = isAdmin;
-        this.isOrganizer = isOrganizer;
+
+        // Initialize the rest to defaults
+        this.notifications = new ArrayList<Notification>();
+        this.waitlist = new ArrayList<String>();
+        this.chosen = new ArrayList<String>();
+        this.registered = new ArrayList<String>();
     }
 
     // User from database
     public User (String androidId, String name, String phoneNumber, String email,
-                 String address, Boolean enNotifications, Boolean isAdmin, Boolean isOrganizer,
+                 String address, Boolean enNotifications, Boolean isAdmin,
                  ArrayList<Notification> notifications, ArrayList<String> waitlist, ArrayList<String> chosen,
                  ArrayList<String> cancelled, ArrayList<String> registered){
         this.androidId = androidId;
@@ -57,14 +63,15 @@ public class User {
         this.address = address;
         this.enNotifications = enNotifications;
         this.isAdmin = isAdmin;
-        this.isOrganizer = isOrganizer;
 
         this.notifications = notifications;
     }
 
     public void setAndroidId(String id) { this.androidId = id; }
 
-    public String getAndroidId() { return androidId; }
+    public String getAndroidId() {
+        return this.androidId;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -113,15 +120,6 @@ public class User {
     public Boolean getIsAdmin() {
         return isAdmin;
     }
-
-    public void setOrganizer(Boolean organizer) {
-        isOrganizer = organizer;
-    }
-
-    public Boolean getIsOrganizer() {
-        return isOrganizer;
-    }
-
 
     public void addNotification(Notification notification) {
         notifications.add(notification);

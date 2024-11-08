@@ -20,7 +20,7 @@ public class Event {
     private boolean requireGeolocation;
     private Facility facility;
 
-    private String QRHashCode;
+    private String qrHashCode;
 
     private List<Tag> tags;
 
@@ -32,6 +32,8 @@ public class Event {
     // New event being created
     public Event(String organizerId, String name, Date eventDate, Date lotteryDate, String description,
                  int entrantLimit, int participantLimit, boolean requireGeolocation) {
+        init(); // provide sensible defaults
+
         this.organizerId = organizerId;
         this.name = name;
         this.eventDate = eventDate;
@@ -44,8 +46,10 @@ public class Event {
 
     // Event from database
     public Event(String id, String organizerId, String name, Date eventDate, Date lotteryDate, String description,
-                 int entrantLimit, int participantLimit, boolean requireGeolocation, String QRHashCode,
+                 int entrantLimit, int participantLimit, boolean requireGeolocation, String qrHashCode,
                  List<String> waitlist, List<String> chosen, List<String> cancelled, List<String> registered) {
+        init(); // provide sensible defaults
+
         this.id = id;
         this.organizerId = organizerId;
         this.name = name;
@@ -56,31 +60,33 @@ public class Event {
         this.participantLimit = participantLimit;
         this.requireGeolocation = requireGeolocation;
 
-        this.QRHashCode = QRHashCode;
-        if(waitlist == null){
-            this.waitlist = new ArrayList<>();
-        }else{
-            this.waitlist = (ArrayList<String>) waitlist;
-        }
+        this.qrHashCode = qrHashCode;
+        this.waitlist = waitlist;
+        this.chosen = chosen;
+        this.cancelled = cancelled;
+        this.registered = registered;
+    }
 
-        if(chosen == null){
-            this.chosen = new ArrayList<>();
-        }else{
-            this.chosen = (ArrayList<String>) chosen;
-        }
+    // provide sensible defaults for members to avoid bugs
+    private void init() {
+        this.id = "event_placeholder";
+        this.organizerId = "placeholder";
+        this.name = "name_placeholder";
+        this.eventDate = new Date();
+        this.lotteryDate = new Date();
+        this.description = "description_placeholder";
+        this.entrantLimit = 20;
+        this.participantLimit = -1;
+        this.requireGeolocation = false;
 
-        if(registered == null){
-            this.registered = new ArrayList<>();
-        }else{
-            this.registered = (ArrayList<String>) registered;
-        }
-
-        if(cancelled == null){
-            this.cancelled = new ArrayList<>();
-        }else{
-            this.cancelled = (ArrayList<String>) cancelled;
-        }
-
+        this.poster_image = new Image();
+        this.facility = new Facility();
+        this.qrHashCode = "qrHashCode_placeholder";
+        this.tags = new ArrayList<>();
+        this.waitlist = new ArrayList<>();
+        this.chosen = new ArrayList<>();
+        this.cancelled = new ArrayList<>();
+        this.registered = new ArrayList<>();
     }
 
     public Event(){
@@ -130,6 +136,10 @@ public class Event {
 
     public void setEventDate(Date eventDate) {
         this.eventDate = eventDate;
+    }
+
+    public String getQrHashCode() {
+        return qrHashCode;
     }
 
     public Date getEventDate() {

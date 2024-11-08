@@ -2,6 +2,7 @@ package com.example.napkinapp.utils;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.napkinapp.models.Event;
@@ -56,6 +57,10 @@ public class DB_Client {
         database = FirebaseFirestore.getInstance();
     }
 
+    public FirebaseFirestore getDatabase() {
+        return database;
+    }
+
     /**
      * Executes a query and returns the results based on the specified return type.
      *
@@ -64,16 +69,14 @@ public class DB_Client {
      * @param returnType The expected class type of the results. null if no results expected
      */
     public <T> void executeQuery(Query query, DatabaseCallback<T> callback, Class<T> returnType) {
+        if (List.class.isAssignableFrom(returnType)) {
+            throw new IllegalArgumentException("Use executeQueryList() for List types.");
+        }
+
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (returnType == Void.class) {
                     callback.onSuccess(null);
-                } else if (returnType == List.class) {
-                    List<T> resultList = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        resultList.add(document.toObject(returnType));
-                    }
-                    callback.onSuccess((T) resultList);
                 } else {
                     if (!task.getResult().isEmpty()) {
                         T result = task.getResult().getDocuments().get(0).toObject(returnType);
@@ -87,6 +90,23 @@ public class DB_Client {
             }
         });
     }
+
+    // Overloaded method for fetching a list of objects
+    public <T> void executeQueryList(Query query, DatabaseCallback<List<T>> callback, Class<T> elementType) {
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<T> resultList = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    resultList.add(document.toObject(elementType));
+                }
+                callback.onSuccess(resultList);
+            } else {
+                callback.onFailure(task.getException());
+            }
+        });
+    }
+
+
 
     /**
      * Writes data to the specified collection and document in Firestore, overwriting it if the
@@ -176,6 +196,33 @@ public class DB_Client {
     public <T> void findAll(String collection, Map<String, Object> filters, DatabaseCallback<List<T>> callback, Class<T> returnType) {
         CollectionReference colRef = database.collection(collection);
         Query query = applyFilters(colRef, filters);
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<T> result = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    result.add(document.toObject(returnType));
+                }
+                callback.onSuccess(result);
+            } else {
+                callback.onFailure(task.getException());
+            }
+        });
+    }
+
+    /**
+     * Finds all documents matching the specified whereIn statement in a Firestore collection.
+     *
+     * @param collection The Firestore collection to search.
+     * @param field The field to check is in list.
+     * @param list The list to check if field is in.
+     * @param callback A callback for handling success or failure of the query.
+     * @param returnType The expected class type of the results. null if no results expected
+     * @param <T> The type of each document in the results.
+     */
+    public <T> void findAllIn(String collection, String field, @NonNull List<Object> list, DatabaseCallback<List<T>> callback, Class<T> returnType) {
+        CollectionReference colRef = database.collection(collection);
+        Query query = colRef.whereIn(field, list);
 
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

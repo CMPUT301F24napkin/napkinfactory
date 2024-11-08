@@ -16,6 +16,8 @@ import com.example.napkinapp.fragments.myevents.MyEventsFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.notifications.ListNotificationsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
+
+import com.example.napkinapp.fragments.qrscanner.QRScannerFragment;
 import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 break;
             case 3:
                 // QRscanner
+                selectedFragment = new QRScannerFragment();
                 break;
             case 4:
                 // Myevents
@@ -108,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_fragmentcontainer, new AdminNavagationFragment())
+                .replace(R.id.content_fragmentcontainer, new AdminNavagationFragment(user))
                 .addToBackStack(null)
                 .commit();
 
