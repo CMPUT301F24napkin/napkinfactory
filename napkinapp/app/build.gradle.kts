@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation("androidx.work:work-runtime:2.7.1")
 
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
