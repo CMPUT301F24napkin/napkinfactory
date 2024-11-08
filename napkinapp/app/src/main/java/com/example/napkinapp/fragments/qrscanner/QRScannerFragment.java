@@ -19,6 +19,10 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 
+import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
+import com.example.napkinapp.models.Event;
+import com.example.napkinapp.models.User;
+import com.example.napkinapp.utils.DB_Client;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.ResultPoint;
 import com.journeyapps.barcodescanner.BarcodeCallback;
@@ -27,11 +31,11 @@ import com.journeyapps.barcodescanner.BarcodeView;
 import com.journeyapps.barcodescanner.DefaultDecoderFactory;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class QRScannerFragment extends Fragment {
     private BarcodeView qrScannerView;
-    private TextView qrResult;
     private TitleUpdateListener titleUpdateListener;
 
     public QRScannerFragment(){
@@ -52,7 +56,6 @@ public class QRScannerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.qr_scanner, container, false);
         qrScannerView = view.findViewById(R.id.barcode_view);
-        qrResult = view.findViewById(R.id.qr_result);
 
         titleUpdateListener.updateTitle("QR Scanner");
 
@@ -66,13 +69,30 @@ public class QRScannerFragment extends Fragment {
         return view;
     }
     private void startScanner() {
+        DB_Client db = new DB_Client();
         qrScannerView.setDecoderFactory(new DefaultDecoderFactory(Collections.singletonList(BarcodeFormat.QR_CODE)));
         qrScannerView.decodeContinuous(new BarcodeCallback() {
+
+            // query event and open view event fragment
             @Override
             public void barcodeResult(BarcodeResult result) {
+                HashMap<String,Object> filter = new HashMap<>();
+                filter.put("qrHashCode", result);
+                db.findOne("Events", filter, new DB_Client.DatabaseCallback<Event>() {
 
-                qrResult.setText(result.getText());
-                Log.i("QRScanner",qrResult.toString());
+                    @Override
+                    public void onSuccess(@Nullable Event data) {
+                        if (data == null){
+                            Log.e("Database Issue", "Event not found in Database for the specified qrHashCode: " + result);
+                            return;
+                        }
+                        getParentFragmentManager().beginTransaction()
+                                .replace(R.id.content_fragmentcontainer, new ViewEventFragment(data)) // Use your actual container ID
+                                .addToBackStack(null) // Allows user to go back to ListEventsFragment
+                                .commit();
+                    }
+                    },
+                        Event.class);
             }
 
             @Override

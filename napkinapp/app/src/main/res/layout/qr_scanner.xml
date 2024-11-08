@@ -29,14 +29,5 @@
         android:textColor="#FFFFFF"
         android:textSize="16sp" />
 
-    <!-- TextView for QR code result display -->
-    <TextView
-        android:id="@+id/qr_result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="24dp"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp" />
 
 </FrameLayout>
