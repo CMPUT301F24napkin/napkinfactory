@@ -211,6 +211,10 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
             @Override
             public void onSuccess(@Nullable User updatedUser) {
                 if (updatedUser != null) {
+                    if (user.getNotifications().size() < updatedUser.getNotifications().size()){
+                        Toast.makeText(getBaseContext(), "You received a new notification", Toast.LENGTH_SHORT).show();
+                    }
+
                     user = updatedUser;
                     updateHeaderNotificationIcon();
 
@@ -222,8 +226,6 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                                 .addToBackStack(null)
                                 .commit();
                     }
-
-
 
                     Log.i("User Update", "User data updated in real-time: " + user.getName());
 
