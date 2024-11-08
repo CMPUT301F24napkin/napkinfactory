@@ -1,12 +1,12 @@
-package com.example.napkinapp.fragments.listevents;
+package com.example.napkinapp.fragments.admineventsearch;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,10 +19,10 @@ import java.util.ArrayList;
 /**
  * Adapter class which allows Events to be displayed in lists.
  */
-public class EventArrayAdapter extends ArrayAdapter<Event> {
+public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
 
     public interface EventListCustomizer {
-        void CustomizeEventCardButton(Button button, Event event);
+        void CustomizeEventCardButton(Button button);
     }
 
     private final ArrayList<Event> events;
@@ -33,7 +33,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
      *
      * @param eventListCustomizer The drawable id of the icon we want to display on the left. Do 0 for no icon.
      */
-    public EventArrayAdapter(@NonNull Context context, ArrayList<Event> events, EventListCustomizer eventListCustomizer) {
+    public AdminEventArrayAdapter(@NonNull Context context, ArrayList<Event> events, EventListCustomizer eventListCustomizer) {
         super(context, 0, events);
         this.context = context;
         this.events = events;
@@ -75,7 +75,9 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         text1.setText(event.getName());
         text2.setText(event.getEventDate().toString());
 
-        eventListCustomizer.CustomizeEventCardButton(button, event);
+        eventListCustomizer.CustomizeEventCardButton(button);
+
+        button.setTag(event); // store the event on this button so the event listener can grab it!
 
         return view;
     }

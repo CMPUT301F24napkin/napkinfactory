@@ -16,6 +16,7 @@ import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.R;
+import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 
 import java.util.ArrayList;
@@ -24,16 +25,17 @@ import java.util.List;
 public class ListEventsFragment extends Fragment {
     private TitleUpdateListener titleUpdateListener;
     private Context mContext;
+    private User loggedInUser;
 
-    public ListEventsFragment(){
-        // Required null constructor
+    public ListEventsFragment(){}
+    public ListEventsFragment(User user){
+        loggedInUser = user;
     }
 
-    EventArrayAdapter.EventListCustomizer customizer = button -> {
+    EventArrayAdapter.EventListCustomizer customizer = (button, event) -> {
         button.setText("Add to Watchlist");
         button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.add, 0, 0, 0);
         button.setOnClickListener(v->{
-            Event event = (Event)v.getTag();
             Log.i("Button", String.format("List Events: Clicked on event %s\n", event.getName()));
         });
     };

@@ -57,6 +57,10 @@ public class DB_Client {
         database = FirebaseFirestore.getInstance();
     }
 
+    public FirebaseFirestore getDatabase() {
+        return database;
+    }
+
     /**
      * Executes a query and returns the results based on the specified return type.
      *
@@ -65,16 +69,14 @@ public class DB_Client {
      * @param returnType The expected class type of the results. null if no results expected
      */
     public <T> void executeQuery(Query query, DatabaseCallback<T> callback, Class<T> returnType) {
+        if (List.class.isAssignableFrom(returnType)) {
+            throw new IllegalArgumentException("Use executeQueryList() for List types.");
+        }
+
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (returnType == Void.class) {
                     callback.onSuccess(null);
-                } else if (returnType == List.class) {
-                    List<T> resultList = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        resultList.add(document.toObject(returnType));
-                    }
-                    callback.onSuccess((T) resultList);
                 } else {
                     if (!task.getResult().isEmpty()) {
                         T result = task.getResult().getDocuments().get(0).toObject(returnType);
@@ -88,6 +90,23 @@ public class DB_Client {
             }
         });
     }
+
+    // Overloaded method for fetching a list of objects
+    public <T> void executeQueryList(Query query, DatabaseCallback<List<T>> callback, Class<T> elementType) {
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<T> resultList = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    resultList.add(document.toObject(elementType));
+                }
+                callback.onSuccess(resultList);
+            } else {
+                callback.onFailure(task.getException());
+            }
+        });
+    }
+
+
 
     /**
      * Writes data to the specified collection and document in Firestore, overwriting it if the
