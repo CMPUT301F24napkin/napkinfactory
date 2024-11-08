@@ -1,4 +1,4 @@
-package com.example.napkinapp.fragments.listevents;
+package com.example.napkinapp.fragments.registeredevents;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,23 +12,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.listevents.EventArrayAdapter;
 import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Event;
-import com.example.napkinapp.R;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListEventsFragment extends Fragment {
+public class RegisteredEventsFragment extends Fragment {
     private TitleUpdateListener titleUpdateListener;
     private Context mContext;
     private User loggedInUser;
 
-    public ListEventsFragment(){}
-    public ListEventsFragment(User user){
+    public RegisteredEventsFragment(){}
+    public RegisteredEventsFragment(User user){
         loggedInUser = user;
     }
 

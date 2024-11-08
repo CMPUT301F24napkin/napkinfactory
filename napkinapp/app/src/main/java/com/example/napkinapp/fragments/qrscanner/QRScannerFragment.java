@@ -88,7 +88,7 @@ public class QRScannerFragment extends Fragment {
                         }
                         getParentFragmentManager().beginTransaction()
                                 .replace(R.id.content_fragmentcontainer, new ViewEventFragment(data)) // Use your actual container ID
-                                .addToBackStack(null) // Allows user to go back to ListEventsFragment
+                                .addToBackStack(null) // Allows user to go back to RegisteredEventsFragment
                                 .commit();
                     }
                     },
