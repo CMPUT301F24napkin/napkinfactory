@@ -1,8 +1,6 @@
 package com.example.napkinapp.fragments.adminmenu;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.icu.text.CaseMap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
-import com.example.napkinapp.fragments.admineventsearch.SearchEventFragment;
+import com.example.napkinapp.fragments.admineventsearch.AdminListEventsFragment;
 
 public class AdminNavagationFragment extends Fragment {
 
@@ -62,10 +60,10 @@ public class AdminNavagationFragment extends Fragment {
             // Begin the transaction
             Fragment currFrag = requireActivity().getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
 
-            if (!(currFrag instanceof SearchEventFragment)) {
+            if (!(currFrag instanceof AdminListEventsFragment)) {
                 // Switch to SearchEventFragment
                 requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content_fragmentcontainer, new SearchEventFragment())
+                        .replace(R.id.content_fragmentcontainer, new AdminListEventsFragment())
                         .addToBackStack(null)
                         .commit();
             }

@@ -56,6 +56,10 @@ public class DB_Client {
         database = FirebaseFirestore.getInstance();
     }
 
+    public FirebaseFirestore getDatabase() {
+        return database;
+    }
+
     /**
      * Executes a query and returns the results based on the specified return type.
      *
@@ -63,25 +67,15 @@ public class DB_Client {
      * @param callback A callback for handling success or failure of the query.
      * @param returnType The expected class type of the results. null if no results expected
      */
-    public <T> void executeQuery(Query query, DatabaseCallback<T> callback, Class<T> returnType) {
+    public <T> void executeQuery(Query query, DatabaseCallback<List<T>> callback, Class<T> returnType) {
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                if (returnType == Void.class) {
-                    callback.onSuccess(null);
-                } else if (returnType == List.class) {
-                    List<T> resultList = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        resultList.add(document.toObject(returnType));
-                    }
-                    callback.onSuccess((T) resultList);
-                } else {
-                    if (!task.getResult().isEmpty()) {
-                        T result = task.getResult().getDocuments().get(0).toObject(returnType);
-                        callback.onSuccess(result);
-                    } else {
-                        callback.onSuccess(null);
-                    }
+                // Handle the result as a list if multiple documents are expected
+                List<T> resultList = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    resultList.add(document.toObject(returnType));
                 }
+                callback.onSuccess(resultList);
             } else {
                 callback.onFailure(task.getException());
             }
