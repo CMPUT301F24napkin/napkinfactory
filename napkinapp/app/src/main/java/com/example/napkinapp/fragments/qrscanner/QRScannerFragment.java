@@ -1,3 +1,8 @@
+/**
+ * Fragment for the QR scanner screen.
+ * This screen lets the user scan a QR code and will automatically open the event once successfully scanned.
+ */
+
 package com.example.napkinapp.fragments.qrscanner;
 
 import android.Manifest;
@@ -72,6 +77,10 @@ public class QRScannerFragment extends Fragment {
 
         return view;
     }
+
+    /**
+     * Start the scanner, and open the scanned Event using its hashed id once successful.
+     */
     private void startScanner() {
         DB_Client db = new DB_Client();
         qrScannerView.setDecoderFactory(new DefaultDecoderFactory(Collections.singletonList(BarcodeFormat.QR_CODE)));

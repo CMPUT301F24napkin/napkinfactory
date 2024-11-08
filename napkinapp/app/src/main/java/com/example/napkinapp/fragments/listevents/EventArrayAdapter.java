@@ -1,3 +1,8 @@
+/**
+ * Event array adapter to view events in ListViews.
+ * Allows customization of the event card with a interface
+ */
+
 package com.example.napkinapp.fragments.listevents;
 
 import android.content.Context;
@@ -74,7 +79,8 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         Button button = view.findViewById(R.id.button);
         Log.d("EventArrayAdapter", "Got event " + event.getName());
         eventName.setText(event.getName());
-        eventDate.setText(event.getEventDate().toString());
+//        text2.setText(event.getEventDate().toString());
+        eventDate.setText(event.getId());
 
         eventListCustomizer.CustomizeEventCardButton(button, event);
 

@@ -1,3 +1,9 @@
+/**
+ * List all events that are currently available in the db.
+ * Allows filtering by waitlisted, etc.
+ * Does not show your own events.
+ */
+
 package com.example.napkinapp.fragments.listevents;
 
 import android.content.Context;
@@ -44,6 +50,9 @@ public class ListEventsFragment extends Fragment {
         loggedInUser = user;
     }
 
+    /**
+     * custom button customization callback. call the handleToggleBUtton method.
+     */
     EventArrayAdapter.EventListCustomizer customizer = (button, event) -> {
         updateButtonState(button, event);
         button.setOnClickListener(v -> {
@@ -109,6 +118,11 @@ public class ListEventsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * handle button clicks in the list of events.
+     * @param btn the main button
+     * @param event the event attached to this event card
+     */
     private void handleToggleButtonClick(Button btn, Event event) {
         Toast.makeText(mContext, "Button state: " + btn.isSelected(), Toast.LENGTH_SHORT).show();
         if (btn.isSelected()) {
@@ -120,6 +134,11 @@ public class ListEventsFragment extends Fragment {
         handleChipSelection(chips, chips.getCheckedChipIds());
     }
 
+    /**
+     * Updates the button's state based on whether the logged in user is on its waitlist or not.
+     * @param btn the button to update
+     * @param event the event to check if this user is waitlisted in.
+     */
     private void updateButtonState(Button btn, Event event) {
         if (event.getWaitlist().contains(loggedInUser.getAndroidId())) {
             // It is waitlisted
@@ -134,6 +153,10 @@ public class ListEventsFragment extends Fragment {
         }
     }
 
+    /**
+     * Removes the logged in user from the event deeply.
+     * @param event the event to delete.
+     */
     private void removeEventFromWaitlist(Event event) {
         event.removeUserFromWaitList(loggedInUser.getAndroidId());
         loggedInUser.removeEventFromWaitList(event.getId());
@@ -170,6 +193,10 @@ public class ListEventsFragment extends Fragment {
 
     }
 
+    /**
+     * Add a event to waitlist. Adds it to both copies of waitlist, on the Event and User.
+     * @param event event to add current logged in user to.
+     */
     private void addEventToWaitlist(Event event) {
         event.addUserToWaitlist(loggedInUser.getAndroidId());
         loggedInUser.addEventToWaitlist(event.getId());
@@ -205,6 +232,10 @@ public class ListEventsFragment extends Fragment {
         });
     }
 
+    /**
+     * Load the chips based on harcoded defaults.
+     * @param inflater inflated to use to inflate new chip obejcts from
+     */
     private void loadChips(@NonNull LayoutInflater inflater) {
         ArrayList<String> tags = new ArrayList<>();
         tags.add("Waitlist");
@@ -220,6 +251,11 @@ public class ListEventsFragment extends Fragment {
         }
     }
 
+    /**
+     * Handle what happens when a chip is checked. Redraw all events in the eventList.
+     * @param group
+     * @param checkedIds
+     */
     private void handleChipSelection(ChipGroup group, List<Integer> checkedIds) {
 
         ArrayList<String> selectedCategories = new ArrayList<>();
@@ -244,6 +280,10 @@ public class ListEventsFragment extends Fragment {
         // Implement when tags are added
     }
 
+    /**
+     * filters the events by who is on the waitlist. notifies the arrayAdapter that data changed.
+     * @param selectedCategories
+     */
     private void filterEventsWaitlist(ArrayList<String> selectedCategories) {
         DB_Client db = new DB_Client();
 
@@ -267,6 +307,9 @@ public class ListEventsFragment extends Fragment {
         // Implement when tags are added
     }
 
+    /**
+     * Does not filter by events and updated eventList to display all possible events, excluding your own.
+     */
     private void displayAllEvents() {
         DB_Client db = new DB_Client();
         Query query = db.getDatabase().collection("Events").whereNotEqualTo("organizerId", loggedInUser.getAndroidId());

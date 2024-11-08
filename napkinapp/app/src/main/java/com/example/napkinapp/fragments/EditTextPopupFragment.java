@@ -1,3 +1,8 @@
+/**
+ * Helper fragment which extends DialogFragment and will allow the user to
+ * specify a text in an input field and press either accept or cancel.
+ */
+
 package com.example.napkinapp.fragments;
 
 import android.app.AlertDialog;
@@ -24,6 +29,9 @@ public class EditTextPopupFragment extends DialogFragment {
         this.hint = hint;
     }
 
+    /**
+     * callback interface for the dialog on button press.
+     */
     public interface ButtonCallbacks {
       void onPositive(String text);
       default void onNegative() {};

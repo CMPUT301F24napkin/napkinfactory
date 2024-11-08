@@ -1,3 +1,7 @@
+/**
+ * The fragment for the footer bar on the bottom of the app.
+ */
+
 package com.example.napkinapp.fragments;
 
 import android.content.Context;
@@ -71,6 +75,10 @@ public class FooterFragment extends Fragment {
         });
     }
 
+    /**
+     * based on which of the possible footer buttons is selected, draw it as selected or unselected.
+     * @param btn
+     */
     private void updateSelectedButton(Button btn){
         if (selectedBtn != null) {
             // Set previous button's drawable back to its unselected version

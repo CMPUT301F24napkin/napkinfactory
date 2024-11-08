@@ -2,6 +2,11 @@ package com.example.napkinapp.models;
 
 import java.util.ArrayList;
 
+/**
+ * Model class for a User. The user's id is its androidId
+ * It contains members for user personal data, status bits for if the user is Admin or not, and a list of notifications.
+ * It also contains a list of its waitlisted, chosen, registered Events (eventId) for easier access but it duplicates data so it makes it a little trickier later.
+ */
 public class User {
     // Need to add some way to store and add photos later
     private String androidId;

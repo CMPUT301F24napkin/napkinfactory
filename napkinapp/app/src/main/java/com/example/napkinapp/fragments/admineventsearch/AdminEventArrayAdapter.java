@@ -1,3 +1,7 @@
+/**
+ * Array Adapter for the Admin search events page.
+ */
+
 package com.example.napkinapp.fragments.admineventsearch;
 
 import android.content.Context;

@@ -1,3 +1,8 @@
+/**
+ * Fragment for the Admin search events page.
+ * Current issue is that it does a shallow delete of the event and should delete references to thsi event too.
+ */
+
 package com.example.napkinapp.fragments.admineventsearch;
 
 import android.content.Context;
@@ -119,7 +124,8 @@ public class AdminListEventsFragment extends Fragment {
 
     }
 
-    private void deleteEvent(Event event) {
+    private void
+    deleteEvent(Event event) {
         if (event.getId() == null || event.getId().isEmpty()) {
             Log.e("RegisteredEventsFragment", "Event ID is null or empty. Cannot delete event.");
             return;

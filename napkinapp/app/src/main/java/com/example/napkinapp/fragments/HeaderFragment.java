@@ -1,3 +1,7 @@
+/**
+ * Fragment for the header of the top of the screen. Contains a hamburger menu and a notifications bell.
+ */
+
 package com.example.napkinapp.fragments;
 
 import android.content.Context;
@@ -35,6 +39,9 @@ public class HeaderFragment extends Fragment {
         headerTitle.setText(title);
     }
 
+    /**
+     * Read the currently logged in user's notifications and set the icon to be null, empty or active based on that.
+     */
     public void updateNotificationIcon(){
 
         if (MainActivity.user == null || MainActivity.user.getNotifications().isEmpty()) {

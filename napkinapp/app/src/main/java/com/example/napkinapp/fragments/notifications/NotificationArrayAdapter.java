@@ -1,3 +1,8 @@
+/**
+ * Array adapter for a list of notifications.
+ * it sets the button callbacks to toggle the 'read' status and the x button to delete the notification.
+ */
+
 package com.example.napkinapp.fragments.notifications;
 
 import android.content.Context;
