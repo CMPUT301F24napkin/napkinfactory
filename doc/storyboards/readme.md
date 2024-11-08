@@ -1,4 +1,4 @@
-#Storyboards
+# Storyboards
 
 ### Admin
 ![Admin Story Board](https://github.com/CMPUT301F24napkin/napkinfactory/blob/editdocs/doc/storyboards/AdminStoryBoard.png?raw=true)
