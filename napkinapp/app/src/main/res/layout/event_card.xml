@@ -51,6 +51,6 @@
             android:layout_weight="1"
             android:drawableStart="@drawable/add"
             android:drawableTint="@color/white"
-            android:text="@string/caption_add_to_waitlist"></Button>
+            android:text="@string/add_to_waitlist" />
     </LinearLayout>
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.napkinapp.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,10 +24,10 @@ public class Event {
 
     private List<Tag> tags;
 
-    private List<String> waitlist;
-    private List<String> chosen;
-    private List<String> cancelled;
-    private List<String> registered;
+    private ArrayList<String> waitlist;
+    private ArrayList<String> chosen;
+    private ArrayList<String> cancelled;
+    private ArrayList<String> registered;
 
     // New event being created
     public Event(String organizerId, String name, Date eventDate, Date lotteryDate, String description,
@@ -56,10 +57,29 @@ public class Event {
         this.requireGeolocation = requireGeolocation;
 
         this.QRHashCode = QRHashCode;
-        this.waitlist = waitlist;
-        this.chosen = chosen;
-        this.cancelled = cancelled;
-        this.registered = registered;
+        if(waitlist == null){
+            this.waitlist = new ArrayList<>();
+        }else{
+            this.waitlist = (ArrayList<String>) waitlist;
+        }
+
+        if(chosen == null){
+            this.chosen = new ArrayList<>();
+        }else{
+            this.chosen = (ArrayList<String>) chosen;
+        }
+
+        if(registered == null){
+            this.registered = new ArrayList<>();
+        }else{
+            this.registered = (ArrayList<String>) registered;
+        }
+
+        if(cancelled == null){
+            this.cancelled = new ArrayList<>();
+        }else{
+            this.cancelled = (ArrayList<String>) cancelled;
+        }
 
     }
 
@@ -140,4 +160,40 @@ public class Event {
         this.requireGeolocation = requireGeolocation;
     }
 
+    public void addUserToWaitlist(String userId){
+        if(waitlist.contains(userId)){
+            // Don't double add
+            return;
+        }
+        waitlist.add(userId);
+    }
+
+    public void removeUserFromWaitList(String userId){
+        if(waitlist == null)
+            return;
+        // Already checks for null userid
+        waitlist.remove(userId);
+    }
+
+    public ArrayList<String> getWaitlist(){
+        if(waitlist == null)
+            return new ArrayList<String>();
+        return  waitlist;
+    }
+
+    public void addUserToChosen(String userId){
+        if(chosen.contains(userId)) {
+            // Don't double add
+            return;
+        }
+        chosen.add(userId);
+    }
+
+    public void removeUserFromChosen(String userId){
+        chosen.remove(userId);
+    }
+
+    public ArrayList<String> getChosen(){
+        return chosen;
+    }
 }

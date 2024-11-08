@@ -29,7 +29,7 @@ public class User {
         enNotifications = false;
         isOrganizer = false;
         isAdmin = false;
-        notifications = new ArrayList<Notification>();
+        notifications = new ArrayList<>();
     }
 
     // New user
@@ -60,13 +60,9 @@ public class User {
         this.isOrganizer = isOrganizer;
 
         this.notifications = notifications;
-
-        this.waitlist = waitlist;
-        this.chosen = chosen;
-        this.registered = registered;
     }
 
-    public void setAndroidId(String id) { this.androidId = id; };
+    public void setAndroidId(String id) { this.androidId = id; }
 
     public String getAndroidId() { return androidId; }
 
@@ -152,4 +148,40 @@ public class User {
         return Boolean.TRUE;
     }
 
+    public void addEventToWaitlist(String eventId){
+        if(waitlist.contains(eventId)){
+            // Don't double add
+            return;
+        }
+        waitlist.add(eventId);
+    }
+
+    public void removeEventFromWaitList(String eventId){
+        // Already checks for null eventId
+        waitlist.remove(eventId);
+    }
+
+    public ArrayList<String> getWaitlist(){
+        return  waitlist;
+    }
+
+    public void addEventToChosen(String eventId){
+        if(chosen == null || chosen.contains(eventId)) {
+            // Don't double add
+            return;
+        }
+        chosen.add(eventId);
+    }
+
+    public void removeEventFromChosen(String eventId){
+        if(chosen == null)
+            return;
+        chosen.remove(eventId);
+    }
+
+    public ArrayList<String> getChosen(){
+        if(chosen == null)
+            return new ArrayList<>();
+        return chosen;
+    }
 }
