@@ -105,6 +105,8 @@ public class ViewEventFragment extends Fragment {
             handleToggleWaitlist();
         });
 
+        updateButtons();
+
         cancel.setOnClickListener((v) -> {
             if (getActivity() != null) {
                 // TODO: there a is a bug hitting cancel after it loads with a qr code
