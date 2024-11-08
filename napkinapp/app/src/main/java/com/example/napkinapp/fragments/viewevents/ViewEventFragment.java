@@ -23,12 +23,12 @@ import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
+import com.example.napkinapp.utils.QRCodeUtils;
 
 import java.util.HashMap;
 
 public class ViewEventFragment extends Fragment {
     private Event event;
-    private User organizer;
     private TitleUpdateListener titleUpdateListener;
 
     public ViewEventFragment(Event event){
@@ -64,11 +64,13 @@ public class ViewEventFragment extends Fragment {
 
         ImageView eventImage = view.findViewById(R.id.event_image);
         ImageView organizerProfile = view.findViewById(R.id.organizer_profile);
+        ImageView qrBitmap = view.findViewById(R.id.event_qr_code);
 
         // TODO: properly populate all data
         eventName.setText(event.getName());
         eventDate.setText(event.getEventDate().toString());
         eventDetails.setText(event.getDescription());
+        qrBitmap.setImageBitmap(QRCodeUtils.generateQRCode(event.getQRHashCode(),150,150));
 
         // database queries
         HashMap<String,Object> filter = new HashMap<>();
@@ -85,6 +87,8 @@ public class ViewEventFragment extends Fragment {
                 organization.setText(data.getPhoneNumber());
             }
         }, User.class);
+
+
 
 
         Button apply = view.findViewById(R.id.event_apply);

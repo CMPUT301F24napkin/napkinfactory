@@ -112,6 +112,10 @@ public class Event {
         this.eventDate = eventDate;
     }
 
+    public String getQRHashCode() {
+        return QRHashCode;
+    }
+
     public Date getEventDate() {
         return eventDate;
     }

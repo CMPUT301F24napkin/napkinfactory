@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,13 +65,14 @@ public class QRScannerFragment extends Fragment {
 
         return view;
     }
-
     private void startScanner() {
         qrScannerView.setDecoderFactory(new DefaultDecoderFactory(Collections.singletonList(BarcodeFormat.QR_CODE)));
         qrScannerView.decodeContinuous(new BarcodeCallback() {
             @Override
             public void barcodeResult(BarcodeResult result) {
+
                 qrResult.setText(result.getText());
+                Log.i("QRScanner",qrResult.toString());
             }
 
             @Override
