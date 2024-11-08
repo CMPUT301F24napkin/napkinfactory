@@ -21,13 +21,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.fragments.EditTextPopupFragment;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.QRCodeUtils;
@@ -38,8 +38,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class OrganizerViewEventFragment extends Fragment {
@@ -57,14 +59,51 @@ public class OrganizerViewEventFragment extends Fragment {
     };
 
     private void doLottery() {
-        // TODO implement
 
-        event.getWaitlist();
+        ArrayList<String> waitlistCopy = new ArrayList<>(event.getWaitlist());
+        ArrayList<String> chosenListCopy = new ArrayList<>(event.getChosen()); // empty
 
-        // choose random event.getParticipantLimit() from event.getWaitlist() and put into event.chosen. everyone else stays in event.waitlist.
-        event.getParticipantLimit();
+        Collections.shuffle(waitlistCopy);
 
-        // notify everyone in waitlist. notify everyone in chosen.
+        // minimum between size of waitlist and space left in chosen list.
+        int numUsersToMove = Math.min(waitlistCopy.size(), event.getParticipantLimit() - chosenListCopy.size());
+        int i = numUsersToMove;
+        Iterator<String> iterator = waitlistCopy.iterator();
+        while (i > 0 && iterator.hasNext()) {
+            String element = iterator.next();
+            chosenListCopy.add(element);
+            iterator.remove();
+            i--;
+        }
+        event.setWaitlist(waitlistCopy);
+        event.setChosen(chosenListCopy);
+
+        // notify everyone in waitlist. notify everyone in chosenListCopy.
+        for(String androidId : waitlistCopy) {
+            DB_Client db = new DB_Client();
+            HashMap<String, Object> filter = new HashMap<>();
+            db.findOne("Users", filter, new DB_Client.DatabaseCallback<User>() {
+                @Override
+                public void onSuccess(@Nullable User data) {
+                    data.addNotification(new Notification(
+                            getText(R.string.notification_not_chosen_name).toString(),
+                            getText(R.string.notification_not_chosen_description).toString(),false, event.getId(), false));
+                }
+                }, User.class);
+        }
+
+        for(String androidId : chosenListCopy) {
+            DB_Client db = new DB_Client();
+            HashMap<String, Object> filter = new HashMap<>();
+            db.findOne("Users", filter, new DB_Client.DatabaseCallback<User>() {
+                @Override
+                public void onSuccess(@Nullable User data) {
+                    data.addNotification(new Notification(
+                            getText(R.string.notification_chosen_name).toString(),
+                            getText(R.string.notification_chosen_description).toString(),false, event.getId(), false));
+                }
+            }, User.class);
+        }
     }
 
     @Override

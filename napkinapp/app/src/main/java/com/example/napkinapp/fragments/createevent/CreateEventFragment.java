@@ -26,12 +26,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class CreateEventFragment extends Fragment {
-    private EditText eventName, eventDate, lotteryDate, eventDescription, registeredEntrantLimit, participantLimit;
+    private EditText eventName, eventDate, lotteryDate, eventDescription, entrantLimit, participantLimit;
     private CheckBox participantLimitCheckbox;
     private ImageButton eventDatePickerButton, lotteryDatePickerButton;
     private SwitchCompat geolocationSwitch;
@@ -52,7 +50,7 @@ public class CreateEventFragment extends Fragment {
         lotteryDate = view.findViewById(R.id.lottery_date);
         eventDescription = view.findViewById(R.id.event_description);
         lotteryDatePickerButton = view.findViewById(R.id.lottery_date_picker);
-        registeredEntrantLimit = view.findViewById(R.id.registered_entrant_limit);
+        entrantLimit = view.findViewById(R.id.entrant_limit);
         participantLimit = view.findViewById(R.id.participant_limit);
         participantLimitCheckbox = view.findViewById(R.id.participant_limit_checkbox);
         createButton = view.findViewById(R.id.create_button);
@@ -90,10 +88,10 @@ public class CreateEventFragment extends Fragment {
         }
 
         int participantLimitValue = -1;
-        int registeredLimitValue = 20;
+        int entrantLimitValue = 20;
         try{
             participantLimitValue = (participantLimitCheckbox.isChecked()) ? Integer.parseInt(participantLimit.getText().toString()) : -1;
-            registeredLimitValue = Integer.parseInt(registeredEntrantLimit.getText().toString());
+            entrantLimitValue = Integer.parseInt(entrantLimit.getText().toString());
         }
         catch (NumberFormatException e) {
             // TODO what do we want to do?? maybe ask the user to enter it again.
@@ -103,7 +101,7 @@ public class CreateEventFragment extends Fragment {
 
         // Create the Event object with the Date
         Event event = new Event(userID, eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
-                registeredLimitValue, participantLimitValue, geolocationSwitch.isChecked());
+                entrantLimitValue, participantLimitValue, geolocationSwitch.isChecked());
 
         db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {
             @Override

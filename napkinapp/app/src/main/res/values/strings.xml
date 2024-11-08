@@ -13,4 +13,10 @@
     <string name="message_text_view">Message Text View</string>
     <string name="read_notification_button">Read Notification Button</string>
     <string name="edit_profile">Edit Profile</string>
+
+<!--    Notificatoins-->
+    <string name="notification_not_chosen_name">Sorry, not selected</string>
+    <string name="notification_not_chosen_description">Unfortunately, you were not chosen for this event.</string>
+    <string name="notification_chosen_name">Hooray, selected!</string>
+    <string name="notification_chosen_description">Congratulations, you were chosen for this event!</string>
 </resources>
