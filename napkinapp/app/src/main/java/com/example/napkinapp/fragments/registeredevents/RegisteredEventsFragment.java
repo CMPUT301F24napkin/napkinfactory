@@ -31,22 +31,27 @@ public class RegisteredEventsFragment extends Fragment {
     RegisteredEventArrayAdapter eventArrayAdapter;
     private ArrayList<Event> events;
 
-    public RegisteredEventsFragment(){}
-    public RegisteredEventsFragment(User user){
+    public RegisteredEventsFragment() {
+    }
+
+    public RegisteredEventsFragment(User user) {
         loggedInUser = user;
     }
 
     RegisteredEventArrayAdapter.RegisteredEventListCustomizer customizer = (button1, button2, text3, event) -> {
-        if (loggedInUser.getChosen().contains(event.getId())) {
-            // this user has been chosen but not yet accepted nor decline. display buttons.
-            setUpChosenEvent(event, button1, button2, text3);
-            Log.i("RegisteredEventsFragment", String.format("eventid %s is in chosen", event.getId()));
-        } else if(loggedInUser.getRegistered().contains(event.getId())) {
+        Log.i("IsEventInUser", "Chosen: " + loggedInUser.getChosen().contains(event.getId()) + "\n Registered: " + loggedInUser.getRegistered().contains(event.getId()));
+        // TODO: Bug where when user registers for event and then leaves screen, both chosen and registered lists return true for containing event
+        if (loggedInUser.getRegistered().contains(event.getId())) {
             // this user has been chosen and then accepted. display a text.
             button1.setVisibility(View.GONE);
             button2.setVisibility(View.GONE);
             text3.setText("You have accepted this event.");
-            Log.i("RegisteredEventsFragment", String.format("eventid %s is in registered", event.getId()));
+            Log.i("RegisteredEventsFragment", String.format("ARRAY ADDAPTER eventid %s is in registered", event.getId()));
+        } else if (loggedInUser.getChosen().contains(event.getId())) {
+            // this user has been chosen but not yet accepted nor decline. display buttons.
+            setUpChosenEvent(event, button1, button2, text3);
+            Log.i("RegisteredEventsFragment", String.format("eventid %s is in chosen", event.getId()));
+
         } else {
             Log.i("RegisteredEventsFragment", String.format("eventid %s is none!", event.getId()));
             button1.setVisibility(View.GONE);
@@ -59,9 +64,9 @@ public class RegisteredEventsFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
-        if(context instanceof TitleUpdateListener){
+        if (context instanceof TitleUpdateListener) {
             titleUpdateListener = (TitleUpdateListener) context;
-        }else{
+        } else {
             throw new RuntimeException(context + " needs to implement TitleUpdateListener");
         }
 
@@ -78,7 +83,7 @@ public class RegisteredEventsFragment extends Fragment {
         events = new ArrayList<>();
 
         //Update title
-        titleUpdateListener.updateTitle("Event List");
+        titleUpdateListener.updateTitle("Registered Events");
 
         // Attach EventArrayAdapter to ListView
         eventArrayAdapter = new RegisteredEventArrayAdapter(mContext, events, customizer);
@@ -90,7 +95,7 @@ public class RegisteredEventsFragment extends Fragment {
         eventslist.setOnItemClickListener((parent, view1, position, id) -> {
             Event clickedEvent = events.get(position);
             Log.d("RegisteredEventsFragment", "Clicked an event at position " + position);
-            if(clickedEvent != null) {
+            if (clickedEvent != null) {
                 // Replace fragment
                 getParentFragmentManager().beginTransaction()
                         .replace(R.id.content_fragmentcontainer, new ViewEventFragment(clickedEvent, loggedInUser)) // Use your actual container ID
@@ -104,13 +109,13 @@ public class RegisteredEventsFragment extends Fragment {
     /**
      * Loads the list of registered and chosen events pertaining to the user
      */
-    private void initializeList(){
+    private void initializeList() {
         DB_Client db = new DB_Client();
         ArrayList<String> androidIds = loggedInUser.getChosen();
         androidIds.addAll(loggedInUser.getRegistered());
 
         // Query requires non empty list
-        if(androidIds.isEmpty()){
+        if (androidIds.isEmpty()) {
             return;
         }
 
@@ -118,7 +123,7 @@ public class RegisteredEventsFragment extends Fragment {
             @Override
             public void onSuccess(@Nullable List<Event> data) {
                 events.clear();
-                if(data != null){
+                if (data != null) {
                     events.addAll(data);
                 }
                 eventArrayAdapter.notifyDataSetChanged();
@@ -128,17 +133,17 @@ public class RegisteredEventsFragment extends Fragment {
         }, Event.class);
     }
 
-    private void setUpChosenEvent(Event event, Button accept, Button decline, TextView txt){
+    private void setUpChosenEvent(Event event, Button accept, Button decline, TextView txt) {
         accept.setText("Accept");
         accept.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_check_24, 0, 0, 0);
-        accept.setOnClickListener(v->{
+        accept.setOnClickListener(v -> {
             // Register user for event
             registerUser(event);
         });
 
         decline.setText("Decline");
         decline.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_close_24, 0, 0, 0);
-        decline.setOnClickListener(v->{
+        decline.setOnClickListener(v -> {
             // Reject event
             declineEvent(event);
             Log.i("Button", String.format("List Events: Clicked on event %s\n", event.getName()));
@@ -148,14 +153,14 @@ public class RegisteredEventsFragment extends Fragment {
         Log.i("RegisteredEventsFragment", String.format("eventid %s is in chosen", event.getId()));
     }
 
-    private void registerUser(Event event){
+    private void registerUser(Event event) {
         // move this event from Chosen to Registered
         // add to this user's copy
         loggedInUser.addEventToRegistered(event.getId());
         loggedInUser.removeEventFromChosen(event.getId());
 
-        event.addUserToRegistered(loggedInUser);
-        event.removeUserFromChosen(loggedInUser);
+        event.addUserToRegistered(loggedInUser.getAndroidId());
+        event.removeUserFromChosen(loggedInUser.getAndroidId());
 
         DB_Client db = new DB_Client();
         db.writeData("Users", loggedInUser.getAndroidId(), loggedInUser, new DB_Client.DatabaseCallback<Void>() {
@@ -189,9 +194,9 @@ public class RegisteredEventsFragment extends Fragment {
         eventArrayAdapter.notifyDataSetChanged();
     }
 
-    private void declineEvent(Event event){
+    private void declineEvent(Event event) {
         loggedInUser.removeEventFromChosen(event.getId());
-        event.addUserToCancelled(loggedInUser);
+        event.addUserToCancelled(loggedInUser.getAndroidId());
 
         DB_Client db = new DB_Client();
         db.writeData("Users", loggedInUser.getAndroidId(), loggedInUser, new DB_Client.DatabaseCallback<Void>() {

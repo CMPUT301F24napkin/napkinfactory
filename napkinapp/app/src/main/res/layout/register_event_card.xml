@@ -4,86 +4,87 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin"
+    android:padding="@dimen/padding"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:orientation="horizontal"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image"
         android:layout_width="120dp"
         android:layout_height="120dp"
+        android:focusableInTouchMode="false"
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_launcher"
-        app:shapeAppearanceOverlay="@style/rounded_corners"
-        android:focusableInTouchMode="false"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-        <TextView
-            android:id="@+id/eventName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:layout_weight="1"
-            android:focusableInTouchMode="false"
-            android:text="EventName"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/text_size_primary"
-            app:layout_constraintStart_toEndOf="@+id/image"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/eventDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:layout_weight="1"
-            android:text="EventDate"
-            android:textColor="@color/text_secondary"
-            android:textSize="@dimen/text_size_secondary"
-            android:focusableInTouchMode="false"
-            app:layout_constraintStart_toEndOf="@+id/image"
-            app:layout_constraintTop_toBottomOf="@+id/eventName"/>
-
-        <Button
-            android:id="@+id/btnAccept"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:layout_weight="1"
-            android:drawableStart="@drawable/add"
-            android:drawableTint="@color/white"
-            android:text="Accept"
-            app:layout_constraintStart_toEndOf="@+id/image"
-            app:layout_constraintTop_toBottomOf="@+id/eventDate"
-            app:layout_constraintEnd_toStartOf="@+id/btnDecline"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <Button
-            android:id="@+id/btnDecline"
-            style="?android:attr/buttonBarNegativeButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:layout_weight="1"
-            android:text="Decline"
-            app:layout_constraintStart_toEndOf="@+id/btnAccept"
-            app:layout_constraintTop_toBottomOf="@+id/eventDate"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+        app:shapeAppearanceOverlay="@style/rounded_corners" />
 
     <TextView
-        android:id="@+id/waitForLotteryText"
-        android:textAlignment="center"
+        android:id="@+id/eventName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:layout_weight="1"
+        android:focusableInTouchMode="false"
+        android:text="EventName"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/text_size_primary"
+        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/eventDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:layout_weight="1"
+        android:focusableInTouchMode="false"
+        android:text="EventDate"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_size_secondary"
+        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintTop_toBottomOf="@+id/eventName" />
+
+    <Button
+        android:id="@+id/btnAccept"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
         android:layout_weight="1"
-        app:drawableTint="@color/white"
-        android:text="You have registered sucesfully"
-        app:layout_constraintStart_toEndOf="@+id/image"
-        app:layout_constraintTop_toBottomOf="@+id/eventDate"
+        android:drawableStart="@drawable/add"
+        android:drawableTint="@color/white"
+        android:text="Accept"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toStartOf="@+id/btnDecline"
+        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintTop_toBottomOf="@+id/eventDate" />
+
+    <Button
+        android:id="@+id/btnDecline"
+        style="?android:attr/buttonBarNegativeButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:layout_weight="1"
+        android:text="Decline"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnAccept"
+        app:layout_constraintTop_toBottomOf="@+id/eventDate" />
+
+    <TextView
+        android:id="@+id/waitForLotteryText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:layout_weight="1"
+        android:text="You have registered sucesfully"
+        android:textAlignment="center"
+        app:drawableTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintTop_toBottomOf="@+id/eventDate" />
 </androidx.constraintlayout.widget.ConstraintLayout>
