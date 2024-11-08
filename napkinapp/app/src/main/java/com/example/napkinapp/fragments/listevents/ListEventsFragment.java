@@ -76,13 +76,15 @@ public class ListEventsFragment extends Fragment {
                 events.clear();
                 events.addAll(data);
                 eventArrayAdapter.notifyDataSetChanged();
+
+                Log.d("ListEventsFragment", "Event list loaded with " + events.size() + " items.");
             }
         }, Event.class);
 
-        Log.d("ListEventsFragment", "Event list loaded with " + events.size() + " items.");
+
         eventslist.setOnItemClickListener((parent, view1, position, id) -> {
             Event clickedEvent = events.get(position);
-
+            Log.d("ListEventsFragment", "Clicked an event at position " + position);
             if(clickedEvent != null) {
                 // Replace fragment
                 getParentFragmentManager().beginTransaction()
