@@ -3,7 +3,7 @@ package com.example.napkinapp.models;
 import java.util.UUID;
 
 public class Notification {
-    private String id;
+    private Integer id;
     private String title;
     private String message;
     private Boolean read;
@@ -15,7 +15,7 @@ public class Notification {
     }
 
     public Notification (String title, String message) {
-        this.id =  UUID.randomUUID().toString();
+        this.id = (int) (UUID.randomUUID().getMostSignificantBits() & 0xFFFFFFFFL);
         this.title = title;
         this.message = message;
         this.read = false;
@@ -24,7 +24,7 @@ public class Notification {
     }
 
     public Notification (String title, String message, Boolean read) {
-        this.id =  UUID.randomUUID().toString();
+        this.id =  (int) (UUID.randomUUID().getMostSignificantBits() & 0xFFFFFFFFL);
         this.title = title;
         this.message = message;
         this.read = read;
@@ -33,7 +33,7 @@ public class Notification {
     }
 
     public Notification (String title, String message, Boolean read, String eventId, boolean isOrganizerNotification) {
-        this.id =  UUID.randomUUID().toString();
+        this.id =  (int) (UUID.randomUUID().getMostSignificantBits() & 0xFFFFFFFFL);
         this.title = title;
         this.message = message;
         this.read = read;
@@ -49,11 +49,11 @@ public class Notification {
         return title;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -77,7 +77,11 @@ public class Notification {
         return eventId;
     }
 
-    public boolean isOrganizerNotification() {
+    public boolean getIsOrganizerNotification() {
         return isOrganizerNotification;
+    }
+
+    public void setOrganizerNotification (boolean isOrganizerNotification){
+        this.isOrganizerNotification = isOrganizerNotification;
     }
 }
