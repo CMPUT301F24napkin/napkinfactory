@@ -76,7 +76,7 @@ public class Event {
         this.lotteryDate = new Date();
         this.description = "description_placeholder";
         this.entrantLimit = 20;
-        this.participantLimit = -1;
+        this.participantLimit = Integer.MAX_VALUE;
         this.requireGeolocation = false;
 
         this.poster_image = new Image();

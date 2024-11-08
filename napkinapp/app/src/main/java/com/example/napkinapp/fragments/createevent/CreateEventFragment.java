@@ -87,10 +87,10 @@ public class CreateEventFragment extends Fragment {
             e.printStackTrace();
         }
 
-        int participantLimitValue = -1;
+        int participantLimitValue = Integer.MAX_VALUE;
         int entrantLimitValue = 20;
         try{
-            participantLimitValue = (participantLimitCheckbox.isChecked()) ? Integer.parseInt(participantLimit.getText().toString()) : -1;
+            participantLimitValue = (participantLimitCheckbox.isChecked()) ? Integer.parseInt(participantLimit.getText().toString()) : Integer.MAX_VALUE;
             entrantLimitValue = Integer.parseInt(entrantLimit.getText().toString());
         }
         catch (NumberFormatException e) {
