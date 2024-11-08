@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.R;
 import com.example.napkinapp.utils.DB_Client;
@@ -79,6 +80,17 @@ public class ListEventsFragment extends Fragment {
         }, Event.class);
 
         Log.d("ListEventsFragment", "Event list loaded with " + events.size() + " items.");
+        eventslist.setOnItemClickListener((parent, view1, position, id) -> {
+            Event clickedEvent = events.get(position);
+
+            if(clickedEvent != null) {
+                // Replace fragment
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.content_fragmentcontainer, new ViewEventFragment(clickedEvent)) // Use your actual container ID
+                        .addToBackStack(null) // Allows user to go back to ListEventsFragment
+                        .commit();
+            }
+        });
         return view;
     }
 }
