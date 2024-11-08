@@ -115,15 +115,6 @@ public class User {
         return isAdmin;
     }
 
-    public void setOrganizer(Boolean organizer) {
-        isOrganizer = organizer;
-    }
-
-    public Boolean getIsOrganizer() {
-        return isOrganizer;
-    }
-
-
     public void addNotification(Notification notification) {
         notifications.add(notification);
     }
