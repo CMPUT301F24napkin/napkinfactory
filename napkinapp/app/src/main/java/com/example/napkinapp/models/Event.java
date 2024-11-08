@@ -20,7 +20,7 @@ public class Event {
     private boolean requireGeolocation;
     private Facility facility;
 
-    private String QRHashCode;
+    private String qrHashCode;
 
     private List<Tag> tags;
 
@@ -40,13 +40,28 @@ public class Event {
         this.entrantLimit = entrantLimit;
         this.participantLimit = participantLimit;
         this.requireGeolocation = requireGeolocation;
+    }
 
-        // set default values
-        tags = new ArrayList<Tag>();
-        waitlist = new ArrayList<String>();
-        chosen = new ArrayList<String>();
-        cancelled = new ArrayList<String>();
-        registered = new ArrayList<String>();
+    // Event from database
+    public Event(String id, String organizerId, String name, Date eventDate, Date lotteryDate, String description,
+                 int entrantLimit, int participantLimit, boolean requireGeolocation, String qrHashCode,
+                 List<String> waitlist, List<String> chosen, List<String> cancelled, List<String> registered) {
+        this.id = id;
+        this.organizerId = organizerId;
+        this.name = name;
+        this.eventDate = eventDate;
+        this.lotteryDate = lotteryDate;
+        this.description = description;
+        this.entrantLimit = entrantLimit;
+        this.participantLimit = participantLimit;
+        this.requireGeolocation = requireGeolocation;
+
+        this.qrHashCode = qrHashCode;
+        this.waitlist = waitlist;
+        this.chosen = chosen;
+        this.cancelled = cancelled;
+        this.registered = registered;
+
     }
 
     public Event(){
@@ -96,6 +111,10 @@ public class Event {
 
     public void setEventDate(Date eventDate) {
         this.eventDate = eventDate;
+    }
+
+    public String getQrHashCode() {
+        return qrHashCode;
     }
 
     public Date getEventDate() {
