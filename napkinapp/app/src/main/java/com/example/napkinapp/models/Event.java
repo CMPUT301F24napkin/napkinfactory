@@ -1,5 +1,6 @@
 package com.example.napkinapp.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,6 +32,8 @@ public class Event {
     // New event being created
     public Event(String organizerId, String name, Date eventDate, Date lotteryDate, String description,
                  int entrantLimit, int participantLimit, boolean requireGeolocation) {
+        init(); // provide sensible defaults
+
         this.organizerId = organizerId;
         this.name = name;
         this.eventDate = eventDate;
@@ -45,6 +48,8 @@ public class Event {
     public Event(String id, String organizerId, String name, Date eventDate, Date lotteryDate, String description,
                  int entrantLimit, int participantLimit, boolean requireGeolocation, String qrHashCode,
                  List<String> waitlist, List<String> chosen, List<String> cancelled, List<String> registered) {
+        init(); // provide sensible defaults
+
         this.id = id;
         this.organizerId = organizerId;
         this.name = name;
@@ -60,7 +65,28 @@ public class Event {
         this.chosen = chosen;
         this.cancelled = cancelled;
         this.registered = registered;
+    }
 
+    // provide sensible defaults for members to avoid bugs
+    private void init() {
+        this.id = "event_placeholder";
+        this.organizerId = "placeholder";
+        this.name = "name_placeholder";
+        this.eventDate = new Date();
+        this.lotteryDate = new Date();
+        this.description = "description_placeholder";
+        this.entrantLimit = 20;
+        this.participantLimit = -1;
+        this.requireGeolocation = false;
+
+        this.poster_image = new Image();
+        this.facility = new Facility();
+        this.qrHashCode = "qrHashCode_placeholder";
+        this.tags = new ArrayList<>();
+        this.waitlist = new ArrayList<>();
+        this.chosen = new ArrayList<>();
+        this.cancelled = new ArrayList<>();
+        this.registered = new ArrayList<>();
     }
 
     public Event(){
