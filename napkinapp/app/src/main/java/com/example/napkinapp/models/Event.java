@@ -19,8 +19,6 @@ public class Event {
     private boolean requireGeolocation;
     private Facility facility;
 
-
-
     private String QRHashCode;
 
     private List<Tag> tags;
@@ -62,6 +60,7 @@ public class Event {
         this.chosen = chosen;
         this.cancelled = cancelled;
         this.registered = registered;
+
     }
 
     public Event(){
@@ -90,6 +89,7 @@ public class Event {
 
     public void setOrganizerId(String organizerId){
         this.organizerId = organizerId;
+
     }
 
     public void setEntrantLimit(int entrantLimit) {

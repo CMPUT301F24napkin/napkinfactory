@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class CreateEventFragment extends Fragment {
@@ -92,17 +93,7 @@ public class CreateEventFragment extends Fragment {
         Event event = new Event("placeholder", eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
         Integer.parseInt(registeredEntrantLimit.getText().toString()), limit, geolocationSwitch.isChecked());
 
-        db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {
-            @Override
-            public void onSuccess(@Nullable String data) {
-                Log.i("TAG", "Successfully made event");
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Log.e("TAG", Objects.requireNonNull(e.getMessage()));
-            }
-        });
+        db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {});
     }
 
 

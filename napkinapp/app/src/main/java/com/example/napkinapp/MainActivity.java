@@ -1,25 +1,26 @@
 package com.example.napkinapp;
 
-import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
 import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
+import com.example.napkinapp.fragments.myevents.MyEventsFragment;
+import com.example.napkinapp.fragments.myevents.MyEventsFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
+import com.example.napkinapp.fragments.notifications.ListNotificationsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
-import com.example.napkinapp.fragments.viewevents.OrganizerViewEventFragment;
+import com.example.napkinapp.models.Notification;
+import com.example.napkinapp.models.User;
 import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.utils.DB_Client;
-
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick,
         FooterFragment.FooterNavigationListener, TitleUpdateListener {
@@ -27,27 +28,25 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
     private HeaderFragment header;
     private FooterFragment footer;
 
+    public static User user;
+
+    public void updateHeaderNotificationIcon() {
+        if (header != null) {
+            header.updateNotificationIcon();
+        }
+    }
+
     @Override
     public void handleFooterButtonClick(int btnid) {
+        // add functionality to get a user from the database or instantiate if this is the first log-on
         Fragment selectedFragment = null;
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
         switch(btnid) {
             // Not using actual button id's as apparently they're non final
             case 0:
-                DB_Client db = new DB_Client();
-                db.findOne("Events", null, new DB_Client.DatabaseCallback<Event>() {
-                    @Override
-                    public void onSuccess(@Nullable Event data) {
-                        DB_Client.DatabaseCallback.super.onSuccess(data);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.content_fragmentcontainer, new OrganizerViewEventFragment(data))
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                }, Event.class);
+                selectedFragment = new ListEventsFragment();
                 break;
             case 1:
-                // Registered events
                 break;
             case 2:
                 // map
@@ -57,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 break;
             case 4:
                 // Myevents
+                selectedFragment = new MyEventsFragment();
                 break;
         }
 
@@ -81,16 +81,16 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
     }
 
     @Override
-    public void handleProfileButtonClick() {
+    public void handleNotificationButtonClick() {
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
 
-        if(currFrag instanceof ProfileFragment){
-            // do nothing if profile already opened
+        if(currFrag instanceof ListNotificationsFragment){
+            // do nothing if notifications already opened
             return;
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_fragmentcontainer, new ProfileFragment())
+                .replace(R.id.content_fragmentcontainer, new ListNotificationsFragment())
                 .addToBackStack(null)
                 .commit();
 
@@ -120,6 +120,13 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         // EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        user = new User();
+
+        for (int i = 0; i < 6; i++) {
+            user.addNotification(new Notification("Title " + i, "Bingo bongo " + i));
+        }
+
+
         // Load header fragment
         header = new HeaderFragment();
         getSupportFragmentManager().beginTransaction()
@@ -144,9 +151,10 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 footer.setSelectedButtonById(2);
             } else if (currentFragment instanceof QRScannerFragment) {
                 footer.setSelectedButtonById(3);
-            } else if (currentFragment instanceof MyEventsFragment) {
+            } */
+            else if (currentFragment instanceof MyEventsFragment) {
                 footer.setSelectedButtonById(4);
-            }*/
+            }
         });
 
         // Load footer fragment

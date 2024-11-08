@@ -8,4 +8,8 @@
     <string name="caption_add_to_waitlist">Add to Waitlist</string>
     <string name="caption_remove_from_waitlist">Remove from Waitlist</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</string>
+    <string name="delete_notification_button">Delete notification button</string>
+    <string name="title_text_view">Title Text View</string>
+    <string name="message_text_view">Message Text View</string>
+    <string name="read_notification_button">Read Notification Button</string>
 </resources>
