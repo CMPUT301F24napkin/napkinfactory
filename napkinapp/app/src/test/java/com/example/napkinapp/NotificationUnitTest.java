@@ -24,7 +24,7 @@ public class NotificationUnitTest {
         Assertions.assertEquals(message, notification.getMessage());
         assertFalse(notification.getRead());
         assertEquals("", notification.getEventId());
-        assertFalse(notification.isOrganizerNotification());
+        assertFalse(notification.getIsOrganizerNotification());
     }
 
     @Test
@@ -35,7 +35,7 @@ public class NotificationUnitTest {
         assertEquals(message, readNotification.getMessage());
         assertTrue(readNotification.getRead());
         assertEquals("", readNotification.getEventId());
-        assertFalse(readNotification.isOrganizerNotification());
+        assertFalse(readNotification.getIsOrganizerNotification());
     }
 
     @Test
@@ -47,7 +47,7 @@ public class NotificationUnitTest {
         assertEquals(message, fullNotification.getMessage());
         assertEquals(read, fullNotification.getRead());
         assertEquals(eventId, fullNotification.getEventId());
-        assertTrue(fullNotification.isOrganizerNotification());
+        assertTrue(fullNotification.getIsOrganizerNotification());
     }
 
     @Test
