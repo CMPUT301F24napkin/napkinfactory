@@ -1,3 +1,7 @@
+/**
+ * Fragment of the profile screen. Allows all users to edit their profile.
+ */
+
 package com.example.napkinapp.fragments.profile;
 
 import android.content.Context;

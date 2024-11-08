@@ -46,6 +46,9 @@ public class MyEventsFragment extends Fragment {
         this.loggedInUser = user;
     }
 
+    /**
+     * Custom customizer for the button in the event card. Makes it open the event view screen.
+     */
     EventArrayAdapter.EventListCustomizer customizer = (button, event) -> {
         button.setText("View");
         button.setOnClickListener(v->{

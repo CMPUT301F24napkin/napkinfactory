@@ -1,3 +1,9 @@
+/**
+ * Model class of an Event.
+ * it contains all raw the data of an event as well as lists of users (androidId) that are
+ * waitlisted, chosen, cancelled, and registered in this event.
+ */
+
 package com.example.napkinapp.models;
 
 import java.util.ArrayList;

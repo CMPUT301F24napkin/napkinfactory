@@ -40,6 +40,10 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         }
     }
 
+    /**
+     * This function implementation will handle when the footer is clicked.
+     * @param btnid the id of the button that is clicked.
+     */
     @Override
     public void handleFooterButtonClick(int btnid) {
         // add functionality to get a user from the database or instantiate if this is the first log-on
@@ -79,6 +83,10 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         }
     }
 
+    /**
+     * Helper function for setting the title. Checks if not null.
+     * @param title the title to set
+     */
     @Override
     public void updateTitle(String title) {
         if(header != null){
@@ -86,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         }
     }
 
+    /**
+     * Handle when the notification button is clicked in the top bar. Switches the fragment to be ListNotificationsFragment.
+     */
     @Override
     public void handleNotificationButtonClick() {
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
@@ -103,6 +114,9 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         footer.resetButtons();
     }
 
+    /**
+     * Handle what happens when hamburger menu is clicked. opens Admin screen.
+     */
     @Override
     public void handleHamburgerButtonClick() {
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
@@ -127,11 +141,6 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         setContentView(R.layout.activity_main);
 
         initializeApp();
-
-//        for (int i = 0; i < 6; i++) {
-//            user.addNotification(new Notification("Title " + i, "Bingo bongo " + i));
-//        }
-
 
         // Load header fragment
         header = new HeaderFragment();
@@ -167,6 +176,10 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 .commit();
     }
 
+    /**
+     * Initializes the app
+     * checks if user is already registered. if not, register. if so, log in automatically.
+     */
     private void initializeApp(){
         // Ignore error
         userID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -243,12 +256,18 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         }, User.class);
     }
 
+    /**
+     * helper function for opening the profile screen
+     */
     private void OpenProfile(){
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_fragmentcontainer, new ProfileFragment(user))
                 .commit();
     }
 
+    /**
+    helper function for opening the list events screen
+     */
     private void OpenListEvents(){
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_fragmentcontainer, new ListEventsFragment(user))

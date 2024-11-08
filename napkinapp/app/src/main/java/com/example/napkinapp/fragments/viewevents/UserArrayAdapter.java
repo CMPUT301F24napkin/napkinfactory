@@ -1,3 +1,8 @@
+/**
+ * Array adapter for viewing users. This is used in the OrganizerViewEventFragment
+ * it inflates a bunch of brief_user_list_item views.
+ */
+
 package com.example.napkinapp.fragments.viewevents;
 
 import android.content.Context;

@@ -1,3 +1,12 @@
+/**
+ * Fragment for viewing the events a user is registered in.
+ * Customizes the look of the event card based on its status;
+ * - if it is waitlisted, do not show it
+ * - if the user is chosen, provide two buttons to accept or decline the invitation
+ * - if the user is registered, display some text saying you registered
+ * - if the user is cancelled, do not show it.
+ */
+
 package com.example.napkinapp.fragments.registeredevents;
 
 import android.content.Context;
@@ -38,6 +47,9 @@ public class RegisteredEventsFragment extends Fragment {
         loggedInUser = user;
     }
 
+    /**
+     * customize view of buttons based on if current logged in user is waitlisted, chosen, registered.
+     */
     RegisteredEventArrayAdapter.RegisteredEventListCustomizer customizer = (button1, button2, text3, event) -> {
         Log.i("IsEventInUser", "Chosen: " + loggedInUser.getChosen().contains(event.getId()) + "\n Registered: " + loggedInUser.getRegistered().contains(event.getId()));
         // TODO: Bug where when user registers for event and then leaves screen, both chosen and registered lists return true for containing event
@@ -133,6 +145,13 @@ public class RegisteredEventsFragment extends Fragment {
         }, Event.class);
     }
 
+    /**
+     * set up event card in the case that the event is in the chosen list
+     * @param event the event
+     * @param accept the accept button handle
+     * @param decline the decline button handle
+     * @param txt the text view handle
+     */
     private void setUpChosenEvent(Event event, Button accept, Button decline, TextView txt) {
         accept.setText("Accept");
         accept.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_check_24, 0, 0, 0);
@@ -153,6 +172,10 @@ public class RegisteredEventsFragment extends Fragment {
         Log.i("RegisteredEventsFragment", String.format("eventid %s is in chosen", event.getId()));
     }
 
+    /**
+     * helper function to register the currently logged in user in an event. Does it deeply.
+     * @param event the event to register in
+     */
     private void registerUser(Event event) {
         // move this event from Chosen to Registered
         // add to this user's copy
@@ -194,6 +217,11 @@ public class RegisteredEventsFragment extends Fragment {
         eventArrayAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Make the currently logged in user decline this event. Does it deeply.
+     * Works by moving the currently logged in user's androidId out of the chosen list into the cancelled list.
+     * @param event the event to decline
+     */
     private void declineEvent(Event event) {
         loggedInUser.removeEventFromChosen(event.getId());
         event.addUserToCancelled(loggedInUser.getAndroidId());

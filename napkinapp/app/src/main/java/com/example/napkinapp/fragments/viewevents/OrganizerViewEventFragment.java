@@ -1,3 +1,7 @@
+/**
+ * View event screen for the organizers.
+ */
+
 package com.example.napkinapp.fragments.viewevents;
 
 import android.app.DatePickerDialog;
@@ -80,6 +84,11 @@ public class OrganizerViewEventFragment extends Fragment {
         Toast.makeText(mContext, String.format("Sent notification to %d users!", androidIds.size()) , Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Choses a user-specified number of users from the waitlist to move into the chosen list.
+     * Sends notifications to the chosen users telling them they were chosen
+     * Sends notifications to the un-chosen users telling them they were not
+     */
     private void doLottery() {
 
         ArrayList<String> waitlistCopy = new ArrayList<>(event.getWaitlist());
