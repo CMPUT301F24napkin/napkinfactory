@@ -201,4 +201,49 @@ public class Event {
     public void setRegistered(ArrayList<String> registered) {
         this.registered = registered;
     }
+
+    public void addUserToWaitlist(User user){
+        if(waitlist.contains(user.getAndroidId())){
+            return; // Don't double add
+        }
+        waitlist.add(user.getAndroidId());
+    }
+
+    public void addUserToChosen(User user){
+        if(chosen.contains(user.getAndroidId())){
+            return; // Don't double add
+        }
+        chosen.add(user.getAndroidId());
+    }
+
+    public void addUserToRegistered(User user){
+        if(registered.contains(user.getAndroidId())){
+            return; // Don't double add
+        }
+        registered.add(user.getAndroidId());
+    }
+
+    public void addUserToCancelled(User user){
+        if(cancelled.contains(user.getAndroidId())){
+            return; // Don't double add
+        }
+        cancelled.add(user.getAndroidId());
+    }
+
+    public void removeUserFromWaitlist(User user){
+        waitlist.remove(user.getAndroidId());
+    }
+
+    public void removeUserFromChosen(User user){
+        chosen.remove(user.getAndroidId());
+    }
+
+    public void removeUserFromRegistered(User user){
+        registered.remove(user.getAndroidId());
+    }
+
+    public void removeUserFromCancelled(User user){
+        cancelled.remove(user.getAndroidId());
+    }
+
 }

@@ -1,6 +1,5 @@
 package com.example.napkinapp.models;
 
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -27,10 +26,10 @@ public class User {
         address = "";
         enNotifications = false;
         isAdmin = false;
-        notifications = new ArrayList<Notification>();
-        waitlist = new ArrayList<String>();
-        chosen = new ArrayList<String>();
-        registered = new ArrayList<String>();
+        notifications = new ArrayList<>();
+        waitlist = new ArrayList<>();
+        chosen = new ArrayList<>();
+        registered = new ArrayList<>();
     }
 
     // New user
@@ -45,10 +44,10 @@ public class User {
         this.isAdmin = isAdmin;
 
         // Initialize the rest to defaults
-        this.notifications = new ArrayList<Notification>();
-        this.waitlist = new ArrayList<String>();
-        this.chosen = new ArrayList<String>();
-        this.registered = new ArrayList<String>();
+        this.notifications = new ArrayList<>();
+        this.waitlist = new ArrayList<>();
+        this.chosen = new ArrayList<>();
+        this.registered = new ArrayList<>();
     }
 
     // User from database
@@ -71,7 +70,7 @@ public class User {
         this.registered = registered;
     }
 
-    public void setAndroidId(String id) { this.androidId = id; };
+    public void setAndroidId(String id) { this.androidId = id; }
 
     public String getAndroidId() {
         return this.androidId;
@@ -160,6 +159,39 @@ public class User {
 
     public ArrayList<String> getWaitlist() {
         return waitlist;
+    }
+
+    public void addEventToWaitlist(Event event){
+        if(waitlist.contains(event.getId())){
+            return; // Don't double add
+        }
+        waitlist.add(event.getId());
+    }
+
+    public void addEventToChosen(Event event){
+        if(chosen.contains(event.getId())){
+            return; // Don't double add
+        }
+        chosen.add(event.getId());
+    }
+
+    public void addEventToRegistered(Event event){
+        if(registered.contains(event.getId())){
+            return; // Don't double add
+        }
+        registered.add(event.getId());
+    }
+
+    public void removeEventFromWaitlist(Event event){
+        waitlist.remove(event.getId());
+    }
+
+    public void removeEventFromChosen(Event event){
+        chosen.remove(event.getId());
+    }
+
+    public void removeEventFromRegistered(Event event){
+        registered.remove(event.getId());
     }
 
     public void setWaitlist(ArrayList<String> waitlist) {

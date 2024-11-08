@@ -67,8 +67,8 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         Event event = events.get(position);
 
-        TextView text1 = view.findViewById(R.id.text1);
-        TextView text2 = view.findViewById(R.id.text2);
+        TextView text1 = view.findViewById(R.id.eventName);
+        TextView text2 = view.findViewById(R.id.eventDate);
 
         Button button = view.findViewById(R.id.button);
 

@@ -62,22 +62,22 @@ public class RegisteredEventArrayAdapter extends ArrayAdapter<Event> {
         Event event = events.get(position);
 
         if(convertView == null){
-            view = LayoutInflater.from(context).inflate(R.layout.event_card_2_buttons, parent,false);
+            view = LayoutInflater.from(context).inflate(R.layout.register_event_card, parent,false);
         }else {
             view = convertView;
         }
 
-        TextView text1 = view.findViewById(R.id.text1);
-        TextView text2 = view.findViewById(R.id.text2);
-        TextView text3 = view.findViewById(R.id.text3);
+        TextView eventName = view.findViewById(R.id.eventName);
+        TextView eventDate = view.findViewById(R.id.eventDate);
+        TextView waitForLotteryText = view.findViewById(R.id.waitForLotteryText);
 
-        Button button1 = view.findViewById(R.id.button1);
-        Button button2 = view.findViewById(R.id.button2);
+        Button btnAccept = view.findViewById(R.id.btnAccept);
+        Button btnDecline = view.findViewById(R.id.btnDecline);
 
-        text1.setText(event.getName());
-        text2.setText(event.getEventDate().toString());
+        eventName.setText(event.getName());
+        eventDate.setText(event.getEventDate().toString());
 
-        registeredEventListCustomizer.CustomizeEventCardButton(button1, button2, text3, event);
+        registeredEventListCustomizer.CustomizeEventCardButton(btnAccept, btnDecline, waitForLotteryText, event);
 
         return view;
     }
