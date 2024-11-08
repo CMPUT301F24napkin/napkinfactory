@@ -104,16 +104,16 @@ public class AdminListEventsFragment extends Fragment {
                 if (data != null && !data.isEmpty()) {
                     events.addAll(data);
                     eventArrayAdapter.notifyDataSetChanged();
-                    Log.d("ListEventsFragment", "Event list loaded with " + events.size() + " items.");
+                    Log.d("RegisteredEventsFragment", "Event list loaded with " + events.size() + " items.");
                 } else {
-                    Log.d("ListEventsFragment", "No events found matching the name.");
+                    Log.d("RegisteredEventsFragment", "No events found matching the name.");
                     eventArrayAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
-                Log.e("ListEventsFragment", "Error loading events: " + e.getMessage(), e);
+                Log.e("RegisteredEventsFragment", "Error loading events: " + e.getMessage(), e);
             }
         }, Event.class);
 
@@ -121,7 +121,7 @@ public class AdminListEventsFragment extends Fragment {
 
     private void deleteEvent(Event event) {
         if (event.getId() == null || event.getId().isEmpty()) {
-            Log.e("ListEventsFragment", "Event ID is null or empty. Cannot delete event.");
+            Log.e("RegisteredEventsFragment", "Event ID is null or empty. Cannot delete event.");
             return;
         }
 
@@ -136,13 +136,13 @@ public class AdminListEventsFragment extends Fragment {
                 Toast.makeText(mContext, "Event deleted successfully", Toast.LENGTH_SHORT).show();
                 events.remove(event); // Remove the event from the local list
                 eventArrayAdapter.notifyDataSetChanged(); // Update the adapter
-                Log.d("ListEventsFragment", "Event deleted from Firestore and list updated.");
+                Log.d("RegisteredEventsFragment", "Event deleted from Firestore and list updated.");
             }
 
             @Override
             public void onFailure(Exception e) {
                 Toast.makeText(mContext, "Failed to delete event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("ListEventsFragment", "Error deleting event", e);
+                Log.e("RegisteredEventsFragment", "Error deleting event", e);
             }
         });
     }
