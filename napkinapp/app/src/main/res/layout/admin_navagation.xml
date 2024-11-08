@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -8,79 +10,122 @@
     android:gravity="top">
 
     <!-- User Search Button -->
+
+    <!-- Divider Line -->
     <Button
         android:id="@+id/button_user_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
-        android:text="User Search"
-        android:textColor="#000"
         android:gravity="start"
         android:padding="16dp"
-        android:layout_marginBottom="8dp"
-        android:textSize="16sp" />
+        android:text="User Search"
+        android:textColor="#000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Event Search Button -->
 
     <!-- Divider Line -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E0E0E0" />
+        android:background="#E0E0E0"
+        app:layout_constraintBottom_toTopOf="@+id/button_event_search"
+        app:layout_constraintTop_toBottomOf="@+id/button_user_search"
+        tools:layout_editor_absoluteX="-32dp" />
 
-    <!-- Event Search Button -->
     <Button
         android:id="@+id/button_event_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:background="?attr/selectableItemBackground"
-        android:text="Event Search"
-        android:textColor="#000"
         android:gravity="start"
         android:padding="16dp"
-        android:layout_marginBottom="8dp"
-        android:textSize="16sp" />
+        android:text="Event Search"
+        android:textColor="#000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_user_search" />
+
+    <!-- Facilities Map Button -->
 
     <!-- Divider Line -->
     <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E0E0E0" />
+        android:background="#E0E0E0"
+        app:layout_constraintTop_toBottomOf="@+id/button_browse_images"
+        tools:layout_editor_absoluteX="2dp" />
 
-    <!-- Facilities Map Button -->
     <Button
         android:id="@+id/button_facilities_map"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:background="?attr/selectableItemBackground"
-        android:text="Facilities Map"
-        android:textColor="#000"
         android:gravity="start"
         android:padding="16dp"
-        android:layout_marginBottom="8dp"
-        android:textSize="16sp" />
-
-    <!-- Divider Line -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E0E0E0" />
+        android:text="Facilities Map"
+        android:textColor="#000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_event_search" />
 
     <!-- Browse Images Button -->
+
+    <!-- Final Divider Line -->
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="9dp"
+        android:background="#E0E0E0"
+        app:layout_constraintBottom_toTopOf="@+id/button_browse_images"
+        app:layout_constraintTop_toBottomOf="@+id/button_facilities_map"
+        tools:layout_editor_absoluteX="25dp" />
+
     <Button
         android:id="@+id/button_browse_images"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:background="?attr/selectableItemBackground"
-        android:text="Browse Images"
-        android:textColor="#000"
         android:gravity="start"
         android:padding="16dp"
-        android:layout_marginBottom="8dp"
-        android:textSize="16sp" />
+        android:text="Browse Images"
+        android:textColor="#000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_facilities_map" />
 
-    <!-- Final Divider Line -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E0E0E0" />
+        android:layout_marginBottom="8dp"
+        android:background="#E0E0E0"
+        app:layout_constraintBottom_toTopOf="@+id/button_facilities_map"
+        app:layout_constraintTop_toBottomOf="@+id/button_event_search"
+        tools:layout_editor_absoluteX="0dp" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/editProfileButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_profile"
+        android:textColor="#000000"
+        android:backgroundTint="#D3D3D3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
@@ -66,7 +67,11 @@ public class ViewEventFragment extends Fragment {
         eventName.setText(event.getName());
         eventDate.setText(event.getEventDate().toString());
         eventDetails.setText(event.getDescription());
-        qrBitmap.setImageBitmap(QRCodeUtils.generateQRCode(event.getQrHashCode(),150,150));
+        if(event.getQrHashCode() != null) {
+            qrBitmap.setImageBitmap(QRCodeUtils.generateQRCode(event.getQrHashCode(),150,150));
+        } else {
+            qrBitmap.setImageDrawable(ContextCompat.getDrawable(getContext(), R.mipmap.error));
+        }
 
         // database queries
         HashMap<String,Object> filter = new HashMap<>();

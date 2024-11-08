@@ -14,12 +14,17 @@ import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.profile.ProfileFragment;
+import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
+import com.example.napkinapp.models.User;
 import com.example.napkinapp.fragments.admineventsearch.AdminListEventsFragment;
 
 public class AdminNavagationFragment extends Fragment {
 
-    public AdminNavagationFragment() {
-        // Required empty constructor
+    private User user;
+
+    public AdminNavagationFragment(User user) {
+        this.user = user;
     }
 
     private TitleUpdateListener titleUpdateListener;
@@ -46,6 +51,9 @@ public class AdminNavagationFragment extends Fragment {
         Button eventSearchButton = view.findViewById(R.id.button_event_search);
         Button facilitiesMapButton = view.findViewById(R.id.button_facilities_map);
         Button browseImagesButton = view.findViewById(R.id.button_browse_images);
+
+        Button editProfileButton = view.findViewById(R.id.editProfileButton);
+        editProfileButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.blank_profile, 0, 0, 0);
 
         // Update header title
         titleUpdateListener.updateTitle("Admin Navigation");
@@ -75,6 +83,13 @@ public class AdminNavagationFragment extends Fragment {
 
         browseImagesButton.setOnClickListener(v -> {
             Log.d("AdminNavagationFragment", "Browse Images button clicked");
+        });
+
+        editProfileButton.setOnClickListener(v -> {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragmentcontainer, new ProfileFragment(user))
+                    .addToBackStack(null)
+                    .commit();
         });
 
         Log.d("AdminNavagationFragment", "Navigation buttons initialized.");
