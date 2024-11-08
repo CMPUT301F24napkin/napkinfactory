@@ -1,5 +1,6 @@
 package com.example.napkinapp.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,28 +40,13 @@ public class Event {
         this.entrantLimit = entrantLimit;
         this.participantLimit = participantLimit;
         this.requireGeolocation = requireGeolocation;
-    }
 
-    // Event from database
-    public Event(String id, String organizerId, String name, Date eventDate, Date lotteryDate, String description,
-                 int entrantLimit, int participantLimit, boolean requireGeolocation, String QRHashCode,
-                 List<String> waitlist, List<String> chosen, List<String> cancelled, List<String> registered) {
-        this.id = id;
-        this.organizerId = organizerId;
-        this.name = name;
-        this.eventDate = eventDate;
-        this.lotteryDate = lotteryDate;
-        this.description = description;
-        this.entrantLimit = entrantLimit;
-        this.participantLimit = participantLimit;
-        this.requireGeolocation = requireGeolocation;
-
-        this.QRHashCode = QRHashCode;
-        this.waitlist = waitlist;
-        this.chosen = chosen;
-        this.cancelled = cancelled;
-        this.registered = registered;
-
+        // set default values
+        tags = new ArrayList<Tag>();
+        waitlist = new ArrayList<String>();
+        chosen = new ArrayList<String>();
+        cancelled = new ArrayList<String>();
+        registered = new ArrayList<String>();
     }
 
     public Event(){
@@ -140,4 +126,19 @@ public class Event {
         this.requireGeolocation = requireGeolocation;
     }
 
+    public List<String> getWaitlist() {
+        return waitlist;
+    }
+
+    public List<String> getChosen() {
+        return chosen;
+    }
+
+    public List<String> getCancelled() {
+        return cancelled;
+    }
+
+    public List<String> getRegistered() {
+        return registered;
+    }
 }

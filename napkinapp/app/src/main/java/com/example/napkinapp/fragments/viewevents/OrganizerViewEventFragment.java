@@ -1,7 +1,5 @@
 package com.example.napkinapp.fragments.viewevents;
 
-import static androidx.core.content.FileProvider.getUriForFile;
-
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +30,7 @@ import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
@@ -39,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class OrganizerViewEventFragment extends Fragment {
     private Context mContext;
@@ -54,6 +53,17 @@ public class OrganizerViewEventFragment extends Fragment {
     public OrganizerViewEventFragment(Event event){
         this.event = event;
     };
+
+    private void doLottery() {
+        // TODO implement
+
+        event.getWaitlist();
+
+        // choose random event.getParticipantLimit() from event.getWaitlist() and put into event.chosen. everyone else stays in event.waitlist.
+        event.getParticipantLimit();
+
+        // notify everyone in waitlist. notify everyone in chosen.
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -111,24 +121,32 @@ public class OrganizerViewEventFragment extends Fragment {
         Button editLotteryDate = view.findViewById(R.id.edit_lottery_date);
         Button shareQRCode = view.findViewById(R.id.share_qr_code);
         SwitchCompat requireGeolocation = view.findViewById(R.id.require_geolocation);
+        Button doLottery = view.findViewById(R.id.do_lottery);
 
         Chip waitlistChip = view.findViewById(R.id.chip_waitlist);
         Chip chosenChip = view.findViewById(R.id.chip_chosen);
         Chip cancelledChip = view.findViewById(R.id.chip_cancelled);
         Chip registeredChip = view.findViewById(R.id.chip_registered);
+        ChipGroup chipGroup = view.findViewById(R.id.chip_group);
 
         ListView entrantsListView = view.findViewById(R.id.entrants_list_view);
         TextInputLayout messageTextField = view.findViewById(R.id.message_text_field);
         Button sendMessage = view.findViewById(R.id.send_message);
 
-        HashMap<String,Object> filter = new HashMap<>();
-        filter.put("id", event.getOrganizerId());
-        db.findOne("Users", filter, new DB_Client.DatabaseCallback<User>() {
+        HashMap<String,Object> organizerFilter = new HashMap<>();
+        organizerFilter.put("id", event.getOrganizerId());
+        db.findOne("Users", organizerFilter, new DB_Client.DatabaseCallback<User>() {
 
             @Override
             public void onSuccess(@Nullable User data) {
-                organizerName.setText(data.getName());
-                organization.setText(data.getPhoneNumber());
+                if(data != null) {
+                    organizerName.setText(data.getName());
+                    organization.setText(data.getPhoneNumber());
+                } else {
+                    organizerName.setText("Unknown Organizer");
+                    organization.setText("Unknown Organization");
+                }
+
             }
         }, User.class);
 
@@ -156,7 +174,11 @@ public class OrganizerViewEventFragment extends Fragment {
 
         // Description
         editEventDetails.setOnClickListener(v-> {
-            EditTextPopupFragment popup = new EditTextPopupFragment("Edit Event Details",  eventDetails.getText().toString(), eventDetails::setText);
+            EditTextPopupFragment popup = new EditTextPopupFragment("Edit Event Details",  eventDetails.getText().toString(), text -> {
+                event.setDescription(text);
+                eventDetails.setText(text);
+                db.writeData("Events", event.getId(), event,  new DB_Client.DatabaseCallback<Void>(){});
+            });
             popup.show(getActivity().getSupportFragmentManager(), "popup");
         });
 
@@ -166,7 +188,11 @@ public class OrganizerViewEventFragment extends Fragment {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month - 1, dayOfMonth); // Month is 0-based
                 Date date = calendar.getTime();
-                eventDate.setText(formatter.format(date));
+                eventDetails.setText(formatter.format(date));
+
+                // update db
+                event.setEventDate(date);
+                db.writeData("Events", event.getId(), event,  new DB_Client.DatabaseCallback<Void>(){});
             }, 2024, 9, 11);
             popup.show();
         });
@@ -178,9 +204,16 @@ public class OrganizerViewEventFragment extends Fragment {
                 calendar.set(year, month - 1, dayOfMonth); // Month is 0-based
                 Date date = calendar.getTime();
                 lotteryDate.setText(formatter.format(date));
+                // update db
+                event.setLotteryDate(date);
+                db.writeData("Events", event.getId(), event,  new DB_Client.DatabaseCallback<Void>(){});
             }, 2024, 9, 11);
             popup.show();
         });
+
+        // call the member function.
+        // its a function so that we can do unit tests on it!!!
+        doLottery.setOnClickListener(v->{doLottery();});
 
         // Share QR code TODO switch from eventImageURI to actual QR code URI
 
@@ -194,85 +227,79 @@ public class OrganizerViewEventFragment extends Fragment {
         });
 
         requireGeolocation.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // TODO write to DB
             Toast.makeText(mContext, String.format("set Require Geolocation to %b", isChecked), Toast.LENGTH_SHORT).show();
+            // update db
+            event.setRequireGeolocation(isChecked);
+            db.writeData("Events", event.getId(), event,  new DB_Client.DatabaseCallback<Void>(){});
         });
 
         // Do chips
-
-        waitlistChip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Toast.makeText(mContext, String.format("set Filter Waitlist to %b", isChecked), Toast.LENGTH_SHORT).show();
-            if(isChecked) {
-                chosenChip.setChecked(false);
-                cancelledChip.setChecked(false);
-                registeredChip.setChecked(false);
-                messageTextField.setHint("Message to waitlisters");
-            } else {
-                messageTextField.setHint("Message to all");
-            }
-        });
-
-        chosenChip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Toast.makeText(mContext, String.format("set Filter Chosen to %b", isChecked), Toast.LENGTH_SHORT).show();
-            if(isChecked) {
-                waitlistChip.setChecked(false);
-                cancelledChip.setChecked(false);
-                registeredChip.setChecked(false);
-                messageTextField.setHint("Message to chosen");
-            } else {
-                messageTextField.setHint("Message to all");
-            }
-        });
-
-        cancelledChip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Toast.makeText(mContext, String.format("set Filter Cancelled to %b", isChecked), Toast.LENGTH_SHORT).show();
-            if(isChecked) {
-                waitlistChip.setChecked(false);
-                chosenChip.setChecked(false);
-                registeredChip.setChecked(false);
-                messageTextField.setHint("Message to cancelled");
-            } else {
-                messageTextField.setHint("Message to all");
-            }
-        });
-
-        registeredChip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Toast.makeText(mContext, String.format("set Filter Registered to %b", isChecked), Toast.LENGTH_SHORT).show();
-            if(isChecked) {
-                waitlistChip.setChecked(false);
-                chosenChip.setChecked(false);
-                cancelledChip.setChecked(false);
-
-                messageTextField.setHint("Message to registered");
-            } else {
-                messageTextField.setHint("Message to all");
-            }
-        });
-
-        // TODO get list of entrants from database
-
         ArrayList<User> users = new ArrayList<>();
-        users.add(new User("placeholder", "Bob Smith", "9384830293", "bob@smith.com", "388 022 street", true, false, false));
-        users.add(new User("placeholder", "Ruby Goldberg", "9384830293", "bob@smith.com", "388 022 street", true, false, false));
-        users.add(new User("placeholder", "Richard P. McKnob", "9384830293", "bob@smith.com", "388 022 street", true, false, false));
-        users.add(new User("placeholder", "John Thomas", "9384830293", "bob@smith.com", "388 022 street", true, false, false));
-
         UserArrayAdapter userArrayAdapter = new UserArrayAdapter(mContext, users);
         entrantsListView.setAdapter(userArrayAdapter);
 
-        // send message
+        ChipGroup.OnCheckedStateChangeListener listener = ((group, checkedIds) -> {
+            ArrayList<String> arrayList = new ArrayList<>();
+
+            if(checkedIds.isEmpty()) {
+                messageTextField.setHint("Message to all");
+                arrayList.addAll(event.getWaitlist());
+                arrayList.addAll(event.getChosen());
+                arrayList.addAll(event.getCancelled());
+                arrayList.addAll(event.getRegistered());
+            } else if(checkedIds.size() == 1) {
+                // get first selected chip, with app:singleSelection="true" set in XML size should be 1
+                if(checkedIds.get(0) == R.id.chip_waitlist) {
+                    messageTextField.setHint("Message to waitlisters");
+                    arrayList.addAll(event.getWaitlist());
+                } else if(checkedIds.get(0) == R.id.chip_chosen) {
+                    messageTextField.setHint("Message to chosen");
+                    arrayList.addAll(event.getChosen());
+                } else if(checkedIds.get(0) == R.id.chip_cancelled) {
+                    messageTextField.setHint("Message to cancelled");
+                    arrayList.addAll(event.getCancelled());
+                } else if(checkedIds.get(0) == R.id.chip_registered) {
+                    messageTextField.setHint("Message to registered");
+                    arrayList.addAll(event.getRegistered());
+                } else {
+                    Log.e("chipGroup.setOnCheckedStateChangeListener", String.format("unknown chip id %d", checkedIds.get(0)));
+                }
+            }
+
+            // update db
+            if(!arrayList.isEmpty()) {
+                db.findAllIn("Users", "androidId", new ArrayList<Object>(arrayList), new DB_Client.DatabaseCallback<List<User>>() {
+                    @Override
+                    public void onSuccess(@Nullable List<User> data) {
+                        users.clear();
+                        users.addAll(data);
+                        userArrayAdapter.notifyDataSetChanged();
+                    }
+                }, User.class);
+            } else {
+                users.clear();
+                userArrayAdapter.notifyDataSetChanged();
+            }
+        });
+
+        chipGroup.setOnCheckedStateChangeListener(listener); // cal the listener one time to initially populate the data
+        listener.onCheckedChanged(chipGroup, new ArrayList<Integer>());
 
         sendMessage.setOnClickListener(v -> {
-            if(waitlistChip.isChecked()) {
-                Toast.makeText(mContext, "Sending Message to Waitlist" , Toast.LENGTH_SHORT).show();
-            } else if(chosenChip.isChecked()) {
-                Toast.makeText(mContext, "Sending Message to Chosen" , Toast.LENGTH_SHORT).show();
-            } else if(cancelledChip.isChecked()) {
-                Toast.makeText(mContext, "Sending Message to Cancelled" , Toast.LENGTH_SHORT).show();
-            } else if(registeredChip.isChecked()) {
-                Toast.makeText(mContext, "Sending Message to Registered" , Toast.LENGTH_SHORT).show();
+            if(!users.isEmpty()) {
+                if(waitlistChip.isChecked()) {
+                    Toast.makeText(mContext, String.format("Sending message to Waitlist (%d users)", users.size()), Toast.LENGTH_SHORT).show();
+                } else if(chosenChip.isChecked()) {
+                    Toast.makeText(mContext, String.format("Sending message to Chosen (%d users)", users.size()) , Toast.LENGTH_SHORT).show();
+                } else if(cancelledChip.isChecked()) {
+                    Toast.makeText(mContext, String.format("Sending message to Cancelled (%d users)", users.size()) , Toast.LENGTH_SHORT).show();
+                } else if(registeredChip.isChecked()) {
+                    Toast.makeText(mContext, String.format("Sending message to Registered (%d users)", users.size()) , Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "Sending message to All" , Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(mContext, "Sending Message to All" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "No users to send message to!" , Toast.LENGTH_SHORT).show();
             }
         });
 

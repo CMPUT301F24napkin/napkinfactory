@@ -249,11 +249,43 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+
+<!--        Do Lottery Button-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/do_lottery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Do Lottery"
+                app:icon="@drawable/baseline_casino_24"
+                app:iconGravity="end"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 <!--        QR Code-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/qr_code_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="QR Code"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <ImageView
                 android:id="@+id/qr_code"
@@ -263,7 +295,7 @@
                 android:minHeight="200dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@+id/qr_code_text_view"/>
 
             <Button
                 android:id="@+id/share_qr_code"
@@ -325,16 +357,17 @@
             android:layout_marginTop="8dp">
 
             <HorizontalScrollView
-                android:id="@+id/chip_group"
+                android:id="@+id/chip_group_horizontal_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroup"
+                    android:id="@+id/chip_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:singleLine="true">
+                    app:singleLine="true"
+                    app:singleSelection="true">
 
                     <!-- Chips can be declared here, or added dynamically. -->
 
@@ -374,7 +407,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:nestedScrollingEnabled="true"
-                app:layout_constraintTop_toBottomOf="@+id/chip_group"/>
+                app:layout_constraintTop_toBottomOf="@+id/chip_group_horizontal_scroll_view"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/message_text_field"

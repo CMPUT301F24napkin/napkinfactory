@@ -1,13 +1,10 @@
 package com.example.napkinapp.models;
 
-
-import org.checkerframework.common.value.qual.ArrayLen;
-
 import java.util.ArrayList;
 
 public class User {
     // Need to add some way to store and add photos later
-        private String androidId;
+    private String androidId;
     private String name;
     private String phoneNumber;
     private String email;
@@ -20,6 +17,7 @@ public class User {
     private ArrayList<String> waitlist;
     private ArrayList<String> chosen;
     private ArrayList<String> registered;
+    private ArrayList<String> cancelled;
 
     public User () {
         androidId = "";
@@ -153,4 +151,19 @@ public class User {
         return Boolean.TRUE;
     }
 
+    public ArrayList<String> getCancelled() {
+        return cancelled;
+    }
+
+    public ArrayList<String> getRegistered() {
+        return registered;
+    }
+
+    public ArrayList<String> getChosen() {
+        return chosen;
+    }
+
+    public ArrayList<String> getWaitlist() {
+        return waitlist;
+    }
 }
