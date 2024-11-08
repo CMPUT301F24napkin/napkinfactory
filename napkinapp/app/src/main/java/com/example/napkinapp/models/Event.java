@@ -61,10 +61,10 @@ public class Event {
         this.requireGeolocation = requireGeolocation;
 
         this.qrHashCode = qrHashCode;
-        this.waitlist = waitlist;
-        this.chosen = chosen;
-        this.cancelled = cancelled;
-        this.registered = registered;
+        this.waitlist = (ArrayList<String>) waitlist;
+        this.chosen = (ArrayList<String>) chosen;
+        this.cancelled = (ArrayList<String>) cancelled;
+        this.registered = (ArrayList<String>) registered;
     }
 
     // provide sensible defaults for members to avoid bugs
