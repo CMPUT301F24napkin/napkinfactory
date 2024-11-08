@@ -1,6 +1,7 @@
 package com.example.napkinapp.fragments.listevents;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,13 +68,13 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         Event event = events.get(position);
 
-        TextView text1 = view.findViewById(R.id.text1);
-        TextView text2 = view.findViewById(R.id.text2);
+        TextView eventName = view.findViewById(R.id.event_name);
+        TextView eventDate = view.findViewById(R.id.event_date);
 
         Button button = view.findViewById(R.id.button);
-
-        text1.setText(event.getName());
-        text2.setText(event.getEventDate().toString());
+        Log.d("EventArrayAdapter", "Got event " + event.getName());
+        eventName.setText(event.getName());
+        eventDate.setText(event.getEventDate().toString());
 
         eventListCustomizer.CustomizeEventCardButton(button, event);
 

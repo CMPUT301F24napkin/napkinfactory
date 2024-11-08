@@ -24,10 +24,10 @@ public class Event {
 
     private List<Tag> tags;
 
-    private List<String> waitlist;
-    private List<String> chosen;
-    private List<String> cancelled;
-    private List<String> registered;
+    private ArrayList<String> waitlist;
+    private ArrayList<String> chosen;
+    private ArrayList<String> cancelled;
+    private ArrayList<String> registered;
 
     // New event being created
     public Event(String organizerId, String name, Date eventDate, Date lotteryDate, String description,
@@ -61,10 +61,10 @@ public class Event {
         this.requireGeolocation = requireGeolocation;
 
         this.qrHashCode = qrHashCode;
-        this.waitlist = waitlist;
-        this.chosen = chosen;
-        this.cancelled = cancelled;
-        this.registered = registered;
+        this.waitlist = (ArrayList<String>) waitlist;
+        this.chosen = (ArrayList<String>) chosen;
+        this.cancelled = (ArrayList<String>) cancelled;
+        this.registered = (ArrayList<String>) registered;
     }
 
     // provide sensible defaults for members to avoid bugs
@@ -170,35 +170,98 @@ public class Event {
         this.requireGeolocation = requireGeolocation;
     }
 
-    public List<String> getWaitlist() {
-        return waitlist;
+    public void addUserToWaitlist(String userId){
+        if(waitlist.contains(userId)){
+            // Don't double add
+            return;
+        }
+        waitlist.add(userId);
     }
 
-    public List<String> getChosen() {
+    public void removeUserFromWaitList(String userId){
+        if(waitlist == null)
+            return;
+        // Already checks for null userid
+        waitlist.remove(userId);
+    }
+
+    public ArrayList<String> getWaitlist(){
+        if(waitlist == null)
+            return new ArrayList<String>();
+        return  waitlist;
+    }
+
+    public void addUserToChosen(String userId){
+        if(chosen.contains(userId)) {
+            // Don't double add
+            return;
+        }
+        chosen.add(userId);
+    }
+
+    public void removeUserFromChosen(String userId){
+        chosen.remove(userId);
+    }
+
+    public ArrayList<String> getChosen(){
         return chosen;
     }
 
-    public List<String> getCancelled() {
-        return cancelled;
+    public void addUserToRegistered(String userId){
+        if(registered.contains(userId)){
+            // Don't double add
+            return;
+        }
+        registered.add(userId);
     }
 
-    public List<String> getRegistered() {
-        return registered;
+    public void removeUserFromRegistered(String userId){
+        if(registered == null)
+            return;
+        // Already checks for null userid
+        registered.remove(userId);
     }
 
-    public void setWaitlist(List<String> waitlist) {
+    public ArrayList<String> getRegistered(){
+        if(registered == null)
+            return new ArrayList<String>();
+        return  registered;
+    }
+
+    public void addUserToCancelled(String userId){
+        if(cancelled.contains(userId)){
+            // Don't double add
+            return;
+        }
+        cancelled.add(userId);
+    }
+
+    public void removeUserFromCancelled(String userId){
+        if(cancelled == null)
+            return;
+        // Already checks for null userid
+        cancelled.remove(userId);
+    }
+
+    public ArrayList<String> getCancelled(){
+        if(cancelled == null)
+            return new ArrayList<String>();
+        return  cancelled;
+    }
+
+    public void setWaitlist(ArrayList<String> waitlist) {
         this.waitlist = waitlist;
     }
 
-    public void setChosen(List<String> chosen) {
+    public void setChosen(ArrayList<String> chosen) {
         this.chosen = chosen;
     }
 
-    public void setCancelled(List<String> cancelled) {
+    public void setCancelled(ArrayList<String> cancelled) {
         this.cancelled = cancelled;
     }
 
-    public void setRegistered(List<String> registered) {
+    public void setRegistered(ArrayList<String> registered) {
         this.registered = registered;
     }
 }

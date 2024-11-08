@@ -18,7 +18,6 @@ import com.example.napkinapp.fragments.notifications.ListNotificationsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
 
 import com.example.napkinapp.fragments.qrscanner.QRScannerFragment;
-import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 
@@ -56,11 +55,11 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 break;
             case 3:
                 // QRscanner
-                selectedFragment = new QRScannerFragment();
+                selectedFragment = new QRScannerFragment(user);
                 break;
             case 4:
                 // Myevents
-                selectedFragment = new MyEventsFragment();
+                selectedFragment = new MyEventsFragment(user);
                 break;
         }
 

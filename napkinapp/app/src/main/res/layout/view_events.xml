@@ -121,11 +121,11 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/event_apply"
+            android:id="@+id/toggle_waitlist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/design_default_color_primary"
-            android:text="Apply"
+            android:text="@string/add_to_waitlist"
             android:textColor="@color/white" />
 
         <Button
@@ -134,7 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:backgroundTint="@color/white"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textColor="@color/text_primary"
             app:strokeColor="@color/text_secondary"
             app:strokeWidth="1dp" />

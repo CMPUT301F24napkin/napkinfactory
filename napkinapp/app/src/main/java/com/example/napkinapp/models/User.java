@@ -26,6 +26,7 @@ public class User {
         address = "";
         enNotifications = false;
         isAdmin = false;
+
         notifications = new ArrayList<Notification>();
         waitlist = new ArrayList<String>();
         chosen = new ArrayList<String>();
@@ -64,13 +65,9 @@ public class User {
         this.isAdmin = isAdmin;
 
         this.notifications = notifications;
-
-        this.waitlist = waitlist;
-        this.chosen = chosen;
-        this.registered = registered;
     }
 
-    public void setAndroidId(String id) { this.androidId = id; };
+    public void setAndroidId(String id) { this.androidId = id; }
 
     public String getAndroidId() {
         return this.androidId;
@@ -149,19 +146,40 @@ public class User {
         return Boolean.TRUE;
     }
 
-    public ArrayList<String> getCancelled() {
-        return cancelled;
+    public void addEventToWaitlist(String eventId){
+        if(waitlist.contains(eventId)){
+            // Don't double add
+            return;
+        }
+        waitlist.add(eventId);
     }
 
-    public ArrayList<String> getRegistered() {
-        return registered;
+    public void removeEventFromWaitList(String eventId){
+        // Already checks for null eventId
+        waitlist.remove(eventId);
     }
 
-    public ArrayList<String> getChosen() {
+    public ArrayList<String> getWaitlist(){
+        return  waitlist;
+    }
+
+    public void addEventToChosen(String eventId){
+        if(chosen == null || chosen.contains(eventId)) {
+            // Don't double add
+            return;
+        }
+        chosen.add(eventId);
+    }
+
+    public void removeEventFromChosen(String eventId){
+        if(chosen == null)
+            return;
+        chosen.remove(eventId);
+    }
+
+    public ArrayList<String> getChosen(){
+        if(chosen == null)
+            return new ArrayList<>();
         return chosen;
-    }
-
-    public ArrayList<String> getWaitlist() {
-        return waitlist;
     }
 }

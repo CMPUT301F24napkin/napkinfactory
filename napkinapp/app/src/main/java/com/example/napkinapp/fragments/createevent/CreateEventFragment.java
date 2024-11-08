@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.QRCodeUtils;
 
@@ -34,9 +35,14 @@ public class CreateEventFragment extends Fragment {
     private ImageButton eventDatePickerButton, lotteryDatePickerButton;
     private SwitchCompat geolocationSwitch;
     private Button createButton;
+    private User loggedInUser;
 
     public CreateEventFragment(){
         // Required null constructor
+    }
+
+    public CreateEventFragment(User user){
+        this.loggedInUser = user;
     }
 
     @Nullable
@@ -100,8 +106,9 @@ public class CreateEventFragment extends Fragment {
         String userID = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Create the Event object with the Date
-        Event event = new Event(userID, eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
+        Event event = new Event(loggedInUser.getAndroidId(), eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
                 entrantLimitValue, participantLimitValue, geolocationSwitch.isChecked());
+
 
         db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {
             @Override
@@ -124,7 +131,7 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-        getActivity().getSupportFragmentManager().popBackStack();
+        getParentFragmentManager().popBackStack();
 
     }
 

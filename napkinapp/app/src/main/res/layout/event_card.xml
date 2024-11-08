@@ -7,6 +7,7 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     android:orientation="horizontal"
+    android:id="@+id/event_card_root"
     android:descendantFocusability="blocksDescendants">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -26,7 +27,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text1"
+            android:id="@+id/event_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin"
@@ -37,7 +38,7 @@
             android:focusableInTouchMode="false"/>
 
         <TextView
-            android:id="@+id/text2"
+            android:id="@+id/event_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin"
@@ -53,8 +54,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin"
             android:layout_weight="1"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:drawableStart="@drawable/add"
             android:drawableTint="@color/white"
-            android:text="@string/caption_add_to_waitlist"></Button>
+            android:text="@string/add_to_waitlist" />
     </LinearLayout>
 </LinearLayout>

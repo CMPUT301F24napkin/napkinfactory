@@ -26,21 +26,24 @@ import com.example.napkinapp.fragments.createevent.CreateEventFragment;
 import com.example.napkinapp.fragments.listevents.EventArrayAdapter;
 import com.example.napkinapp.fragments.viewevents.OrganizerViewEventFragment;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 public class MyEventsFragment extends Fragment {
     private TitleUpdateListener titleUpdateListener;
     private Context mContext;
+    private User loggedInUser;
 
     public MyEventsFragment() {
 
+    }
+
+    public MyEventsFragment(User user){
+        this.loggedInUser = user;
     }
 
     EventArrayAdapter.EventListCustomizer customizer = (button, event) -> {
@@ -49,7 +52,7 @@ public class MyEventsFragment extends Fragment {
             Log.i("Button", String.format("My Events: Clicked on event %s\n", event.getName()));
 
 
-            getActivity().getSupportFragmentManager().beginTransaction()
+            getParentFragmentManager().beginTransaction()
                     .replace(R.id.content_fragmentcontainer, new OrganizerViewEventFragment(event))
                     .addToBackStack(null)
                     .commit();
@@ -93,7 +96,9 @@ public class MyEventsFragment extends Fragment {
             @Override
             public void onSuccess(@Nullable List<Event> data) {
                 events.clear();
-                events.addAll(data);
+                if(data != null){
+                    events.addAll(data);
+                }
                 eventArrayAdapter.notifyDataSetChanged();
             }
         }, Event.class);
@@ -106,10 +111,22 @@ public class MyEventsFragment extends Fragment {
         Button trailingButton = footerView.findViewById(R.id.trailing_button);
         trailingButton.setOnClickListener(v-> {
             Log.i("Button", "My Events: Clicked on the create event button!");
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_fragmentcontainer, new CreateEventFragment())
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragmentcontainer, new CreateEventFragment(loggedInUser))
                     .addToBackStack(null)
                     .commit();
+        });
+
+        eventsList.setOnItemClickListener((parent, view1, position, id) -> {
+            Event clickedEvent = events.get(position);
+            Log.d("ListEventsFragment", "Clicked an event at position " + position);
+            if(clickedEvent != null) {
+                // Replace fragment
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.content_fragmentcontainer, new OrganizerViewEventFragment(clickedEvent)) // Use your actual container ID
+                        .addToBackStack(null) // Allows user to go back to ListEventsFragment
+                        .commit();
+            }
         });
 
 
