@@ -15,8 +15,8 @@ public class Event {
     private Date lotteryDate;
     private Image poster_image;
     private String description;
-    private int entrantLimit;
-    private int participantLimit;
+    private int entrantLimit;       // the number of users that can join the waitlist
+    private int participantLimit;   // the number of users that are chosen out of the waitlist
     private boolean requireGeolocation;
     private Facility facility;
 
@@ -76,7 +76,7 @@ public class Event {
         this.lotteryDate = new Date();
         this.description = "description_placeholder";
         this.entrantLimit = 20;
-        this.participantLimit = -1;
+        this.participantLimit = Integer.MAX_VALUE;
         this.requireGeolocation = false;
 
         this.poster_image = new Image();
@@ -247,5 +247,21 @@ public class Event {
         if(cancelled == null)
             return new ArrayList<String>();
         return  cancelled;
+    }
+
+    public void setWaitlist(List<String> waitlist) {
+        this.waitlist = waitlist;
+    }
+
+    public void setChosen(List<String> chosen) {
+        this.chosen = chosen;
+    }
+
+    public void setCancelled(List<String> cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public void setRegistered(List<String> registered) {
+        this.registered = registered;
     }
 }

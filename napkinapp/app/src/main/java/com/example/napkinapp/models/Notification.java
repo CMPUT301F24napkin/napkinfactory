@@ -10,6 +10,10 @@ public class Notification {
     private String eventId;
     private boolean isOrganizerNotification;
 
+    public Notification() {
+        // null constructor for DB
+    }
+
     public Notification (String title, String message) {
         this.id =  UUID.randomUUID().toString();
         this.title = title;

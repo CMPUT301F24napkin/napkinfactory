@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -27,8 +28,10 @@ import com.example.napkinapp.fragments.EditTextPopupFragment;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
+import com.example.napkinapp.utils.QRCodeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputLayout;
@@ -36,8 +39,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class OrganizerViewEventFragment extends Fragment {
@@ -54,15 +59,56 @@ public class OrganizerViewEventFragment extends Fragment {
         this.event = event;
     };
 
+    private void sendNotification(List<String> androidIds, Notification notification) {
+        for(String androidId : androidIds) {
+            DB_Client db = new DB_Client();
+            HashMap<String, Object> filter = new HashMap<>();
+            filter.put("androidId", androidId);
+            db.findOne("Users", filter, new DB_Client.DatabaseCallback<User>() {
+                @Override
+                public void onSuccess(@Nullable User data) {
+                    data.addNotification(notification);
+                    db.writeData("Users", androidId, data, DB_Client.IGNORE);
+                }
+            }, User.class);
+        }
+        // Get the InputMethodManager system service
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // If the keyboard is open, hide it
+        imm.hideSoftInputFromWindow(getActivity().findViewById(R.id.content_fragmentcontainer).getWindowToken(), 0);
+        Toast.makeText(mContext, String.format("Sent notification to %d users!", androidIds.size()) , Toast.LENGTH_SHORT).show();
+    }
+
     private void doLottery() {
-        // TODO implement
 
-        event.getWaitlist();
+        ArrayList<String> waitlistCopy = new ArrayList<>(event.getWaitlist());
+        ArrayList<String> chosenListCopy = new ArrayList<>(event.getChosen()); // empty
 
-        // choose random event.getParticipantLimit() from event.getWaitlist() and put into event.chosen. everyone else stays in event.waitlist.
-        event.getParticipantLimit();
+        Collections.shuffle(waitlistCopy);
 
-        // notify everyone in waitlist. notify everyone in chosen.
+        // minimum between size of waitlist and space left in chosen list.
+        int numUsersToMove = Math.min(waitlistCopy.size(), event.getParticipantLimit() - chosenListCopy.size());
+        int i = numUsersToMove;
+        Iterator<String> iterator = waitlistCopy.iterator();
+        while (i > 0 && iterator.hasNext()) {
+            String element = iterator.next();
+            chosenListCopy.add(element);
+            iterator.remove();
+            i--;
+        }
+        event.setWaitlist(waitlistCopy);
+        event.setChosen(chosenListCopy);
+
+        // notify everyone in waitlist. notify everyone in chosenListCopy.
+        sendNotification(waitlistCopy, new Notification(
+                getText(R.string.notification_not_chosen_name).toString(),
+                getText(R.string.notification_not_chosen_description).toString(),false, event.getId(), false));
+
+        sendNotification(chosenListCopy, new Notification(
+                getText(R.string.notification_chosen_name).toString(),
+                getText(R.string.notification_chosen_description).toString(),false, event.getId(), false));
+
     }
 
     @Override
@@ -98,8 +144,6 @@ public class OrganizerViewEventFragment extends Fragment {
 
         DB_Client db = new DB_Client();
 
-        // TODO get QR code from database
-
         // Update title
         titleUpdateListener.updateTitle("Event Details");
 
@@ -134,7 +178,7 @@ public class OrganizerViewEventFragment extends Fragment {
         Button sendMessage = view.findViewById(R.id.send_message);
 
         HashMap<String,Object> organizerFilter = new HashMap<>();
-        organizerFilter.put("id", event.getOrganizerId());
+        organizerFilter.put("androidId", event.getOrganizerId());
         db.findOne("Users", organizerFilter, new DB_Client.DatabaseCallback<User>() {
 
             @Override
@@ -215,7 +259,11 @@ public class OrganizerViewEventFragment extends Fragment {
         // its a function so that we can do unit tests on it!!!
         doLottery.setOnClickListener(v->{doLottery();});
 
-        // Share QR code TODO switch from eventImageURI to actual QR code URI
+        if(event.getQrHashCode() != null) {
+            qrCode.setImageBitmap(QRCodeUtils.generateQRCode(event.getQrHashCode(),150,150));
+        } else {
+            qrCode.setImageResource(R.mipmap.error);
+        }
 
         shareQRCode.setOnClickListener(v->{
             Intent shareIntent = new Intent();
@@ -288,15 +336,33 @@ public class OrganizerViewEventFragment extends Fragment {
         sendMessage.setOnClickListener(v -> {
             if(!users.isEmpty()) {
                 if(waitlistChip.isChecked()) {
-                    Toast.makeText(mContext, String.format("Sending message to Waitlist (%d users)", users.size()), Toast.LENGTH_SHORT).show();
+                    sendNotification(event.getWaitlist(), new Notification(
+                            getText(R.string.notification_custom_name).toString(),
+                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
+
                 } else if(chosenChip.isChecked()) {
-                    Toast.makeText(mContext, String.format("Sending message to Chosen (%d users)", users.size()) , Toast.LENGTH_SHORT).show();
+                    sendNotification(event.getChosen(), new Notification(
+                            getText(R.string.notification_custom_name).toString(),
+                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
+
                 } else if(cancelledChip.isChecked()) {
-                    Toast.makeText(mContext, String.format("Sending message to Cancelled (%d users)", users.size()) , Toast.LENGTH_SHORT).show();
+                    sendNotification(event.getCancelled(), new Notification(
+                            getText(R.string.notification_custom_name).toString(),
+                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
+
                 } else if(registeredChip.isChecked()) {
-                    Toast.makeText(mContext, String.format("Sending message to Registered (%d users)", users.size()) , Toast.LENGTH_SHORT).show();
+                    sendNotification(event.getRegistered(), new Notification(
+                            getText(R.string.notification_custom_name).toString(),
+                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
                 } else {
-                    Toast.makeText(mContext, "Sending message to All" , Toast.LENGTH_SHORT).show();
+                    ArrayList<String> arrayList = new ArrayList<>(event.getWaitlist());
+                    arrayList.addAll(event.getChosen());
+                    arrayList.addAll(event.getRegistered());
+                    arrayList.addAll(event.getCancelled());
+
+                    sendNotification(arrayList, new Notification(
+                            getText(R.string.notification_custom_name).toString(),
+                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
                 }
             } else {
                 Toast.makeText(mContext, "No users to send message to!" , Toast.LENGTH_SHORT).show();

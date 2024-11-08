@@ -74,7 +74,7 @@ public class ViewEventFragment extends Fragment {
         if(event.getQrHashCode() != null) {
             qrBitmap.setImageBitmap(QRCodeUtils.generateQRCode(event.getQrHashCode(),150,150));
         } else {
-            qrBitmap.setImageDrawable(ContextCompat.getDrawable(getContext(), R.mipmap.error));
+            qrBitmap.setImageResource(R.mipmap.error);
         }
 
         // database queries
