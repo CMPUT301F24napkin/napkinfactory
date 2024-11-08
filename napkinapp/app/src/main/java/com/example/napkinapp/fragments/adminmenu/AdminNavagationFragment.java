@@ -1,3 +1,7 @@
+/**
+ * Fragment for the Admin hamburger menu. Inflates a admin_navagation.
+ */
+
 package com.example.napkinapp.fragments.adminmenu;
 
 import android.content.Context;
@@ -40,6 +44,19 @@ public class AdminNavagationFragment extends Fragment {
         }
     }
 
+    /**
+     * On creating the fragment, update the title, set on click listeners for all the search buttons.
+     * Clicking a search button should open the fragment for that search function.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -1,3 +1,7 @@
+/**
+ * Fragment for the notifications list. This screen allows the user to view and delete notifications.
+ */
+
 package com.example.napkinapp.fragments.notifications;
 
 import android.content.Context;

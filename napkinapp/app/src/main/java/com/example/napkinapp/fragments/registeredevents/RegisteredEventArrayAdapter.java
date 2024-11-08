@@ -1,3 +1,7 @@
+/**
+ * Array adapter which allows events to be displayed with 2 buttons, and ability to easily customize those buttons with a interface.
+ */
+
 package com.example.napkinapp.fragments.registeredevents;
 
 import android.content.Context;

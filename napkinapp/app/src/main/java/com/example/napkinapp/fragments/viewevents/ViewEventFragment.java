@@ -1,3 +1,8 @@
+/**
+ * Fragment for viewing events as the user. This is used whenever the user views an event it is
+ * not the organizer of.
+ */
+
 package com.example.napkinapp.fragments.viewevents;
 
 import android.content.Context;
@@ -121,6 +126,9 @@ public class ViewEventFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Add or remove the event from the waitlist based on the state of btnToggleWaitlist.
+     */
     private void handleToggleWaitlist(){
         Toast.makeText(getContext(), "test " + btnToggleWaitlist.isSelected(), Toast.LENGTH_SHORT).show();
         if(btnToggleWaitlist.isSelected()){
@@ -133,6 +141,9 @@ public class ViewEventFragment extends Fragment {
         updateButtons();
     }
 
+    /**
+     * Update the text of the buttons based on whether the user is on the events waitlist or not.
+     */
     private void updateButtons() {
         if(event.getWaitlist().contains(user.getAndroidId())){
             // Waitlist
@@ -145,6 +156,9 @@ public class ViewEventFragment extends Fragment {
         }
     }
 
+    /**
+     * Removes an this currently logged in user from the event's waitlist.
+     */
     private void removeEventFromWaitlist(){
         event.removeUserFromWaitList(user.getAndroidId());
         user.removeEventFromWaitList(event.getId());
@@ -181,6 +195,9 @@ public class ViewEventFragment extends Fragment {
 
     }
 
+    /**
+     * Adds this currently logged in user to the event's waitlist.
+     */
     private void addEventToWaitlist(){
         event.addUserToWaitlist(user.getAndroidId());
         user.addEventToWaitlist(event.getId());

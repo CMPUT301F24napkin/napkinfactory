@@ -1,3 +1,7 @@
+/**
+ * Fragment for the create event page.
+ */
+
 package com.example.napkinapp.fragments.createevent;
 
 import android.app.DatePickerDialog;
