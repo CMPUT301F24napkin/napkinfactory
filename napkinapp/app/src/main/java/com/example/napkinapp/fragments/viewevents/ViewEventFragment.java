@@ -1,7 +1,6 @@
 package com.example.napkinapp.fragments.viewevents;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,10 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,12 +19,12 @@ import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
+import com.example.napkinapp.utils.QRCodeUtils;
 
 import java.util.HashMap;
 
 public class ViewEventFragment extends Fragment {
     private Event event;
-    private User organizer;
     private TitleUpdateListener titleUpdateListener;
 
     public ViewEventFragment(Event event){
@@ -64,11 +60,13 @@ public class ViewEventFragment extends Fragment {
 
         ImageView eventImage = view.findViewById(R.id.event_image);
         ImageView organizerProfile = view.findViewById(R.id.organizer_profile);
+        ImageView qrBitmap = view.findViewById(R.id.event_qr_code);
 
         // TODO: properly populate all data
         eventName.setText(event.getName());
         eventDate.setText(event.getEventDate().toString());
         eventDetails.setText(event.getDescription());
+        qrBitmap.setImageBitmap(QRCodeUtils.generateQRCode(event.getQrHashCode(),150,150));
 
         // database queries
         HashMap<String,Object> filter = new HashMap<>();
@@ -87,6 +85,8 @@ public class ViewEventFragment extends Fragment {
         }, User.class);
 
 
+
+
         Button apply = view.findViewById(R.id.event_apply);
         Button cancel = view.findViewById(R.id.event_cancel);
         Button moreOptions = view.findViewById(R.id.more_options);
@@ -97,7 +97,8 @@ public class ViewEventFragment extends Fragment {
 
         cancel.setOnClickListener((v) -> {
             if (getActivity() != null) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                // TODO: there a is a bug hitting cancel after it loads with a qr code
+                requireActivity().getSupportFragmentManager().popBackStack();
             }
         });
         moreOptions.setOnClickListener((v) -> {
