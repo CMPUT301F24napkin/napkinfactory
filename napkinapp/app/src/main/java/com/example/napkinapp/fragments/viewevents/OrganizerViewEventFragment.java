@@ -35,6 +35,7 @@ import com.example.napkinapp.utils.QRCodeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.FieldValue;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,12 +56,14 @@ public class OrganizerViewEventFragment extends Fragment {
     ImageView eventImage;
     Uri eventImageURI;
 
-    public OrganizerViewEventFragment(Event event){
+    public OrganizerViewEventFragment(Event event) {
         this.event = event;
-    };
+    }
+
+    ;
 
     private void sendNotification(List<String> androidIds, Notification notification) {
-        for(String androidId : androidIds) {
+        for (String androidId : androidIds) {
             DB_Client db = new DB_Client();
             HashMap<String, Object> filter = new HashMap<>();
             filter.put("androidId", androidId);
@@ -77,7 +80,7 @@ public class OrganizerViewEventFragment extends Fragment {
 
         // If the keyboard is open, hide it
         imm.hideSoftInputFromWindow(getActivity().findViewById(R.id.content_fragmentcontainer).getWindowToken(), 0);
-        Toast.makeText(mContext, String.format("Sent notification to %d users!", androidIds.size()) , Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, String.format("Sent notification to %d users!", androidIds.size()), Toast.LENGTH_SHORT).show();
     }
 
     private void doLottery() {
@@ -100,14 +103,35 @@ public class OrganizerViewEventFragment extends Fragment {
         event.setWaitlist(waitlistCopy);
         event.setChosen(chosenListCopy);
 
+        DB_Client db = new DB_Client();
+        // Update event document with new waitlist and chosen lists
+        db.getDatabase().collection("Events").document(event.getId()).get().addOnSuccessListener(documentSnapshot -> {
+
+            documentSnapshot.getReference().update("waitlist", waitlistCopy, "chosen", chosenListCopy)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("UPDATING EVENT LIST","Event waitlist and chosen lists updated");
+
+                        // Update users
+                        for (String userId : chosenListCopy) {
+                            // Users moved to chosen list
+                            db.getDatabase().collection("Users").document(userId)
+                                    .update("chosen", FieldValue.arrayUnion(event.getId()),
+                                            "waitlist", FieldValue.arrayRemove(event.getId()))
+                                    .addOnSuccessListener(aVoid1 -> Log.d("LOTTERY USER","User " + userId + " moved to chosen"))
+                                    .addOnFailureListener(e -> System.out.println("Error updating user " + userId + ": " + e.getMessage()));
+                        }
+
+                    }).addOnFailureListener(e -> System.out.println("Error updating event lists: " + e.getMessage()));
+        });
         // notify everyone in waitlist. notify everyone in chosenListCopy.
         sendNotification(waitlistCopy, new Notification(
                 getText(R.string.notification_not_chosen_name).toString(),
-                getText(R.string.notification_not_chosen_description).toString(),false, event.getId(), false));
+                getText(R.string.notification_not_chosen_description).toString(), false, event.getId(), false));
 
         sendNotification(chosenListCopy, new Notification(
                 getText(R.string.notification_chosen_name).toString(),
-                getText(R.string.notification_chosen_description).toString(),false, event.getId(), false));
+                getText(R.string.notification_chosen_description).toString(), false, event.getId(), false));
+
 
     }
 
@@ -115,23 +139,23 @@ public class OrganizerViewEventFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
-        if(context instanceof TitleUpdateListener){
+        if (context instanceof TitleUpdateListener) {
             titleUpdateListener = (TitleUpdateListener) context;
-        }else{
+        } else {
             throw new RuntimeException(context + " needs to implement TitleUpdateListener");
         }
 
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                    // Callback is invoked after the user selects a media item or closes the
-                    // photo picker.
-                    if (uri != null) {
-                        eventImageURI = uri;
-                        eventImage.setImageURI(uri);
-                        Log.d("PhotoPicker", "Selected URI: " + uri);
-                    } else {
-                        Log.d("PhotoPicker", "No media selected");
-                    }
-                });
+            // Callback is invoked after the user selects a media item or closes the
+            // photo picker.
+            if (uri != null) {
+                eventImageURI = uri;
+                eventImage.setImageURI(uri);
+                Log.d("PhotoPicker", "Selected URI: " + uri);
+            } else {
+                Log.d("PhotoPicker", "No media selected");
+            }
+        });
 
         this.mContext = context;
     }
@@ -177,13 +201,13 @@ public class OrganizerViewEventFragment extends Fragment {
         TextInputLayout messageTextField = view.findViewById(R.id.message_text_field);
         Button sendMessage = view.findViewById(R.id.send_message);
 
-        HashMap<String,Object> organizerFilter = new HashMap<>();
+        HashMap<String, Object> organizerFilter = new HashMap<>();
         organizerFilter.put("androidId", event.getOrganizerId());
         db.findOne("Users", organizerFilter, new DB_Client.DatabaseCallback<User>() {
 
             @Override
             public void onSuccess(@Nullable User data) {
-                if(data != null) {
+                if (data != null) {
                     organizerName.setText(data.getName());
                     organization.setText(data.getPhoneNumber());
                 } else {
@@ -201,33 +225,35 @@ public class OrganizerViewEventFragment extends Fragment {
         eventDate.setText(formatter.format(event.getEventDate()));
         lotteryDate.setText(formatter.format(event.getLotteryDate()));
 
-        editEventName.setOnClickListener(v-> {
-            EditTextPopupFragment popup = new EditTextPopupFragment("Edit Event Name",  eventName.getText().toString(), text -> {
+        editEventName.setOnClickListener(v -> {
+            EditTextPopupFragment popup = new EditTextPopupFragment("Edit Event Name", eventName.getText().toString(), text -> {
                 event.setName(text);
                 eventName.setText(text);
-                db.writeData("Events", event.getId(), event,  new DB_Client.DatabaseCallback<Void>(){});
+                db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+                });
             });
             popup.show(getActivity().getSupportFragmentManager(), "popup");
         });
 
-        editEventImage.setOnClickListener(v->{
+        editEventImage.setOnClickListener(v -> {
             pickMedia.launch(new PickVisualMediaRequest.Builder()
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                     .build());
         });
 
         // Description
-        editEventDetails.setOnClickListener(v-> {
-            EditTextPopupFragment popup = new EditTextPopupFragment("Edit Event Details",  eventDetails.getText().toString(), text -> {
+        editEventDetails.setOnClickListener(v -> {
+            EditTextPopupFragment popup = new EditTextPopupFragment("Edit Event Details", eventDetails.getText().toString(), text -> {
                 event.setDescription(text);
                 eventDetails.setText(text);
-                db.writeData("Events", event.getId(), event,  new DB_Client.DatabaseCallback<Void>(){});
+                db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+                });
             });
             popup.show(getActivity().getSupportFragmentManager(), "popup");
         });
 
         // Event Date
-        editEventDate.setOnClickListener(v->{
+        editEventDate.setOnClickListener(v -> {
             DatePickerDialog popup = new DatePickerDialog(mContext, (view1, year, month, dayOfMonth) -> {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month - 1, dayOfMonth); // Month is 0-based
@@ -236,13 +262,14 @@ public class OrganizerViewEventFragment extends Fragment {
 
                 // update db
                 event.setEventDate(date);
-                db.writeData("Events", event.getId(), event,  new DB_Client.DatabaseCallback<Void>(){});
+                db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+                });
             }, 2024, 9, 11);
             popup.show();
         });
 
         // Lottery Date
-        editLotteryDate.setOnClickListener(v->{
+        editLotteryDate.setOnClickListener(v -> {
             DatePickerDialog popup = new DatePickerDialog(mContext, (view1, year, month, dayOfMonth) -> {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month - 1, dayOfMonth); // Month is 0-based
@@ -250,22 +277,25 @@ public class OrganizerViewEventFragment extends Fragment {
                 lotteryDate.setText(formatter.format(date));
                 // update db
                 event.setLotteryDate(date);
-                db.writeData("Events", event.getId(), event,  new DB_Client.DatabaseCallback<Void>(){});
+                db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+                });
             }, 2024, 9, 11);
             popup.show();
         });
 
         // call the member function.
         // its a function so that we can do unit tests on it!!!
-        doLottery.setOnClickListener(v->{doLottery();});
+        doLottery.setOnClickListener(v -> {
+            doLottery();
+        });
 
-        if(event.getQrHashCode() != null) {
-            qrCode.setImageBitmap(QRCodeUtils.generateQRCode(event.getQrHashCode(),150,150));
+        if (event.getQrHashCode() != null) {
+            qrCode.setImageBitmap(QRCodeUtils.generateQRCode(event.getQrHashCode(), 150, 150));
         } else {
             qrCode.setImageResource(R.mipmap.error);
         }
 
-        shareQRCode.setOnClickListener(v->{
+        shareQRCode.setOnClickListener(v -> {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
 // Example: content://com.google.android.apps.photos.contentprovider/...
@@ -278,7 +308,8 @@ public class OrganizerViewEventFragment extends Fragment {
             Toast.makeText(mContext, String.format("set Require Geolocation to %b", isChecked), Toast.LENGTH_SHORT).show();
             // update db
             event.setRequireGeolocation(isChecked);
-            db.writeData("Events", event.getId(), event,  new DB_Client.DatabaseCallback<Void>(){});
+            db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+            });
         });
 
         // Do chips
@@ -289,24 +320,24 @@ public class OrganizerViewEventFragment extends Fragment {
         ChipGroup.OnCheckedStateChangeListener listener = ((group, checkedIds) -> {
             ArrayList<String> arrayList = new ArrayList<>();
 
-            if(checkedIds.isEmpty()) {
+            if (checkedIds.isEmpty()) {
                 messageTextField.setHint("Message to all");
                 arrayList.addAll(event.getWaitlist());
                 arrayList.addAll(event.getChosen());
                 arrayList.addAll(event.getCancelled());
                 arrayList.addAll(event.getRegistered());
-            } else if(checkedIds.size() == 1) {
+            } else if (checkedIds.size() == 1) {
                 // get first selected chip, with app:singleSelection="true" set in XML size should be 1
-                if(checkedIds.get(0) == R.id.chip_waitlist) {
+                if (checkedIds.get(0) == R.id.chip_waitlist) {
                     messageTextField.setHint("Message to waitlisters");
                     arrayList.addAll(event.getWaitlist());
-                } else if(checkedIds.get(0) == R.id.chip_chosen) {
+                } else if (checkedIds.get(0) == R.id.chip_chosen) {
                     messageTextField.setHint("Message to chosen");
                     arrayList.addAll(event.getChosen());
-                } else if(checkedIds.get(0) == R.id.chip_cancelled) {
+                } else if (checkedIds.get(0) == R.id.chip_cancelled) {
                     messageTextField.setHint("Message to cancelled");
                     arrayList.addAll(event.getCancelled());
-                } else if(checkedIds.get(0) == R.id.chip_registered) {
+                } else if (checkedIds.get(0) == R.id.chip_registered) {
                     messageTextField.setHint("Message to registered");
                     arrayList.addAll(event.getRegistered());
                 } else {
@@ -315,7 +346,7 @@ public class OrganizerViewEventFragment extends Fragment {
             }
 
             // update db
-            if(!arrayList.isEmpty()) {
+            if (!arrayList.isEmpty()) {
                 db.findAllIn("Users", "androidId", new ArrayList<Object>(arrayList), new DB_Client.DatabaseCallback<List<User>>() {
                     @Override
                     public void onSuccess(@Nullable List<User> data) {
@@ -334,26 +365,26 @@ public class OrganizerViewEventFragment extends Fragment {
         listener.onCheckedChanged(chipGroup, new ArrayList<Integer>());
 
         sendMessage.setOnClickListener(v -> {
-            if(!users.isEmpty()) {
-                if(waitlistChip.isChecked()) {
+            if (!users.isEmpty()) {
+                if (waitlistChip.isChecked()) {
                     sendNotification(event.getWaitlist(), new Notification(
                             getText(R.string.notification_custom_name).toString(),
-                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
+                            messageTextField.getEditText().getText().toString(), false, event.getId(), false));
 
-                } else if(chosenChip.isChecked()) {
+                } else if (chosenChip.isChecked()) {
                     sendNotification(event.getChosen(), new Notification(
                             getText(R.string.notification_custom_name).toString(),
-                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
+                            messageTextField.getEditText().getText().toString(), false, event.getId(), false));
 
-                } else if(cancelledChip.isChecked()) {
+                } else if (cancelledChip.isChecked()) {
                     sendNotification(event.getCancelled(), new Notification(
                             getText(R.string.notification_custom_name).toString(),
-                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
+                            messageTextField.getEditText().getText().toString(), false, event.getId(), false));
 
-                } else if(registeredChip.isChecked()) {
+                } else if (registeredChip.isChecked()) {
                     sendNotification(event.getRegistered(), new Notification(
                             getText(R.string.notification_custom_name).toString(),
-                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
+                            messageTextField.getEditText().getText().toString(), false, event.getId(), false));
                 } else {
                     ArrayList<String> arrayList = new ArrayList<>(event.getWaitlist());
                     arrayList.addAll(event.getChosen());
@@ -362,10 +393,10 @@ public class OrganizerViewEventFragment extends Fragment {
 
                     sendNotification(arrayList, new Notification(
                             getText(R.string.notification_custom_name).toString(),
-                            messageTextField.getEditText().getText().toString(),false, event.getId(), false));
+                            messageTextField.getEditText().getText().toString(), false, event.getId(), false));
                 }
             } else {
-                Toast.makeText(mContext, "No users to send message to!" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "No users to send message to!", Toast.LENGTH_SHORT).show();
             }
         });
 
