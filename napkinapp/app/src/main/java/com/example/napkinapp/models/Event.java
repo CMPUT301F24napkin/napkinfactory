@@ -47,7 +47,7 @@ public class Event {
     // Event from database
     public Event(String id, String organizerId, String name, Date eventDate, Date lotteryDate, String description,
                  int entrantLimit, int participantLimit, boolean requireGeolocation, String qrHashCode,
-                 List<String> waitlist, List<String> chosen, List<String> cancelled, List<String> registered) {
+                 ArrayList<String> waitlist, ArrayList<String> chosen, ArrayList<String> cancelled, ArrayList<String> registered) {
         init(); // provide sensible defaults
 
         this.id = id;
@@ -61,10 +61,10 @@ public class Event {
         this.requireGeolocation = requireGeolocation;
 
         this.qrHashCode = qrHashCode;
-        this.waitlist = (ArrayList<String>) waitlist;
-        this.chosen = (ArrayList<String>) chosen;
-        this.cancelled = (ArrayList<String>) cancelled;
-        this.registered = (ArrayList<String>) registered;
+        this.waitlist = waitlist;
+        this.chosen = chosen;
+        this.cancelled = cancelled;
+        this.registered = registered;
     }
 
     // provide sensible defaults for members to avoid bugs
@@ -264,49 +264,4 @@ public class Event {
     public void setRegistered(ArrayList<String> registered) {
         this.registered = registered;
     }
-
-    public void addUserToWaitlist(User user){
-        if(waitlist.contains(user.getAndroidId())){
-            return; // Don't double add
-        }
-        waitlist.add(user.getAndroidId());
-    }
-
-    public void addUserToChosen(User user){
-        if(chosen.contains(user.getAndroidId())){
-            return; // Don't double add
-        }
-        chosen.add(user.getAndroidId());
-    }
-
-    public void addUserToRegistered(User user){
-        if(registered.contains(user.getAndroidId())){
-            return; // Don't double add
-        }
-        registered.add(user.getAndroidId());
-    }
-
-    public void addUserToCancelled(User user){
-        if(cancelled.contains(user.getAndroidId())){
-            return; // Don't double add
-        }
-        cancelled.add(user.getAndroidId());
-    }
-
-    public void removeUserFromWaitlist(User user){
-        waitlist.remove(user.getAndroidId());
-    }
-
-    public void removeUserFromChosen(User user){
-        chosen.remove(user.getAndroidId());
-    }
-
-    public void removeUserFromRegistered(User user){
-        registered.remove(user.getAndroidId());
-    }
-
-    public void removeUserFromCancelled(User user){
-        cancelled.remove(user.getAndroidId());
-    }
-
 }
