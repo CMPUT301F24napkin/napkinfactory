@@ -79,8 +79,8 @@ public class CreateEventFragment extends Fragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
         // Parse the date string into a Date object
-        Date date = null;
-        Date lottery = null;
+        Date date = new Date();
+        Date lottery = new Date();
         try {
             date = dateFormat.parse(eventDate.getText().toString());
             lottery = dateFormat.parse(lotteryDate.getText().toString());
@@ -88,12 +88,20 @@ public class CreateEventFragment extends Fragment {
             e.printStackTrace();
         }
 
-        int limit = (participantLimitCheckbox.isChecked()) ? Integer.parseInt(participantLimit.getText().toString()) : -1;
+        int participantLimitValue = -1;
+        int registeredLimitValue = 20;
+        try{
+            participantLimitValue = (participantLimitCheckbox.isChecked()) ? Integer.parseInt(participantLimit.getText().toString()) : -1;
+            registeredLimitValue = Integer.parseInt(registeredEntrantLimit.getText().toString());
+        }
+        catch (NumberFormatException e) {
+            // TODO what do we want to do?? maybe ask the user to enter it again.
+        }
 
 
         // Create the Event object with the Date
         Event event = new Event("placeholder", eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
-        Integer.parseInt(registeredEntrantLimit.getText().toString()), limit, geolocationSwitch.isChecked());
+                registeredLimitValue, participantLimitValue, geolocationSwitch.isChecked());
 
         db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {
             @Override
@@ -115,6 +123,9 @@ public class CreateEventFragment extends Fragment {
                 ), new DB_Client.DatabaseCallback<Void>() {});
             }
         });
+
+        getActivity().getSupportFragmentManager().popBackStack();
+
     }
 
 

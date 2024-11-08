@@ -1,8 +1,5 @@
 package com.example.napkinapp.models;
 
-
-import org.checkerframework.common.value.qual.ArrayLen;
-
 import java.util.ArrayList;
 
 public class User {
@@ -19,8 +16,10 @@ public class User {
     private ArrayList<String> waitlist;
     private ArrayList<String> chosen;
     private ArrayList<String> registered;
+    private ArrayList<String> cancelled;
 
     public User () {
+        androidId = "";
         name = "";
         phoneNumber = "";
         email = "";
@@ -73,7 +72,9 @@ public class User {
 
     public void setAndroidId(String id) { this.androidId = id; };
 
-    public String getAndroidId() { return androidId; }
+    public String getAndroidId() {
+        return this.androidId;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -148,4 +149,19 @@ public class User {
         return Boolean.TRUE;
     }
 
+    public ArrayList<String> getCancelled() {
+        return cancelled;
+    }
+
+    public ArrayList<String> getRegistered() {
+        return registered;
+    }
+
+    public ArrayList<String> getChosen() {
+        return chosen;
+    }
+
+    public ArrayList<String> getWaitlist() {
+        return waitlist;
+    }
 }

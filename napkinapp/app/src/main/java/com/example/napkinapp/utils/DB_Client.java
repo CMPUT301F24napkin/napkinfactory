@@ -2,6 +2,7 @@ package com.example.napkinapp.utils;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.napkinapp.models.Event;
@@ -195,6 +196,33 @@ public class DB_Client {
     public <T> void findAll(String collection, Map<String, Object> filters, DatabaseCallback<List<T>> callback, Class<T> returnType) {
         CollectionReference colRef = database.collection(collection);
         Query query = applyFilters(colRef, filters);
+
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<T> result = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    result.add(document.toObject(returnType));
+                }
+                callback.onSuccess(result);
+            } else {
+                callback.onFailure(task.getException());
+            }
+        });
+    }
+
+    /**
+     * Finds all documents matching the specified whereIn statement in a Firestore collection.
+     *
+     * @param collection The Firestore collection to search.
+     * @param field The field to check is in list.
+     * @param list The list to check if field is in.
+     * @param callback A callback for handling success or failure of the query.
+     * @param returnType The expected class type of the results. null if no results expected
+     * @param <T> The type of each document in the results.
+     */
+    public <T> void findAllIn(String collection, String field, @NonNull List<Object> list, DatabaseCallback<List<T>> callback, Class<T> returnType) {
+        CollectionReference colRef = database.collection(collection);
+        Query query = colRef.whereIn(field, list);
 
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
