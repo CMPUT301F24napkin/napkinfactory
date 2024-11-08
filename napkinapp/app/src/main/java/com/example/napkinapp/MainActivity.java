@@ -1,5 +1,11 @@
 package com.example.napkinapp;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -7,7 +13,10 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
@@ -22,6 +31,7 @@ import com.example.napkinapp.fragments.registeredevents.RegisteredEventsFragment
 import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
+import com.example.napkinapp.utils.ListenForUserUpdatesWorker;
 
 import java.util.Map;
 
@@ -33,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
 
     public static User user;
     public static String userID;
+
+    public static final String CHANNEL_ID = "napkin_app_notifications";
 
     public void updateHeaderNotificationIcon() {
         if (header != null) {
@@ -126,12 +138,9 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         // EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        createNotificationChannel();
+
         initializeApp();
-
-//        for (int i = 0; i < 6; i++) {
-//            user.addNotification(new Notification("Title " + i, "Bingo bongo " + i));
-//        }
-
 
         // Load header fragment
         header = new HeaderFragment();
@@ -188,6 +197,8 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
 
                     // Load list events
                     OpenListEvents();
+
+                    scheduleUserUpdateListener();
                 }else {
                     // User does not exist, open profile screen
                     Toast.makeText(getBaseContext(), "Create a profile for new Login!", Toast.LENGTH_SHORT).show();
@@ -213,8 +224,12 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
             @Override
             public void onSuccess(@Nullable User updatedUser) {
                 if (updatedUser != null) {
-                    if (user.getNotifications().size() < updatedUser.getNotifications().size()){
+                    if (user.getNotifications().size() < updatedUser.getNotifications().size() && !user.getNotifications().isEmpty()){
                         Toast.makeText(getBaseContext(), "You received a new notification", Toast.LENGTH_SHORT).show();
+                        if (user.getEnNotifications()) {
+                            Notification notification = user.getNotifications().get(user.getNotifications().size() - 1);
+                            sendPushNotification(getBaseContext(), notification.getTitle(), notification.getMessage());
+                        }
                     }
 
                     user = updatedUser;
@@ -253,5 +268,48 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_fragmentcontainer, new ListEventsFragment(user))
                 .commit();
+    }
+
+    public static void sendPushNotification(Context context, String title, String message) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        PendingIntent pendingIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notification_bell_active)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+    }
+
+
+    private void scheduleUserUpdateListener() {
+        WorkManager workManager = WorkManager.getInstance(this);
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(ListenForUserUpdatesWorker.class)
+                .build();
+        workManager.enqueue(workRequest);
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Napkin App Notifications";
+            String description = "Notifications for event updates and profile alerts";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

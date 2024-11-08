@@ -1,6 +1,8 @@
 package com.example.napkinapp.fragments.profile;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
@@ -21,7 +25,7 @@ import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 
 public class ProfileFragment extends Fragment {
-    private User user;
+    private final User user;
     private TitleUpdateListener titleUpdateListener;
 
     public ProfileFragment(){
@@ -66,6 +70,12 @@ public class ProfileFragment extends Fragment {
 
         Switch notificationSwitch = view.findViewById(R.id.notification_switch);
         notificationSwitch.setChecked(user.getEnNotifications());
+
+        notificationSwitch.setOnClickListener((v) ->{
+            if (user.getEnNotifications() && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        });
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
 
