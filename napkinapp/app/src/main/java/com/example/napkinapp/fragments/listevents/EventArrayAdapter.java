@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class EventArrayAdapter extends ArrayAdapter<Event> {
 
     public interface EventListCustomizer {
-        void CustomizeEventCardButton(Button button);
+        void CustomizeEventCardButton(Button button, Event event);
     }
 
     private final ArrayList<Event> events;
@@ -75,9 +75,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         text1.setText(event.getName());
         text2.setText(event.getEventDate().toString());
 
-        eventListCustomizer.CustomizeEventCardButton(button);
-
-        button.setTag(event); // store the event on this button so the event listener can grab it!
+        eventListCustomizer.CustomizeEventCardButton(button, event);
 
         return view;
     }

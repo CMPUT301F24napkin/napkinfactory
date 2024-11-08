@@ -36,7 +36,8 @@ public class HeaderFragment extends Fragment {
     }
 
     public void updateNotificationIcon(){
-        if (MainActivity.user.getNotifications().isEmpty()) {
+
+        if (MainActivity.user == null || MainActivity.user.getNotifications().isEmpty()) {
             notificationBtn.setImageResource(R.drawable.notification_bell_empty);
         } else if (MainActivity.user.allNotificationsRead()){
             notificationBtn.setImageResource(R.drawable.notification_bell);

@@ -1,8 +1,9 @@
 package com.example.napkinapp;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +13,6 @@ import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
 import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
 import com.example.napkinapp.fragments.myevents.MyEventsFragment;
-import com.example.napkinapp.fragments.myevents.MyEventsFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.notifications.ListNotificationsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
@@ -20,9 +20,9 @@ import com.example.napkinapp.fragments.profile.ProfileFragment;
 import com.example.napkinapp.fragments.qrscanner.QRScannerFragment;
 import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
-import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
-import com.example.napkinapp.models.Event;
 import com.example.napkinapp.utils.DB_Client;
+
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick,
         FooterFragment.FooterNavigationListener, TitleUpdateListener {
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
     private FooterFragment footer;
 
     public static User user;
+    public static String userID;
 
     public void updateHeaderNotificationIcon() {
         if (header != null) {
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         switch(btnid) {
             // Not using actual button id's as apparently they're non final
             case 0:
-                selectedFragment = new ListEventsFragment();
+                selectedFragment = new ListEventsFragment(user);
                 break;
             case 1:
                 break;
@@ -123,11 +124,11 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         // EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        user = new User();
+        initializeApp();
 
-        for (int i = 0; i < 6; i++) {
-            user.addNotification(new Notification("Title " + i, "Bingo bongo " + i));
-        }
+//        for (int i = 0; i < 6; i++) {
+//            user.addNotification(new Notification("Title " + i, "Bingo bongo " + i));
+//        }
 
 
         // Load header fragment
@@ -136,10 +137,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 .replace(R.id.header_fragmentcontainer, header)
                 .commit();
 
-        // Load content fragment
-        getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content_fragmentcontainer, new ListEventsFragment())
-                        .commit();
+
 
         // To properly update footer buttons on back button press
         getSupportFragmentManager().addOnBackStackChangedListener(() -> {
@@ -167,5 +165,47 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 .commit();
     }
 
+    private void initializeApp(){
+        // Ignore error
+        userID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        user = new User();
+        user.setAndroidId(userID);
+
+        DB_Client db = new DB_Client();
+
+        db.findOne("Users", Map.of("androidId", userID), new DB_Client.DatabaseCallback<User>() {
+            @Override
+            public void onSuccess(@Nullable User data) {
+                if(data != null){
+                    // User exists, retrieve and set them up
+                    user = data;
+                    Toast.makeText(getBaseContext(), "Welcome back " + user.getName(), Toast.LENGTH_SHORT).show();
+                    // Load list events
+                    OpenListEvents();
+                }else {
+                    // User does not exist, open profile screen
+                    Toast.makeText(getBaseContext(), "Create a profile for new Login!", Toast.LENGTH_SHORT).show();
+                    OpenProfile();
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("User Initialization", "Something went wrong initializing user. UserID: "+userID);
+            }
+        }, User.class);
+    }
+
+    private void OpenProfile(){
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_fragmentcontainer, new ProfileFragment(user))
+                .commit();
+    }
+
+    private void OpenListEvents(){
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_fragmentcontainer, new ListEventsFragment(user))
+                .commit();
+    }
 }
