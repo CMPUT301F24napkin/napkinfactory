@@ -62,7 +62,7 @@ public class NotificationUnitTest {
         notification.setRead(true);
         assertTrue(notification.getRead());
 
-        notification.setId("newId");
+        notification.setId(1111111);
         assertEquals("newId", notification.getId());
     }
 }

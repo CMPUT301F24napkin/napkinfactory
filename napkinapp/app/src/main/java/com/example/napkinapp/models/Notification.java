@@ -77,7 +77,7 @@ public class Notification {
         return eventId;
     }
 
-    public boolean getIsOrganizerNotification() {
+    public boolean isOrganizerNotification() {
         return isOrganizerNotification;
     }
 
