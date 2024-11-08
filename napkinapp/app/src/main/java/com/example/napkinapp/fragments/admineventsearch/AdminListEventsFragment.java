@@ -96,7 +96,7 @@ public class AdminListEventsFragment extends Fragment {
                 .whereLessThanOrEqualTo("name", eventName + "\uf8ff");
 
         // Execute the query using the modified executeQuery method
-        db.executeQuery(query, new DB_Client.DatabaseCallback<List<Event>>() {
+        db.executeQueryList(query, new DB_Client.DatabaseCallback<List<Event>>() {
             @Override
             public void onSuccess(List<Event> data) {
                 Log.d("data", data != null ? data.toString() : "No data returned");
@@ -107,16 +107,16 @@ public class AdminListEventsFragment extends Fragment {
                     Log.d("ListEventsFragment", "Event list loaded with " + events.size() + " items.");
                 } else {
                     Log.d("ListEventsFragment", "No events found matching the name.");
-                    // Handle UI for no results, like showing a "No results found" message
+                    eventArrayAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
                 Log.e("ListEventsFragment", "Error loading events: " + e.getMessage(), e);
-                // Handle failure, such as showing an error message to the user
             }
         }, Event.class);
+
     }
 
     private void deleteEvent(Event event) {
