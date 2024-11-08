@@ -88,6 +88,8 @@ public class ProfileFragment extends Fragment {
                 public void onSuccess(@Nullable Void data) {
                     Log.i("User update/creation", "User updated/created");
                     Toast.makeText(getContext(), "Successfully updated your profile!", Toast.LENGTH_SHORT).show();
+
+                    getParentFragmentManager().popBackStack(); // go back to main screen
                 }
             });
         });

@@ -86,7 +86,7 @@ public class ListEventsFragment extends Fragment {
         displayAllEvents();
 
         // Load chips
-        loadChips();
+        loadChips(inflater);
 
         // Set listeners
         eventslist.setOnItemClickListener((parent, view1, position, id) -> {
@@ -102,8 +102,8 @@ public class ListEventsFragment extends Fragment {
         });
 
         chips.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            Log.i("Chip", "checking chips " + checkedIds);
             handleChipSelection(group, checkedIds);
-            Log.i("Chip", "Chip checked " + checkedIds);
         });
 
         return view;
@@ -204,14 +204,15 @@ public class ListEventsFragment extends Fragment {
         });
     }
 
-    private void loadChips() {
+    private void loadChips(@NonNull LayoutInflater inflater) {
         ArrayList<String> tags = new ArrayList<>();
-        tags.add("Wishlist");
+        tags.add("Waitlist");
+        tags.add("Chosen");
 
         // Grab tags from tag object
 
         for (String tag : tags) {
-            Chip chip = new Chip(mContext);
+            Chip chip = (Chip)inflater.inflate(R.layout.chip_base, chips, false);
 
             chip.setText(tag);
 
@@ -221,23 +222,25 @@ public class ListEventsFragment extends Fragment {
 
     private void handleChipSelection(ChipGroup group, List<Integer> checkedIds) {
         ArrayList<String> selectedCategories = new ArrayList<>();
-        Log.i("Chip", "Method called");
         for (int id : checkedIds) {
             Chip selectedChip = group.findViewById(id);
 
             if (selectedChip != null) {
                 String category = selectedChip.getText().toString();
                 selectedCategories.add(category);
-                Log.i("Chip", category);
+                Log.i("Chip", String.join(", ", selectedCategories));
             }
         }
 
         if (selectedCategories.isEmpty()) {
             displayAllEvents();
+            Log.i("Chip", "Displaying all events.");
         } else if (selectedCategories.contains("Waitlist")) {
             filterEventsWaitlist(selectedCategories);
+            Log.i("Chip", "Displaying waitlist");
         } else {
             filterEvents(selectedCategories);
+            Log.i("Chip", "filtering by tags.");
         }
     }
 
