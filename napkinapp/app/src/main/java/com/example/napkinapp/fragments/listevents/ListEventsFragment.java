@@ -117,6 +117,7 @@ public class ListEventsFragment extends Fragment {
             addEventToWaitlist(event);
         }
         updateButtonState(btn, event);
+        handleChipSelection(chips, chips.getCheckedChipIds());
     }
 
     private void updateButtonState(Button btn, Event event) {
@@ -221,6 +222,7 @@ public class ListEventsFragment extends Fragment {
     }
 
     private void handleChipSelection(ChipGroup group, List<Integer> checkedIds) {
+
         ArrayList<String> selectedCategories = new ArrayList<>();
         for (int id : checkedIds) {
             Chip selectedChip = group.findViewById(id);
@@ -234,13 +236,8 @@ public class ListEventsFragment extends Fragment {
 
         if (selectedCategories.isEmpty()) {
             displayAllEvents();
-            Log.i("Chip", "Displaying all events.");
-        } else if (selectedCategories.contains("Waitlist")) {
-            filterEventsWaitlist(selectedCategories);
-            Log.i("Chip", "Displaying waitlist");
         } else {
-            filterEvents(selectedCategories);
-            Log.i("Chip", "filtering by tags.");
+            filterEventsWaitlist(selectedCategories);
         }
     }
 
@@ -251,23 +248,42 @@ public class ListEventsFragment extends Fragment {
     private void filterEventsWaitlist(ArrayList<String> selectedCategories) {
         DB_Client db = new DB_Client();
 
-        db.findAllIn("Events", "id", new ArrayList<>(loggedInUser.getWaitlist()), new DB_Client.DatabaseCallback<List<Event>>() {
-            @Override
-            public void onSuccess(@Nullable List<Event> data) {
-                if (data != null) {
-                    events.clear();
-                    events.addAll(data);
-                    eventArrayAdapter.notifyDataSetChanged();
-                    Log.i("Chip Query", "Success");
-                }
-            }
+        events.clear();
 
-            @Override
-            public void onFailure(Exception e) {
-                DB_Client.DatabaseCallback.super.onFailure(e);
+        if(selectedCategories.contains("Waitlist")) {
+            if(!loggedInUser.getWaitlist().isEmpty()) {
+                db.findAllIn("Events", "id", new ArrayList<>(loggedInUser.getWaitlist()), new DB_Client.DatabaseCallback<List<Event>>() {
+                    @Override
+                    public void onSuccess(@Nullable List<Event> data) {
+                        if (data != null) {
+                            events.addAll(data);
+                            eventArrayAdapter.notifyDataSetChanged();
+                            Log.i("Chip Query", "Filter by Waitlist Success");
+                        }
+                    }
+                }, Event.class);
             }
-        }, Event.class);
+        }
+
+        // not else if. additionally, if chosen, add these events to events as well.
+        if(selectedCategories.contains("Chosen")) {
+            if(!loggedInUser.getChosen().isEmpty()) {
+                db.findAllIn("Events", "id", new ArrayList<>(loggedInUser.getChosen()), new DB_Client.DatabaseCallback<List<Event>>() {
+                @Override
+                public void onSuccess(@Nullable List<Event> data) {
+                    if (data != null) {
+                        events.addAll(data);
+                        eventArrayAdapter.notifyDataSetChanged();
+                        Log.i("Chip Query", "Filter by Chosen Success");
+                    }
+                }
+            }, Event.class);
+            }
+        }
+
         // Implement when tags are added
+
+
     }
 
     private void displayAllEvents() {
