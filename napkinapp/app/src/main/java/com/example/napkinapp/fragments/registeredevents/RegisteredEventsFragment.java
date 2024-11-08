@@ -21,6 +21,7 @@ import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class RegisteredEventsFragment extends Fragment {
@@ -33,10 +34,16 @@ public class RegisteredEventsFragment extends Fragment {
         loggedInUser = user;
     }
 
-    EventArrayAdapter.EventListCustomizer customizer = (button, event) -> {
-        button.setText("Add to Watchlist");
-        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.add, 0, 0, 0);
-        button.setOnClickListener(v->{
+    RegisteredEventArrayAdapter.RegisteredEventListCustomizer customizer = (button1, button2, event) -> {
+        button1.setText("Accept");
+        button1.setCompoundDrawablesWithIntrinsicBounds(R.drawable.add, 0, 0, 0);
+        button1.setOnClickListener(v->{
+            Log.i("Button", String.format("List Events: Clicked on event %s\n", event.getName()));
+        });
+
+        button2.setText("Decline");
+        button2.setCompoundDrawablesWithIntrinsicBounds(R.drawable.add, 0, 0, 0);
+        button2.setOnClickListener(v->{
             Log.i("Button", String.format("List Events: Clicked on event %s\n", event.getName()));
         });
     };
@@ -60,7 +67,7 @@ public class RegisteredEventsFragment extends Fragment {
         View view = inflater.inflate(R.layout.event_list, container, false);
         ListView eventslist;
         ArrayList<Event> events;
-        EventArrayAdapter eventArrayAdapter;
+        RegisteredEventArrayAdapter eventArrayAdapter;
 
         eventslist = view.findViewById(R.id.events_list_view);
         events = new ArrayList<>();
@@ -69,11 +76,11 @@ public class RegisteredEventsFragment extends Fragment {
         titleUpdateListener.updateTitle("Event List");
 
         // Attach EventArrayAdapter to ListView
-        eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer);
+        eventArrayAdapter = new RegisteredEventArrayAdapter(mContext, events, customizer);
         eventslist.setAdapter(eventArrayAdapter);
 
         DB_Client db = new DB_Client();
-        db.findAll("Events", null, new DB_Client.DatabaseCallback<List<Event>>() {
+        db.findAllIn("Events", "id", new ArrayList<Object>(loggedInUser.getWaitlist()), new DB_Client.DatabaseCallback<List<Event>>() {
             @Override
             public void onSuccess(@Nullable List<Event> data) {
                 events.clear();
