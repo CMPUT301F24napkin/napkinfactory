@@ -1,7 +1,6 @@
 package com.example.napkinapp.fragments.adminmenu;
 
 import android.content.Context;
-import android.icu.text.CaseMap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +17,7 @@ import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
 import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.User;
+import com.example.napkinapp.fragments.admineventsearch.AdminListEventsFragment;
 
 public class AdminNavagationFragment extends Fragment {
 
@@ -65,6 +65,16 @@ public class AdminNavagationFragment extends Fragment {
 
         eventSearchButton.setOnClickListener(v -> {
             Log.d("AdminNavagationFragment", "Event Search button clicked");
+            // Begin the transaction
+            Fragment currFrag = requireActivity().getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
+
+            if (!(currFrag instanceof AdminListEventsFragment)) {
+                // Switch to SearchEventFragment
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content_fragmentcontainer, new AdminListEventsFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         facilitiesMapButton.setOnClickListener(v -> {
