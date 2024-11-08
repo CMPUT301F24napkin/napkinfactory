@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_fragmentcontainer, new AdminNavagationFragment())
+                .replace(R.id.content_fragmentcontainer, new AdminNavagationFragment(user))
                 .addToBackStack(null)
                 .commit();
 
