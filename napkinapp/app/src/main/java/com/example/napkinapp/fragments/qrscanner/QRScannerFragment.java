@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,9 +36,14 @@ import java.util.List;
 public class QRScannerFragment extends Fragment {
     private BarcodeView qrScannerView;
     private TitleUpdateListener titleUpdateListener;
+    private User loggedInUser;
 
     public QRScannerFragment(){
 
+    }
+
+    public QRScannerFragment(User user){
+        this.loggedInUser = user;
     }
 
     @Override
@@ -83,11 +87,11 @@ public class QRScannerFragment extends Fragment {
                     @Override
                     public void onSuccess(@Nullable Event data) {
                         if (data == null){
-                            Log.e("Database Issue", "Event not found in Database for the specified qrHashCode: " + result.toString());
+                            Log.e("Database Issue", "Event not found in Database for the specified qrHashCode: " + result);
                             return;
                         }
                         getParentFragmentManager().beginTransaction()
-                                .replace(R.id.content_fragmentcontainer, new ViewEventFragment(data)) // Use your actual container ID
+                                .replace(R.id.content_fragmentcontainer, new ViewEventFragment(data, loggedInUser)) // Use your actual container ID
                                 .addToBackStack(null) // Allows user to go back to ListEventsFragment
                                 .commit();
                     }

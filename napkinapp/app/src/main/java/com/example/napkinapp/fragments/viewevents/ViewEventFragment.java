@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,12 +26,15 @@ import com.example.napkinapp.utils.QRCodeUtils;
 import java.util.HashMap;
 
 public class ViewEventFragment extends Fragment {
-    private Event event;
     private TitleUpdateListener titleUpdateListener;
+    private final Event event;
+    private Button btnToggleWaitlist;
+    private final User user;
 
-    public ViewEventFragment(Event event){
+    public ViewEventFragment(Event event, User user){
         this.event = event;
-    };
+        this.user = user;
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -92,7 +96,7 @@ public class ViewEventFragment extends Fragment {
 
 
 
-        Button btnToggleWaitlist = view.findViewById(R.id.toggle_waitlist);
+        btnToggleWaitlist = view.findViewById(R.id.toggle_waitlist);
         Button cancel = view.findViewById(R.id.event_cancel);
         Button moreOptions = view.findViewById(R.id.more_options);
 
@@ -115,9 +119,98 @@ public class ViewEventFragment extends Fragment {
         return view;
     }
 
-    private void handleToggleWaitlist() {
-//        if(event.getWaitlist())
+    private void handleToggleWaitlist(){
+        Toast.makeText(getContext(), "test " + btnToggleWaitlist.isSelected(), Toast.LENGTH_SHORT).show();
+        if(btnToggleWaitlist.isSelected()){
+            // Remove from waitlist
+            removeEventFromWaitlist();
+        }else{
+            // Add to waitlist
+            addEventToWaitlist();
+        }
+        updateButtons();
     }
 
+    private void updateButtons() {
+        if(event.getWaitlist().contains(user.getAndroidId())){
+            // Waitlist
+            btnToggleWaitlist.setText(R.string.remove_from_waitlist);
+            btnToggleWaitlist.setSelected(true);
+        }else{
+            // Not
+            btnToggleWaitlist.setText(R.string.add_to_waitlist);
+            btnToggleWaitlist.setSelected(false);
+        }
+    }
 
+    private void removeEventFromWaitlist(){
+        event.removeUserFromWaitList(user.getAndroidId());
+        user.removeEventFromWaitList(event.getId());
+
+        DB_Client dbClient = new DB_Client();
+
+        // Update event db
+        dbClient.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                Toast.makeText(getContext(), "Removed user from event waitlist", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                DB_Client.DatabaseCallback.super.onFailure(e);
+                Log.e("Remove Event Details", "Error removing user from event waitlist");
+            }
+        });
+
+        // Update user db
+        dbClient.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                Toast.makeText(getContext(), "Removed event from user waitlist", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                DB_Client.DatabaseCallback.super.onFailure(e);
+                Log.e("Remove Event Details", "Error removing event from user waitlist");
+            }
+        });
+
+    }
+
+    private void addEventToWaitlist(){
+        event.addUserToWaitlist(user.getAndroidId());
+        user.addEventToWaitlist(event.getId());
+
+        DB_Client dbClient = new DB_Client();
+
+        // Update event db
+        dbClient.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                Toast.makeText(getContext(), "Removed user from event waitlist", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                DB_Client.DatabaseCallback.super.onFailure(e);
+                Log.e("Remove Event Details", "Error removing user from event waitlist");
+            }
+        });
+
+        // Update user db
+        dbClient.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                Toast.makeText(getContext(), "Removed event from user waitlist", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                DB_Client.DatabaseCallback.super.onFailure(e);
+                Log.e("Remove Event Details", "Error removing event from user waitlist");
+            }
+        });
+    }
 }

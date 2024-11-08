@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.QRCodeUtils;
 
@@ -25,9 +26,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class CreateEventFragment extends Fragment {
     private EditText eventName, eventDate, lotteryDate, eventDescription, registeredEntrantLimit, participantLimit;
@@ -35,9 +34,14 @@ public class CreateEventFragment extends Fragment {
     private ImageButton eventDatePickerButton, lotteryDatePickerButton;
     private SwitchCompat geolocationSwitch;
     private Button createButton;
+    private User loggedInUser;
 
     public CreateEventFragment(){
         // Required null constructor
+    }
+
+    public CreateEventFragment(User user){
+        this.loggedInUser = user;
     }
 
     @Nullable
@@ -100,7 +104,7 @@ public class CreateEventFragment extends Fragment {
 
 
         // Create the Event object with the Date
-        Event event = new Event("placeholder", eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
+        Event event = new Event(loggedInUser.getAndroidId(), eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
                 registeredLimitValue, participantLimitValue, geolocationSwitch.isChecked());
 
         db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {
@@ -124,7 +128,7 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-        getActivity().getSupportFragmentManager().popBackStack();
+        getParentFragmentManager().popBackStack();
 
     }
 

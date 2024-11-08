@@ -1,22 +1,18 @@
 package com.example.napkinapp.fragments.listevents;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.napkinapp.R;
-import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Event;
 
 import java.util.ArrayList;
@@ -34,17 +30,15 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
     private final Context context;
 
     private final EventListCustomizer eventListCustomizer;
-    private final FragmentManager fragmentManager;
     /**
      *
      * @param eventListCustomizer The drawable id of the icon we want to display on the left. Do 0 for no icon.
      */
-    public EventArrayAdapter(@NonNull Context context, ArrayList<Event> events, EventListCustomizer eventListCustomizer, FragmentManager fgm) {
+    public EventArrayAdapter(@NonNull Context context, ArrayList<Event> events, EventListCustomizer eventListCustomizer) {
         super(context, 0, events);
         this.context = context;
         this.events = events;
         this.eventListCustomizer = eventListCustomizer;
-        this.fragmentManager = fgm;
     }
 
 
@@ -74,23 +68,15 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         Event event = events.get(position);
 
-        TextView text1 = view.findViewById(R.id.event_name);
-        TextView text2 = view.findViewById(R.id.event_date);
+        TextView eventName = view.findViewById(R.id.event_name);
+        TextView eventDate = view.findViewById(R.id.event_date);
 
         Button button = view.findViewById(R.id.button);
-
-        text1.setText(event.getName());
-        text2.setText(event.getEventDate().toString());
+        Log.d("EventArrayAdapter", "Got event " + event.getName());
+        eventName.setText(event.getName());
+        eventDate.setText(event.getEventDate().toString());
 
         eventListCustomizer.CustomizeEventCardButton(button, event);
-
-        LinearLayout root = view.findViewById(R.id.event_card_root);
-        root.setOnClickListener((v) -> {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_fragmentcontainer, new ViewEventFragment(event))
-                    .addToBackStack(null)
-                    .commit();
-        });
 
         return view;
     }
