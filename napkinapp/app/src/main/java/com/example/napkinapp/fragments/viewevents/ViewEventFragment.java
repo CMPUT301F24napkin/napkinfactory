@@ -92,12 +92,13 @@ public class ViewEventFragment extends Fragment {
 
 
 
-        Button apply = view.findViewById(R.id.event_apply);
+        Button btnToggleWaitlist = view.findViewById(R.id.toggle_waitlist);
         Button cancel = view.findViewById(R.id.event_cancel);
         Button moreOptions = view.findViewById(R.id.more_options);
 
-        apply.setOnClickListener((v) -> {
+        btnToggleWaitlist.setOnClickListener((v) -> {
             // TODO: logic for applying to event
+            handleToggleWaitlist();
         });
 
         cancel.setOnClickListener((v) -> {
@@ -112,6 +113,10 @@ public class ViewEventFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void handleToggleWaitlist() {
+//        if(event.getWaitlist())
     }
 
 

@@ -77,7 +77,7 @@ public class MyEventsFragment extends Fragment {
         ArrayList<Event> events = new ArrayList<>();
 
         // Attach EventArrayAdapter to ListView
-        EventArrayAdapter eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer);
+        EventArrayAdapter eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer, getParentFragmentManager());
         eventsList.setAdapter(eventArrayAdapter);
 
 

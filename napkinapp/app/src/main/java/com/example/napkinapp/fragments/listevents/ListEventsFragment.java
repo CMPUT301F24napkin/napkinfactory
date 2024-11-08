@@ -72,7 +72,7 @@ public class ListEventsFragment extends Fragment {
         titleUpdateListener.updateTitle("Event List");
 
         // Attach EventArrayAdapter to ListView
-        eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer);
+        eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer, getParentFragmentManager());
         eventslist.setAdapter(eventArrayAdapter);
 
         DB_Client db = new DB_Client();

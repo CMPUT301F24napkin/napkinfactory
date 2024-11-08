@@ -5,13 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.napkinapp.R;
+import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Event;
 
 import java.util.ArrayList;
@@ -29,15 +34,17 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
     private final Context context;
 
     private final EventListCustomizer eventListCustomizer;
+    private final FragmentManager fragmentManager;
     /**
      *
      * @param eventListCustomizer The drawable id of the icon we want to display on the left. Do 0 for no icon.
      */
-    public EventArrayAdapter(@NonNull Context context, ArrayList<Event> events, EventListCustomizer eventListCustomizer) {
+    public EventArrayAdapter(@NonNull Context context, ArrayList<Event> events, EventListCustomizer eventListCustomizer, FragmentManager fgm) {
         super(context, 0, events);
         this.context = context;
         this.events = events;
         this.eventListCustomizer = eventListCustomizer;
+        this.fragmentManager = fgm;
     }
 
 
@@ -67,8 +74,8 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         Event event = events.get(position);
 
-        TextView text1 = view.findViewById(R.id.text1);
-        TextView text2 = view.findViewById(R.id.text2);
+        TextView text1 = view.findViewById(R.id.event_name);
+        TextView text2 = view.findViewById(R.id.event_date);
 
         Button button = view.findViewById(R.id.button);
 
@@ -76,6 +83,14 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         text2.setText(event.getEventDate().toString());
 
         eventListCustomizer.CustomizeEventCardButton(button, event);
+
+        LinearLayout root = view.findViewById(R.id.event_card_root);
+        root.setOnClickListener((v) -> {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_fragmentcontainer, new ViewEventFragment(event))
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         return view;
     }
