@@ -19,12 +19,14 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.R;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.utils.DB_Client;
+import com.example.napkinapp.utils.QRCodeUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class CreateEventFragment extends Fragment {
@@ -77,8 +79,8 @@ public class CreateEventFragment extends Fragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
         // Parse the date string into a Date object
-        Date date = null;
-        Date lottery = null;
+        Date date = new Date();
+        Date lottery = new Date();
         try {
             date = dateFormat.parse(eventDate.getText().toString());
             lottery = dateFormat.parse(lotteryDate.getText().toString());
@@ -86,14 +88,44 @@ public class CreateEventFragment extends Fragment {
             e.printStackTrace();
         }
 
-        int limit = (participantLimitCheckbox.isChecked()) ? Integer.parseInt(participantLimit.getText().toString()) : -1;
+        int participantLimitValue = -1;
+        int registeredLimitValue = 20;
+        try{
+            participantLimitValue = (participantLimitCheckbox.isChecked()) ? Integer.parseInt(participantLimit.getText().toString()) : -1;
+            registeredLimitValue = Integer.parseInt(registeredEntrantLimit.getText().toString());
+        }
+        catch (NumberFormatException e) {
+            // TODO what do we want to do?? maybe ask the user to enter it again.
+        }
 
 
         // Create the Event object with the Date
         Event event = new Event("placeholder", eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
-        Integer.parseInt(registeredEntrantLimit.getText().toString()), limit, geolocationSwitch.isChecked());
+                registeredLimitValue, participantLimitValue, geolocationSwitch.isChecked());
 
-        db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {});
+        db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {
+            @Override
+            public void onSuccess(@Nullable String data) {
+                if (data == null){
+                    Log.e("DB", "Failed to get event ID");
+                    return;
+                }
+                String hash = QRCodeUtils.hashString(data);
+
+                if (hash == null){
+                    Log.e("QR", "Failed to generate QR Hash code");
+                    return;
+                }
+                db.updateAll("Events", Map.of(
+                        "id", data
+                ), Map.of(
+                        "qrHashCode", hash
+                ), new DB_Client.DatabaseCallback<Void>() {});
+            }
+        });
+
+        getActivity().getSupportFragmentManager().popBackStack();
+
     }
 
 

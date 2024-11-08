@@ -23,6 +23,7 @@ import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.fragments.createevent.CreateEventFragment;
 import com.example.napkinapp.fragments.listevents.EventArrayAdapter;
+import com.example.napkinapp.fragments.viewevents.OrganizerViewEventFragment;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.utils.DB_Client;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -44,6 +45,12 @@ public class MyEventsFragment extends Fragment {
         button.setText("View");
         button.setOnClickListener(v->{
             Log.i("Button", String.format("My Events: Clicked on event %s\n", event.getName()));
+
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragmentcontainer, new OrganizerViewEventFragment(event))
+                    .addToBackStack(null)
+                    .commit();
         });
     };
 
