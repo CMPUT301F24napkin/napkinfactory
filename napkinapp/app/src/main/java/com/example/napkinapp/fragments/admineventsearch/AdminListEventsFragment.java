@@ -108,9 +108,8 @@ public class AdminListEventsFragment extends Fragment {
                 }
                 else {
                     Log.d("ListEventsFragment", "No events found matching the name.");
-                    // Handle UI for no results, like showing a "No results found" message
+                    eventArrayAdapter.notifyDataSetChanged();
                 }
-                eventArrayAdapter.notifyDataSetChanged();
             }
 
             @Override
