@@ -1,6 +1,7 @@
 package com.example.napkinapp.fragments.notifications;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +9,11 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.example.napkinapp.MainActivity;
 import com.example.napkinapp.R;
@@ -44,11 +47,21 @@ public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
         TextView titleTextView = view.findViewById(R.id.titleTextView);
         TextView messageTextView = view.findViewById(R.id.messageTextView);
 
-        CheckBox isReadCheckBox = view.findViewById(R.id.isReadCheckBox);
-        isReadCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            notification.setRead(isChecked);
+        ImageButton isReadButton = view.findViewById(R.id.readButton);
+        if (notification.getRead()){
+            isReadButton.setImageResource(R.drawable.notification_bell_empty);
+        } else {
+            isReadButton.setImageResource(R.drawable.notification_bell_active);
+        }
+        isReadButton.setOnClickListener((buttonView) -> {
+            notification.setRead(!notification.getRead());
             if (context instanceof MainActivity) {
                 ((MainActivity) context).updateHeaderNotificationIcon();
+            }
+            if (notification.getRead()){
+                isReadButton.setImageResource(R.drawable.notification_bell_empty);
+            } else {
+                isReadButton.setImageResource(R.drawable.notification_bell_active);
             }
             notifyDataSetChanged();
         });
@@ -56,12 +69,19 @@ public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
         ImageButton deleteButton = view.findViewById(R.id.deleteButton);
         deleteButton.setOnClickListener(v -> {
             notifications.remove(position);
+            if (context instanceof MainActivity) {
+                ((MainActivity) context).updateHeaderNotificationIcon();
+            }
             notifyDataSetChanged();
         });
 
         titleTextView.setText(notification.getTitle());
         messageTextView.setText(notification.getMessage());
-        isReadCheckBox.setChecked(notification.getRead());
+
+        // Still need to update this method so that it can update this in the future
+        view.setOnClickListener(v -> {
+            Toast.makeText(context, "Will launch this: " + notification.getTitle(), Toast.LENGTH_SHORT).show();
+        });
 
         return view;
     }

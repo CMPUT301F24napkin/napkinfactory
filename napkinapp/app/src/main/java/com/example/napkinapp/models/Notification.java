@@ -7,12 +7,16 @@ public class Notification {
     private String title;
     private String message;
     private Boolean read;
+    private String eventId;
+    private boolean isOrganizerNotification;
 
     public Notification (String title, String message) {
         this.id =  UUID.randomUUID().toString();
         this.title = title;
         this.message = message;
         this.read = false;
+        this.eventId = "";
+        this.isOrganizerNotification = false;
     }
 
     public Notification (String title, String message, Boolean read) {
@@ -20,6 +24,17 @@ public class Notification {
         this.title = title;
         this.message = message;
         this.read = read;
+        this.eventId = "";
+        this.isOrganizerNotification = false;
+    }
+
+    public Notification (String title, String message, Boolean read, String eventId, boolean isOrganizerNotification) {
+        this.id =  UUID.randomUUID().toString();
+        this.title = title;
+        this.message = message;
+        this.read = read;
+        this.eventId = eventId;
+        this.isOrganizerNotification = isOrganizerNotification;
     }
 
     public void setTitle(String title) {
@@ -52,5 +67,13 @@ public class Notification {
 
     public Boolean getRead() {
         return read;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public boolean isOrganizerNotification() {
+        return isOrganizerNotification;
     }
 }
