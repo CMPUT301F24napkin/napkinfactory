@@ -356,4 +356,56 @@ public class DB_Client {
         }
         return query;
     }
+
+    /**
+     * Adds a snapshot listener for a single document in Firestore.
+     * This listener will be triggered every time the document changes in Firestore.
+     *
+     * @param collection The Firestore collection to listen to.
+     * @param documentId The ID of the document to listen to.
+     * @param callback The callback to be triggered when the document changes.
+     * @param returnType The class type of the data in the document.
+     */
+    public <T> void addDocumentSnapshotListener(String collection, String documentId, DatabaseCallback<T> callback, Class<T> returnType) {
+        database.collection(collection).document(documentId)
+                .addSnapshotListener((documentSnapshot, e) -> {
+                    if (e != null) {
+                        callback.onFailure(e);
+                        return;
+                    }
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                        T result = documentSnapshot.toObject(returnType);
+                        callback.onSuccess(result);
+                    } else {
+                        callback.onSuccess(null);
+                    }
+                });
+    }
+
+    /**
+     * Adds a snapshot listener for a collection in Firestore.
+     * This listener will be triggered every time any document in the collection changes.
+     *
+     * @param collection The Firestore collection to listen to.
+     * @param callback The callback to be triggered when any document in the collection changes.
+     * @param returnType The class type of the data in the documents.
+     */
+    public <T> void addCollectionSnapshotListener(String collection, DatabaseCallback<List<T>> callback, Class<T> returnType) {
+        database.collection(collection)
+                .addSnapshotListener((querySnapshot, e) -> {
+                    if (e != null) {
+                        callback.onFailure(e);
+                        return;
+                    }
+                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                        List<T> resultList = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            resultList.add(document.toObject(returnType));
+                        }
+                        callback.onSuccess(resultList);
+                    } else {
+                        callback.onSuccess(new ArrayList<>());
+                    }
+                });
+    }
 }

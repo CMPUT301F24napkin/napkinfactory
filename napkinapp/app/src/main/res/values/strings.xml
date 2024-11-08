@@ -13,4 +13,5 @@
     <string name="message_text_view">Message Text View</string>
     <string name="read_notification_button">Read Notification Button</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="loading">Loading</string>
 </resources>

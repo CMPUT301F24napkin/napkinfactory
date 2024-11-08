@@ -1,23 +1,22 @@
 package com.example.napkinapp.fragments.notifications;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.example.napkinapp.MainActivity;
 import com.example.napkinapp.R;
 import com.example.napkinapp.models.Notification;
+import com.example.napkinapp.utils.DB_Client;
 
 import java.util.ArrayList;
 
@@ -63,6 +62,20 @@ public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
             } else {
                 isReadButton.setImageResource(R.drawable.notification_bell_active);
             }
+            DB_Client db = new DB_Client();
+
+            db.writeData("Users", MainActivity.user.getAndroidId(), MainActivity.user, new DB_Client.DatabaseCallback<Void>() {
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("User update/creation", "Something went wrong updating user");
+                }
+
+                @Override
+                public void onSuccess(@Nullable Void data) {
+                    Log.i("User update/creation", "User updated/created");
+                }
+            });
+
             notifyDataSetChanged();
         });
 
@@ -72,6 +85,21 @@ public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
             if (context instanceof MainActivity) {
                 ((MainActivity) context).updateHeaderNotificationIcon();
             }
+
+            DB_Client db = new DB_Client();
+
+            db.writeData("Users", MainActivity.user.getAndroidId(), MainActivity.user, new DB_Client.DatabaseCallback<Void>() {
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("User update/creation", "Something went wrong updating user");
+                }
+
+                @Override
+                public void onSuccess(@Nullable Void data) {
+                    Log.i("User update/creation", "User updated/created");
+                }
+            });
+
             notifyDataSetChanged();
         });
 
