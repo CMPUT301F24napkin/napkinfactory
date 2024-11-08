@@ -1,5 +1,7 @@
 package com.example.napkinapp.models;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 public class User {
@@ -16,7 +18,6 @@ public class User {
     private ArrayList<String> waitlist;
     private ArrayList<String> chosen;
     private ArrayList<String> registered;
-    private ArrayList<String> cancelled;
 
     public User () {
         androidId = "";
@@ -149,10 +150,6 @@ public class User {
         return Boolean.TRUE;
     }
 
-    public ArrayList<String> getCancelled() {
-        return cancelled;
-    }
-
     public ArrayList<String> getRegistered() {
         return registered;
     }
@@ -163,5 +160,17 @@ public class User {
 
     public ArrayList<String> getWaitlist() {
         return waitlist;
+    }
+
+    public void setWaitlist(ArrayList<String> waitlist) {
+        this.waitlist = waitlist;
+    }
+
+    public void setChosen(ArrayList<String> chosen) {
+        this.chosen = chosen;
+    }
+
+    public void setRegistered(ArrayList<String> registered) {
+        this.registered = registered;
     }
 }

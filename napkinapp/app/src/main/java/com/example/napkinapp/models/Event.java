@@ -24,10 +24,10 @@ public class Event {
 
     private List<Tag> tags;
 
-    private List<String> waitlist;
-    private List<String> chosen;
-    private List<String> cancelled;
-    private List<String> registered;
+    private ArrayList<String> waitlist;
+    private ArrayList<String> chosen;
+    private ArrayList<String> cancelled;
+    private ArrayList<String> registered;
 
     // New event being created
     public Event(String organizerId, String name, Date eventDate, Date lotteryDate, String description,
@@ -47,7 +47,7 @@ public class Event {
     // Event from database
     public Event(String id, String organizerId, String name, Date eventDate, Date lotteryDate, String description,
                  int entrantLimit, int participantLimit, boolean requireGeolocation, String qrHashCode,
-                 List<String> waitlist, List<String> chosen, List<String> cancelled, List<String> registered) {
+                 ArrayList<String> waitlist, ArrayList<String> chosen, ArrayList<String> cancelled, ArrayList<String> registered) {
         init(); // provide sensible defaults
 
         this.id = id;
@@ -170,35 +170,35 @@ public class Event {
         this.requireGeolocation = requireGeolocation;
     }
 
-    public List<String> getWaitlist() {
+    public ArrayList<String> getWaitlist() {
         return waitlist;
     }
 
-    public List<String> getChosen() {
+    public ArrayList<String> getChosen() {
         return chosen;
     }
 
-    public List<String> getCancelled() {
+    public ArrayList<String> getCancelled() {
         return cancelled;
     }
 
-    public List<String> getRegistered() {
+    public ArrayList<String> getRegistered() {
         return registered;
     }
 
-    public void setWaitlist(List<String> waitlist) {
+    public void setWaitlist(ArrayList<String> waitlist) {
         this.waitlist = waitlist;
     }
 
-    public void setChosen(List<String> chosen) {
+    public void setChosen(ArrayList<String> chosen) {
         this.chosen = chosen;
     }
 
-    public void setCancelled(List<String> cancelled) {
+    public void setCancelled(ArrayList<String> cancelled) {
         this.cancelled = cancelled;
     }
 
-    public void setRegistered(List<String> registered) {
+    public void setRegistered(ArrayList<String> registered) {
         this.registered = registered;
     }
 }
