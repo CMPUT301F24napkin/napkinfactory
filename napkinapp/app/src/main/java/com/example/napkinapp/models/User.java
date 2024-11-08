@@ -14,7 +14,6 @@ public class User {
     private String address;
     private Boolean enNotifications;
     private Boolean isAdmin;
-    private Boolean isOrganizer;
     private ArrayList<Notification> notifications;
 
     private ArrayList<String> waitlist;
@@ -27,14 +26,13 @@ public class User {
         email = "";
         address = "";
         enNotifications = false;
-        isOrganizer = false;
         isAdmin = false;
         notifications = new ArrayList<Notification>();
     }
 
     // New user
     public User (String androidId, String name, String phoneNumber, String email,
-                 String address, Boolean enNotifications, Boolean isAdmin, Boolean isOrganizer){
+                 String address, Boolean enNotifications, Boolean isAdmin){
         this.androidId = androidId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -42,12 +40,11 @@ public class User {
         this.address = address;
         this.enNotifications = enNotifications;
         this.isAdmin = isAdmin;
-        this.isOrganizer = isOrganizer;
     }
 
     // User from database
     public User (String androidId, String name, String phoneNumber, String email,
-                 String address, Boolean enNotifications, Boolean isAdmin, Boolean isOrganizer,
+                 String address, Boolean enNotifications, Boolean isAdmin,
                  ArrayList<Notification> notifications, ArrayList<String> waitlist, ArrayList<String> chosen,
                  ArrayList<String> cancelled, ArrayList<String> registered){
         this.androidId = androidId;
@@ -57,7 +54,6 @@ public class User {
         this.address = address;
         this.enNotifications = enNotifications;
         this.isAdmin = isAdmin;
-        this.isOrganizer = isOrganizer;
 
         this.notifications = notifications;
 
@@ -117,15 +113,6 @@ public class User {
     public Boolean getIsAdmin() {
         return isAdmin;
     }
-
-    public void setOrganizer(Boolean organizer) {
-        isOrganizer = organizer;
-    }
-
-    public Boolean getIsOrganizer() {
-        return isOrganizer;
-    }
-
 
     public void addNotification(Notification notification) {
         notifications.add(notification);
