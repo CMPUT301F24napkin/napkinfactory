@@ -67,13 +67,36 @@ public class DB_Client {
      * @param callback A callback for handling success or failure of the query.
      * @param returnType The expected class type of the results. null if no results expected
      */
-    public <T> void executeQuery(Query query, DatabaseCallback<List<T>> callback, Class<T> returnType) {
+    public <T> void executeQuery(Query query, DatabaseCallback<T> callback, Class<T> returnType) {
+        if (List.class.isAssignableFrom(returnType)) {
+            throw new IllegalArgumentException("Use executeQueryList() for List types.");
+        }
+
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                // Handle the result as a list if multiple documents are expected
+                if (returnType == Void.class) {
+                    callback.onSuccess(null);
+                } else {
+                    if (!task.getResult().isEmpty()) {
+                        T result = task.getResult().getDocuments().get(0).toObject(returnType);
+                        callback.onSuccess(result);
+                    } else {
+                        callback.onSuccess(null);
+                    }
+                }
+            } else {
+                callback.onFailure(task.getException());
+            }
+        });
+    }
+
+    // Overloaded method for fetching a list of objects
+    public <T> void executeQueryList(Query query, DatabaseCallback<List<T>> callback, Class<T> elementType) {
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
                 List<T> resultList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    resultList.add(document.toObject(returnType));
+                    resultList.add(document.toObject(elementType));
                 }
                 callback.onSuccess(resultList);
             } else {
@@ -81,6 +104,8 @@ public class DB_Client {
             }
         });
     }
+
+
 
     /**
      * Writes data to the specified collection and document in Firestore, overwriting it if the
