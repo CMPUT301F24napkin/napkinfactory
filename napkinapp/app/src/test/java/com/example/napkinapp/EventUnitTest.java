@@ -90,4 +90,85 @@ public class EventUnitTest {
         event.setRequireGeolocation(false);
         assertFalse(event.isRequireGeolocation());
     }
+
+    @Test
+    public void testAddUserToCancelled_AddsUserWhenNotPresent() {
+        event = new Event(organizerId, name, eventDate, lotteryDate, description, entrantLimit, participantLimit, requireGeolocation);
+
+        String userId = "user1";
+        event.addUserToCancelled(userId);
+
+        assertTrue(event.getCancelled().contains(userId));
+    }
+
+    @Test
+    public void testAddUserToCancelled_DoesNotAddUserIfAlreadyPresent() {
+        String userId = "user1";
+        cancelled.add(userId);
+
+        event = new Event(organizerId, name, eventDate, lotteryDate, description, entrantLimit, participantLimit, requireGeolocation);
+
+        event.addUserToCancelled(userId);
+        assertEquals(1, event.getCancelled().size());
+    }
+
+    @Test
+    public void testRemoveUserFromCancelled_RemovesUserIfPresent() {
+        String userId = "user1";
+        cancelled.add(userId);
+
+        event = new Event(organizerId, name, eventDate, lotteryDate, description, entrantLimit, participantLimit, requireGeolocation);
+
+        event.removeUserFromCancelled(userId);
+        assertFalse(event.getCancelled().contains(userId));
+    }
+
+    @Test
+    public void testRemoveUserFromCancelled_DoesNothingIfUserNotPresent() {
+        event = new Event(organizerId, name, eventDate, lotteryDate, description, entrantLimit, participantLimit, requireGeolocation);
+
+        String userId = "user1";
+        event.removeUserFromCancelled(userId);
+
+        assertTrue(cancelled.isEmpty());
+    }
+
+    @Test
+    public void testAddUserToRegistered_AddsUserWhenNotPresent() {
+        event = new Event(organizerId, name, eventDate, lotteryDate, description, entrantLimit, participantLimit, requireGeolocation);
+
+        String userId = "user1";
+        event.addUserToRegistered(userId);
+        assertTrue(event.getRegistered().contains(userId));
+    }
+
+    @Test
+    public void testAddUserToRegistered_DoesNotAddUserIfAlreadyPresent() {
+
+        String userId = "user1";
+        registered.add(userId);
+        event = new Event(organizerId, name, eventDate, lotteryDate, description, entrantLimit, participantLimit, requireGeolocation);
+
+        event.addUserToRegistered(userId);
+        assertEquals(1, event.getRegistered().size());
+    }
+
+    @Test
+    public void testRemoveUserFromRegistered_RemovesUserIfPresent() {
+        String userId = "user1";
+        registered.add(userId);
+        event = new Event(organizerId, name, eventDate, lotteryDate, description, entrantLimit, participantLimit, requireGeolocation);
+
+        event.removeUserFromRegistered(userId);
+        assertFalse(event.getRegistered().contains(userId));
+    }
+
+    @Test
+    public void testRemoveUserFromRegistered_DoesNothingIfUserNotPresent() {
+        event = new Event(organizerId, name, eventDate, lotteryDate, description, entrantLimit, participantLimit, requireGeolocation);
+
+        String userId = "user1";
+        event.removeUserFromRegistered(userId);
+        assertTrue(registered.isEmpty());
+    }
 }
