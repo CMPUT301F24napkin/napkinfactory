@@ -18,6 +18,7 @@ junitJupiter = "5.8.1"
 glide = "4.16.0"
 playServicesLocation = "21.3.0"
 fragmentTesting = "1.8.5"
+osmdroidAndroid = "6.1.20"
 
 
 [libraries]
@@ -38,6 +39,7 @@ junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.r
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "fragmentTesting" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+osmdroid-android = { group = "org.osmdroid", name = "osmdroid-android", version.ref = "osmdroidAndroid" }
 
 
 [plugins]
