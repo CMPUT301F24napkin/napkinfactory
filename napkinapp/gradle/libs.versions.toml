@@ -15,6 +15,7 @@ constraintlayout = "2.1.4"
 zxing = "core"
 zxingAndroidEmbedded = "4.3.0"
 junitJupiter = "5.8.1"
+osmdroidAndroid = "6.1.20"
 
 [libraries]
 core = { module = "com.google.zxing:core", version.ref = "core" }
@@ -30,6 +31,7 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 zxing = { module = "com.google:zxing", version.ref = "zxing" }
 zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+osmdroid-android = { group = "org.osmdroid", name = "osmdroid-android", version.ref = "osmdroidAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
