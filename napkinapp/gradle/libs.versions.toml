@@ -17,6 +17,7 @@ zxingAndroidEmbedded = "4.3.0"
 junitJupiter = "5.8.1"
 playServicesLocation = "21.3.0"
 fragmentTesting = "1.8.5"
+osmdroidAndroid = "6.1.20"
 
 [libraries]
 core = { module = "com.google.zxing:core", version.ref = "core" }
@@ -34,6 +35,7 @@ zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", ve
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "fragmentTesting" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+osmdroid-android = { group = "org.osmdroid", name = "osmdroid-android", version.ref = "osmdroidAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

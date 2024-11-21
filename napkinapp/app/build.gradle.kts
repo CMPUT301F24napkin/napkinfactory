@@ -37,6 +37,9 @@ android {
             }
         }
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -45,6 +48,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation("androidx.work:work-runtime:2.7.1")
+    implementation(libs.osmdroid.android)
     implementation(libs.play.services.location)
     implementation(libs.fragment.testing)
 
