@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
 
     public static final String CHANNEL_ID = "napkin_app_notifications";
 
-
     public void updateHeaderNotificationIcon() {
         if (header != null) {
             header.updateNotificationIcon();
@@ -194,8 +193,6 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.footer_fragmentcontainer, footer)
                 .commit();
-
-
     }
 
     /**
