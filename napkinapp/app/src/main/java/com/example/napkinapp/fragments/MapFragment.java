@@ -162,6 +162,7 @@ public class MapFragment extends Fragment {
         addMarker("MVP's house", "literally wrote the most lines of code <3 omg hes so hot!!!", 53.508247805120284, -113.47414073221799);
         addMarker("Certain Eastern-European Individual", "writes code occasionally i guess", 53.470003731447584, -113.39308303414089);
         addMarker("Illegal Immigrant", "wrote, like, ALL the backend! Way to go!", 53.5282620031484, -113.57275089319474);
+        addMarker("Queen of Hackathon", "Wanted to be pretty princess but that is cringe", 53.406111, -113.458472);
 
         return view;
     }
