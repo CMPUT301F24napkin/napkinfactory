@@ -34,6 +34,7 @@ import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class ListEventsFragment extends Fragment {
     private TitleUpdateListener titleUpdateListener;
@@ -312,8 +313,10 @@ public class ListEventsFragment extends Fragment {
      */
     private void displayAllEvents() {
         DB_Client db = new DB_Client();
-        Query query = db.getDatabase().collection("Events").whereNotEqualTo("organizerId", loggedInUser.getAndroidId());
-        db.executeQueryList(query, new DB_Client.DatabaseCallback<List<Event>>() {
+        List<Function<Query, Query>> conditions = List.of(
+                query -> query.whereNotEqualTo("organizerId", loggedInUser.getAndroidId())
+        );
+        db.executeQueryList("Events", conditions, new DB_Client.DatabaseCallback<List<Event>>() {
             @Override
             public void onSuccess(@Nullable List<Event> data) {
                 events.clear();
