@@ -3,6 +3,7 @@ package com.example.napkinapp.utils;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.core.Query;
@@ -28,7 +29,8 @@ public class DB_Client {
 
     // Variables to store predefined data for methods
     private static Object findOneData;
-    private static List<?> findManyData;
+    private static List<?> findAllData;
+    private static List<?> findAllInData;
     private static Object executeQueryData;
     private static List<?> executeQueryListData;
     private static List<Object> insertedData = new ArrayList<>();
@@ -45,9 +47,14 @@ public class DB_Client {
         findOneData = data;
     }
 
-    public static void setFindManyData(List<Object> data) {
-        findManyData = data;
+    public static void setFindAllData(List<Object> data) {
+        findAllData = data;
     }
+
+    public static void setFindAllInData(List<?> data) {
+        findAllInData = data;
+    }
+
 
     public static void setExecuteQueryData(Object data) {
         executeQueryData = data;
@@ -77,7 +84,8 @@ public class DB_Client {
     // Reset method to clear data between tests
     public static void reset() {
         findOneData = null;
-        findManyData = null;
+        findAllData = null;
+        findAllInData = null;
         executeQueryData = null;
         executeQueryListData = null;
         insertedData.clear();
@@ -112,13 +120,30 @@ public class DB_Client {
         }
 
         List<T> data = new ArrayList<>();
-        if (findManyData != null) {
-            for (Object obj : findManyData) {
+        if (findAllData != null) {
+            for (Object obj : findAllData) {
                 data.add(returnType.cast(obj));
             }
         }
 
         new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(data));
+    }
+
+    public <T> void findAllIn(String collection, String field, @NonNull List<Object> list, DatabaseCallback<List<T>> callback, Class<T> returnType) {
+        if (exceptionToThrow != null) {
+            callback.onFailure(exceptionToThrow);
+            return;
+        }
+
+        List<T> result = new ArrayList<>();
+        if (findAllInData != null) {
+            for (Object obj : findAllInData) {
+                result.add(returnType.cast(obj));
+            }
+        }
+
+        // Simulate asynchronous behavior
+        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(result));
     }
 
     public <T> void executeQuery(
@@ -221,7 +246,7 @@ public class DB_Client {
             return;
         }
 
-        int count = findManyData != null ? findManyData.size() : 0;
+        int count = findAllData != null ? findAllData.size() : 0;
         callback.onSuccess(count);
     }
 
