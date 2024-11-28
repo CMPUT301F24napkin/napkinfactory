@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.core)
 
     testImplementation("org.mockito:mockito-core:4.11.0")
+    testImplementation(libs.junit.jupiter)
     androidTestImplementation ("org.mockito:mockito-android:4.11.0")
 
     testImplementation("junit:junit:4.13.2")
