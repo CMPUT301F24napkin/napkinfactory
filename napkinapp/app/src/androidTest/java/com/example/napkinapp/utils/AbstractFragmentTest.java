@@ -1,14 +1,10 @@
 package com.example.napkinapp.utils;
 
-import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 
 import com.example.napkinapp.R;
-import com.example.napkinapp.utils.DB_Client;
-import com.example.napkinapp.utils.TestActivity;
+
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.After;
@@ -70,6 +66,17 @@ public abstract class AbstractFragmentTest<T extends Fragment> {
         return (T) fragment[0];
     }
 
+    /**
+     * Refresh the fragment with updated data by replacing the current fragment.
+     */
+    protected void refreshFragment() {
+        activityScenario.onActivity(activity -> {
+            T newFragment = createFragment();
+            activity.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragmentcontainer, newFragment)
+                    .commitNow();
+        });
+    }
 
     public void disableAnimations() {
         try {
