@@ -129,7 +129,7 @@ public class User {
     }
 
     public void addNotification(Notification notification) {
-        notifications.add(notification);
+        notifications.add(0, notification);
     }
 
     public void deleteNotification(Notification notification) {

@@ -25,6 +25,8 @@ public class Event {
     private boolean requireGeolocation;
     private Facility facility;
 
+
+
     private String qrHashCode;
 
     private List<Tag> tags;
