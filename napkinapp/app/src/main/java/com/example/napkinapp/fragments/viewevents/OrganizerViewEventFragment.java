@@ -49,6 +49,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class OrganizerViewEventFragment extends Fragment {
     private Context mContext;
@@ -113,25 +114,45 @@ public class OrganizerViewEventFragment extends Fragment {
         event.setChosen(chosenListCopy);
 
         DB_Client db = new DB_Client();
-        // Update event document with new waitlist and chosen lists
-        db.getDatabase().collection("Events").document(event.getId()).get().addOnSuccessListener(documentSnapshot -> {
 
-            documentSnapshot.getReference().update("waitlist", waitlistCopy, "chosen", chosenListCopy)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d("UPDATING EVENT LIST","Event waitlist and chosen lists updated");
+// Update the event's waitlist and chosen list
+        Map<String, Object> eventUpdates = Map.of(
+                "waitlist", waitlistCopy,
+                "chosen", chosenListCopy
+        );
 
-                        // Update users
-                        for (String userId : chosenListCopy) {
-                            // Users moved to chosen list
-                            db.getDatabase().collection("Users").document(userId)
-                                    .update("chosen", FieldValue.arrayUnion(event.getId()),
-                                            "waitlist", FieldValue.arrayRemove(event.getId()))
-                                    .addOnSuccessListener(aVoid1 -> Log.d("LOTTERY USER","User " + userId + " moved to chosen"))
-                                    .addOnFailureListener(e -> System.out.println("Error updating user " + userId + ": " + e.getMessage()));
+        db.writeData("Events", event.getId(), eventUpdates, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(Void data) {
+                Log.d("UPDATING EVENT LIST", "Event waitlist and chosen lists updated");
+
+                // Update users in the chosen list
+                for (String userId : chosenListCopy) {
+                    Map<String, Object> userUpdates = Map.of(
+                            "chosen", FieldValue.arrayUnion(event.getId()),
+                            "waitlist", FieldValue.arrayRemove(event.getId())
+                    );
+
+                    db.writeData("Users", userId, userUpdates, new DB_Client.DatabaseCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void data) {
+                            Log.d("LOTTERY USER", "User " + userId + " moved to chosen");
                         }
 
-                    }).addOnFailureListener(e -> System.out.println("Error updating event lists: " + e.getMessage()));
+                        @Override
+                        public void onFailure(Exception e) {
+                            Log.e("LOTTERY USER", "Error updating user " + userId + ": " + e.getMessage());
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("UPDATING EVENT LIST", "Error updating event lists: " + e.getMessage());
+            }
         });
+
         // notify everyone in waitlist. notify everyone in chosenListCopy.
         sendNotification(waitlistCopy, new Notification(
                 getText(R.string.notification_not_chosen_name).toString(),
