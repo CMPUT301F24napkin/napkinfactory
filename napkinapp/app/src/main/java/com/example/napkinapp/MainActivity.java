@@ -329,7 +329,6 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
     }
 
-
     private void scheduleUserUpdateListener() {
         WorkManager workManager = WorkManager.getInstance(this);
         OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(ListenForUserUpdatesWorker.class)
