@@ -1,7 +1,10 @@
 package com.example.napkinapp.models;
 
+import android.util.Pair;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -35,6 +38,7 @@ public class Event {
     private ArrayList<String> chosen;
     private ArrayList<String> cancelled;
     private ArrayList<String> registered;
+    private HashMap<String, ArrayList<Double>> entrantLocations;
 
     // New event being created
     public Event(String organizerId, String name, Date eventDate, Date lotteryDate, String description,
@@ -54,7 +58,8 @@ public class Event {
     // Event from database
     public Event(String id, String organizerId, String name, Date eventDate, Date lotteryDate, String description,
                  int entrantLimit, int participantLimit, boolean requireGeolocation, String qrHashCode,
-                 ArrayList<String> waitlist, ArrayList<String> chosen, ArrayList<String> cancelled, ArrayList<String> registered) {
+                 ArrayList<String> waitlist, ArrayList<String> chosen, ArrayList<String> cancelled, ArrayList<String> registered,
+                 HashMap<String, ArrayList<Double>> entrantLocations) {
         init(); // provide sensible defaults
 
         this.id = id;
@@ -72,6 +77,7 @@ public class Event {
         this.chosen = chosen;
         this.cancelled = cancelled;
         this.registered = registered;
+        this.entrantLocations = entrantLocations;
     }
 
     // provide sensible defaults for members to avoid bugs
@@ -94,6 +100,7 @@ public class Event {
         this.chosen = new ArrayList<>();
         this.cancelled = new ArrayList<>();
         this.registered = new ArrayList<>();
+        this.entrantLocations = new HashMap<>();
     }
 
     public Event(){
@@ -302,5 +309,20 @@ public class Event {
 
     public void setRegistered(ArrayList<String> registered) {
         this.registered = registered;
+    }
+
+    public void addEntrantLocation(String userId, ArrayList<Double> location){
+        if (entrantLocations == null){
+            entrantLocations = new HashMap<>();
+        }
+        entrantLocations.put(userId, location);
+    }
+
+    public void removeEntrantLocation(String userId){
+        entrantLocations.remove(userId);
+    }
+
+    public HashMap<String, ArrayList<Double>> getEntrantLocations(){
+        return this.entrantLocations;
     }
 }
