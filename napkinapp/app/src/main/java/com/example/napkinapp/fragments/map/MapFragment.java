@@ -1,13 +1,16 @@
 /**
  * Fragment of the profile screen. Allows all users to edit their profile.
+ *
+ * US 02.02.02 As an organizer I want to see on a map where entrants joined my event waiting list from
+ * US 01.08.01 As an entrant, I want to be warned before joining a waiting list that requires geolocation.
  */
 
-package com.example.napkinapp.fragments;
+package com.example.napkinapp.fragments.map;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Point;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -19,29 +22,27 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.facility.ViewFacilityFragment;
+import com.example.napkinapp.fragments.viewevents.OrganizerViewEventFragment;
+import com.example.napkinapp.models.Facility;
 import com.example.napkinapp.models.User;
 
 import org.osmdroid.api.IMapController;
-import org.osmdroid.api.IMapView;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import org.osmdroid.views.overlay.Marker;
 
 public class MapFragment extends Fragment {
     private final User user;
@@ -64,6 +65,8 @@ public class MapFragment extends Fragment {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+
+    CustomInfoWindow customInfoWindow = null;
 
     // Register the permissions callback, which handles the user's response to the
     // system permissions dialog. Save the return value, an instance of
@@ -122,10 +125,17 @@ public class MapFragment extends Fragment {
         map = view.findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
+        customInfoWindow = new CustomInfoWindow(map, v -> {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragmentcontainer, new ViewFacilityFragment(new Facility(), user)) // Use your actual container ID
+                    .addToBackStack(null) // Allows user to go back to ListEventsFragment
+                    .commit();
+        });
+
         // if permissions not granted
         requestPermissionLauncher.launch(permissionsToRequest);
 
-        // add my location overlay
+        // add my location overlay DOESN"T WORK
 //        MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(m_context), map);
 //        mLocationOverlay.enableMyLocation();
 //        map.getOverlays().add(mLocationOverlay);
@@ -135,7 +145,7 @@ public class MapFragment extends Fragment {
         map.setMultiTouchControls(true);
 
         IMapController mapController = map.getController();
-        mapController.setZoom(18);
+        mapController.setZoom(15.0);
         GeoPoint startPoint = new GeoPoint(53.527309714453466, -113.52931950296305);
         mapController.setCenter(startPoint);
 
@@ -195,9 +205,21 @@ public class MapFragment extends Fragment {
      * @param latitude the latitude of the marker
      * @return the newly-created overlay item
      */
-    public OverlayItem addMarker(String title, String description, double longitude, double latitude) {
-        OverlayItem item = new OverlayItem(title, description, new GeoPoint(longitude, latitude));
-        markersOverlay.addItem(item);
-        return item;
+    public Marker addMarker(String title, String description, double longitude, double latitude) {
+        Drawable icon = ResourcesCompat.getDrawable(getResources(), R.drawable.baseline_location_on_72, null);
+        icon.setTint(Color.parseColor("#FF007AFF"));
+
+        Marker marker = new Marker(map);
+        marker.setPosition(new GeoPoint(longitude, latitude));
+        marker.setTitle(title);
+        marker.setSnippet(description);
+        marker.setInfoWindow(customInfoWindow);
+        marker.setIcon(icon);
+
+        // uncomment the next line to disable marker clicking
+//        marker.setOnMarkerClickListener((marker1, mapView) -> {return false;}); // 2
+
+        map.getOverlays().add(marker);
+        return marker;
     }
 }
