@@ -89,7 +89,7 @@ public class TestActivity extends AppCompatActivity implements TitleUpdateListen
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_fragmentcontainer, new ListNotificationsFragment())
+                .replace(R.id.content_fragmentcontainer, new ListNotificationsFragment(user))
                 .addToBackStack(null)
                 .commit();
 
