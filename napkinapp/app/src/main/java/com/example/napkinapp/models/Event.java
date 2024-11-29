@@ -81,7 +81,7 @@ public class Event {
     }
 
     // provide sensible defaults for members to avoid bugs
-    private void init() {
+    public void init() {
         this.id = "event_placeholder";
         this.organizerId = "placeholder";
         this.name = "name_placeholder";

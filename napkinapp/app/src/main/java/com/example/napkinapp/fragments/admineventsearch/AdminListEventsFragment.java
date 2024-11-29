@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class AdminListEventsFragment extends Fragment {
     private TitleUpdateListener titleUpdateListener;
@@ -96,12 +97,13 @@ public class AdminListEventsFragment extends Fragment {
 
     private void loadEvents(String eventName) {
         // Create a query with a "like" match on event names
-        Query query = db.getDatabase().collection("Events")
-                .whereGreaterThanOrEqualTo("name", eventName)
-                .whereLessThanOrEqualTo("name", eventName + "\uf8ff");
+        List<Function<Query, Query>> conditions = List.of(
+                query -> query.whereGreaterThanOrEqualTo("name", eventName),
+                query -> query.whereLessThanOrEqualTo("name", eventName + "\uf8ff")
+        );
 
         // Execute the query using the modified executeQuery method
-        db.executeQueryList(query, new DB_Client.DatabaseCallback<List<Event>>() {
+        db.executeQueryList("Events", conditions, new DB_Client.DatabaseCallback<List<Event>>() {
             @Override
             public void onSuccess(List<Event> data) {
                 Log.d("data", data != null ? data.toString() : "No data returned");
