@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.adminusersearch.AdminListUsersFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
 import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.User;
@@ -78,6 +79,16 @@ public class AdminNavagationFragment extends Fragment {
         // Set up click listeners for each button
         userSearchButton.setOnClickListener(v -> {
             Log.d("AdminNavagationFragment", "User Search button clicked");
+
+            Fragment currFrag = requireActivity().getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
+
+            if (!(currFrag instanceof AdminListEventsFragment)) {
+                // Switch to SearchEventFragment
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content_fragmentcontainer, new AdminListUsersFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         eventSearchButton.setOnClickListener(v -> {
