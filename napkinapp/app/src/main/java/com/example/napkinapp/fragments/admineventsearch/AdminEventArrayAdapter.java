@@ -71,8 +71,8 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
 
         Event event = events.get(position);
 
-        TextView eventName = view.findViewById(R.id.event_name);
-        TextView eventDate = view.findViewById(R.id.event_date);
+        TextView eventName = view.findViewById(R.id.eventName);
+        TextView eventDate = view.findViewById(R.id.eventDate);
 
         Button button = view.findViewById(R.id.button);
 
