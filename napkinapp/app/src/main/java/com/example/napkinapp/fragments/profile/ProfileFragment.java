@@ -42,6 +42,13 @@ public class ProfileFragment extends Fragment {
     private final User user;
     private TitleUpdateListener titleUpdateListener;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
+
+    private TextView nameText;
+    private TextView emailText;
+    private TextView phoneText;
+    private TextView addressText;
+    Switch notificationSwitch;
+
     private ImageUtils imageUtils = new ImageUtils(ImageUtils.PROFILE);
 
     private Uri profileImageUri = null;
@@ -81,6 +88,29 @@ public class ProfileFragment extends Fragment {
         );
     }
 
+    private void updateUserInfo(User user) {
+        user.setName(nameText.getText().toString());
+        user.setEmail(emailText.getText().toString());
+        user.setPhoneNumber(phoneText.getText().toString());
+        user.setAddress(addressText.getText().toString());
+        user.setEnNotifications(notificationSwitch.isChecked());
+
+        DB_Client db = new DB_Client();
+        db.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("User update/creation", "Something went wrong updating user");
+                Toast.makeText(getContext(), "Error updating/creating user! Please try again!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                Log.i("User update/creation", "User updated/created");
+                Toast.makeText(getContext(), "Successfully updated your profile!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -90,10 +120,10 @@ public class ProfileFragment extends Fragment {
         // Update title
         titleUpdateListener.updateTitle("Profile Settings");
 
-        TextView nameText = view.findViewById(R.id.editTextName);
-        TextView emailText = view.findViewById(R.id.editTextEmailAddress);
-        TextView phoneText = view.findViewById(R.id.editTextPhone);
-        TextView addressText = view.findViewById(R.id.editTextAddress);
+        nameText = view.findViewById(R.id.editTextName);
+        emailText = view.findViewById(R.id.editTextEmailAddress);
+        phoneText = view.findViewById(R.id.editTextPhone);
+        addressText = view.findViewById(R.id.editTextAddress);
         profileImage = view.findViewById(R.id.image);
 
 
@@ -113,8 +143,7 @@ public class ProfileFragment extends Fragment {
             }
         }
 
-
-        Switch notificationSwitch = view.findViewById(R.id.notification_switch);
+        notificationSwitch = view.findViewById(R.id.notification_switch);
         notificationSwitch.setChecked(user.getEnNotifications());
 
         notificationSwitch.setOnClickListener((v) -> {
@@ -137,36 +166,17 @@ public class ProfileFragment extends Fragment {
             if(profileImageUri != null) {
                 imageUtils.uploadImage(profileImageUri, user.getAndroidId())
                         .addOnSuccessListener(uri -> {
-                            Log.i("UploadImage", "New image URL: " + uri.toString());
-                            user.setName(nameText.getText().toString());
-                            user.setEmail(emailText.getText().toString());
-                            user.setPhoneNumber(phoneText.getText().toString());
-                            user.setAddress(addressText.getText().toString());
-                            user.setEnNotifications(notificationSwitch.isChecked());
                             user.setProfileImageUri(uri.toString());
-
-                            DB_Client db = new DB_Client();
-
-                            db.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
-                                @Override
-                                public void onFailure(Exception e) {
-                                    Log.e("User update/creation", "Something went wrong updating user");
-                                    Toast.makeText(getContext(), "Error updating/creating user! Please try again!", Toast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onSuccess(@Nullable Void data) {
-                                    Log.i("User update/creation", "User updated/created");
-                                    Toast.makeText(getContext(), "Successfully updated your profile!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                            updateUserInfo(user);
                         })
                         .addOnFailureListener(e -> {
                             Log.e("UploadImage", "Failed to upload image: " + e.getMessage());
-                            Toast.makeText(getContext(), "Error updating/creating user! Please try again!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Failed uploading image! Please try again!", Toast.LENGTH_SHORT).show();
                         });
             }
-
+            else{
+                updateUserInfo(user);
+            }
         });
 
         return view;
