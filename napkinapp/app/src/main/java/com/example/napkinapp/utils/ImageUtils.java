@@ -9,37 +9,26 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.Objects;
 
+/**
+ * This utility class provides methods for managing images in relation to firebase storage
+ */
 public class ImageUtils {
-    private static FirebaseStorage FirebaseInt = FirebaseStorage.getInstance();
-
-    // Constants for folders on Firebase (MIGHT DELETE LATER)
-    public static final String PROFILE = "profiles";
-    public static final String EVENT = "events";
+    private static final FirebaseStorage FirebaseInt = FirebaseStorage.getInstance();
 
     /**
      * Uploads images related to specific functionality of the app to firebase cloud
      *
      * @param image local image to upload to firebase
-     * @return Task<Uri> that once resolved will return the Uri of the upload onSuccess
+     * @return Task<Uri> that resolves once upload succeeds. onSuccess returns Uri from firebase.
      */
     public static Task<Uri> uploadImage(Uri image) {
-        // grab file extension
-        String path = image.getPath();
-        String ext;
-        if (path != null && path.contains(".")) {
-            ext = path.substring(path.lastIndexOf(".") + 1);
-        }
-        else {
-            return null;
-        }
 
         // Create a reference to the Firebase Storage location
         StorageReference folderRef = FirebaseInt.getReference().child("IMAGES");
-        String fileName = System.currentTimeMillis() + ext;  // Generate unique file name
-        StorageReference fileRef = folderRef.child(fileName);
+        String fileName = Long.toString(System.currentTimeMillis());  // Generate unique file name
 
         // Start the upload task
-        UploadTask uploadTask = fileRef.putFile(image);
+        UploadTask uploadTask = folderRef.child(fileName).putFile(image);
 
         // Return the Task that will resolve with the download URL once successful
         return uploadTask.continueWithTask(task -> {
@@ -47,7 +36,7 @@ public class ImageUtils {
                 throw Objects.requireNonNull(task.getException()); // Throw the exception to be caught in the onFailureListener
             }
             // Once upload is successful, retrieve the download URL (Task<Uri>)
-            return fileRef.getDownloadUrl();
+            return folderRef.getDownloadUrl();
         });
     }
 
@@ -59,7 +48,6 @@ public class ImageUtils {
      */
     public static Task<Void> deleteImage(Uri firebaseImage) {
         StorageReference imageRef = FirebaseInt.getReferenceFromUrl(firebaseImage.toString());
-
         return imageRef.delete();
     }
 
@@ -68,7 +56,7 @@ public class ImageUtils {
      *
      * @param firebaseImage image on firebase that is going to be replaced
      * @param newImage new image on local storage
-     * @return Task<Uri> that once resolved will return the Uri of the new image onSuccess
+     * @return Task<Uri> that resolves once updates succeeds. onSuccess returns Uri from firebase.
      */
     public static Task<Uri> updateImage(Uri firebaseImage, Uri newImage) {
         return deleteImage(firebaseImage).continueWithTask(deleteTask -> {
