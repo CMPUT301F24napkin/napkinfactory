@@ -3,7 +3,7 @@
  * Current issue is that it does a shallow delete of the event and should delete references to thsi event too.
  */
 
-package com.example.napkinapp.fragments.admineventsearch;
+package com.example.napkinapp.fragments.adminusersearch;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.google.firebase.firestore.Query;
 
@@ -32,24 +33,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class AdminListEventsFragment extends Fragment {
+public class AdminListUsersFragment extends Fragment {
     private TitleUpdateListener titleUpdateListener;
     private Context mContext;
-    private ArrayList<Event> events;
-    private AdminEventArrayAdapter eventArrayAdapter;
+    private ArrayList<User> users;
+    private AdminUserArrayAdapter userArrayAdapter;
     private DB_Client db;
-    public AdminListEventsFragment() {
+    public AdminListUsersFragment() {
         // Required null constructor
     }
 
-    AdminEventArrayAdapter.EventListCustomizer customizer = button -> {
+    AdminUserArrayAdapter.UserListCustomizer customizer = button -> {
         button.setText("Remove");
         button.setOnClickListener(v -> {
-            Event event = (Event) v.getTag();
-            Log.i("Button", String.format("List Events: Clicked on event %s\n", event.getName()));
+            User user = (User) v.getTag();
+            Log.i("Button", String.format("List Events: Clicked on event %s\n", user.getName()));
 
             // Call the delete method with the event ID
-            deleteEvent(event);
+
+            Toast.makeText(mContext, "Delete User", Toast.LENGTH_SHORT).show();
+            deleteUser(user);
         });
     };
 
@@ -69,52 +72,54 @@ public class AdminListEventsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.admin_event_search, container, false);
-        ListView eventsListView = view.findViewById(R.id.events_list_view);
-        EditText searchEventName = view.findViewById(R.id.search_event_name);
+        View view = inflater.inflate(R.layout.admin_user_search, container, false);
+        ListView eventsListView = view.findViewById(R.id.user_list_view);
+        EditText searchUserName = view.findViewById(R.id.search_user_name);
         Button searchButton = view.findViewById(R.id.search_button);
         db = new DB_Client();
 
-        events = new ArrayList<>();
-        eventArrayAdapter = new AdminEventArrayAdapter(mContext, events, customizer);
-        eventsListView.setAdapter(eventArrayAdapter);
+        users = new ArrayList<>();
+        userArrayAdapter = new AdminUserArrayAdapter(mContext, users, customizer);
+        eventsListView.setAdapter(userArrayAdapter);
 
         // Update title
-        titleUpdateListener.updateTitle("Event List");
+        titleUpdateListener.updateTitle("Users List");
 
         // Load all events initially
-        loadEvents("");
+        loadUsers("");
 
         // Set up search button click listener
         searchButton.setOnClickListener(v -> {
-            String query = searchEventName.getText().toString().trim();
-            loadEvents(query);
+            String query = searchUserName.getText().toString().trim();
+
+            loadUsers(query);
+            Toast.makeText(mContext, "search Event", Toast.LENGTH_SHORT).show();
             //searchEventsByName(query);
         });
 
         return view;
     }
 
-    private void loadEvents(String eventName) {
+    private void loadUsers(String userName) {
         // Create a query with a "like" match on event names
         List<Function<Query, Query>> conditions = List.of(
-                query -> query.whereGreaterThanOrEqualTo("name", eventName),
-                query -> query.whereLessThanOrEqualTo("name", eventName + "\uf8ff")
+                query -> query.whereGreaterThanOrEqualTo("name", userName),
+                query -> query.whereLessThanOrEqualTo("name", userName + "\uf8ff")
         );
 
         // Execute the query using the modified executeQuery method
-        db.executeQueryList("Events", conditions, new DB_Client.DatabaseCallback<List<Event>>() {
+        db.executeQueryList("Users", conditions, new DB_Client.DatabaseCallback<List<User>>() {
             @Override
-            public void onSuccess(List<Event> data) {
+            public void onSuccess(List<User> data) {
                 Log.d("data", data != null ? data.toString() : "No data returned");
-                events.clear();
+                users.clear();
                 if (data != null && !data.isEmpty()) {
-                    events.addAll(data);
-                    eventArrayAdapter.notifyDataSetChanged();
-                    Log.d("RegisteredEventsFragment", "Event list loaded with " + events.size() + " items.");
+                    users.addAll(data);
+                    userArrayAdapter.notifyDataSetChanged();
+                    Log.d("RegisteredEventsFragment", "Event list loaded with " + users.size() + " items.");
                 } else {
                     Log.d("RegisteredEventsFragment", "No events found matching the name.");
-                    eventArrayAdapter.notifyDataSetChanged();
+                    userArrayAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -122,34 +127,34 @@ public class AdminListEventsFragment extends Fragment {
             public void onFailure(Exception e) {
                 Log.e("RegisteredEventsFragment", "Error loading events: " + e.getMessage(), e);
             }
-        }, Event.class);
+        }, User.class);
+
     }
 
-    private void
-    deleteEvent(Event event) {
-        if (event.getId() == null || event.getId().isEmpty()) {
+    private void deleteUser(User user) {
+        if (user.getAndroidId() == null || user.getAndroidId().isEmpty()) {
             Log.e("RegisteredEventsFragment", "Event ID is null or empty. Cannot delete event.");
             return;
         }
 
         // Set up the filter to find the event by its ID
         Map<String, Object> filters = new HashMap<>();
-        filters.put("id", event.getId());
+        filters.put("androidId", user.getAndroidId());
 
         // Call DB_Client's deleteOne method
-        db.deleteOne("Events", filters, new DB_Client.DatabaseCallback<Void>() {
+        db.deleteOne("Users", filters, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(mContext, "Event deleted successfully", Toast.LENGTH_SHORT).show();
-                events.remove(event); // Remove the event from the local list
-                eventArrayAdapter.notifyDataSetChanged(); // Update the adapter
-                Log.d("RegisteredEventsFragment", "Event deleted from Firestore and list updated.");
+                Toast.makeText(mContext, "User deleted successfully", Toast.LENGTH_SHORT).show();
+                users.remove(user); // Remove the event from the local list
+                userArrayAdapter.notifyDataSetChanged(); // Update the adapter
+                Log.d("RegisteredEventsFragment", "User deleted from Firestore and list updated.");
             }
 
             @Override
             public void onFailure(Exception e) {
                 Toast.makeText(mContext, "Failed to delete event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("RegisteredEventsFragment", "Error deleting event", e);
+                Log.e("RegisteredEventsFragment", "Error deleting user", e);
             }
         });
     }
