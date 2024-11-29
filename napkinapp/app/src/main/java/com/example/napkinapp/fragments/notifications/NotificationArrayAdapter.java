@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import com.example.napkinapp.MainActivity;
 import com.example.napkinapp.R;
 import com.example.napkinapp.models.Notification;
+import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 
 import java.util.ArrayList;
@@ -28,11 +29,13 @@ import java.util.ArrayList;
 public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
     private ArrayList<Notification> notifications;
     private Context context;
+    private User user;
 
-    public NotificationArrayAdapter(@NonNull Context context, ArrayList<Notification> notifications) {
+    public NotificationArrayAdapter(@NonNull Context context, ArrayList<Notification> notifications, User user) {
         super(context, 0, notifications);
         this.context = context;
         this.notifications = notifications;
+        this.user = user;
     }
 
     @NonNull
@@ -52,24 +55,17 @@ public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
         TextView messageTextView = view.findViewById(R.id.messageTextView);
 
         ImageButton isReadButton = view.findViewById(R.id.readButton);
-        if (notification.getRead()){
-            isReadButton.setImageResource(R.drawable.notification_bell_empty);
-        } else {
-            isReadButton.setImageResource(R.drawable.notification_bell_active);
-        }
+        toggleIcon(isReadButton, notification);
+
         isReadButton.setOnClickListener((buttonView) -> {
             notification.setRead(!notification.getRead());
             if (context instanceof MainActivity) {
                 ((MainActivity) context).updateHeaderNotificationIcon();
             }
-            if (notification.getRead()){
-                isReadButton.setImageResource(R.drawable.notification_bell_empty);
-            } else {
-                isReadButton.setImageResource(R.drawable.notification_bell_active);
-            }
+            toggleIcon(isReadButton, notification);
             DB_Client db = new DB_Client();
 
-            db.writeData("Users", MainActivity.user.getAndroidId(), MainActivity.user, new DB_Client.DatabaseCallback<Void>() {
+            db.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
                 @Override
                 public void onFailure(Exception e) {
                     Log.e("User update/creation", "Something went wrong updating user");
@@ -93,7 +89,7 @@ public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
 
             DB_Client db = new DB_Client();
 
-            db.writeData("Users", MainActivity.user.getAndroidId(), MainActivity.user, new DB_Client.DatabaseCallback<Void>() {
+            db.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
                 @Override
                 public void onFailure(Exception e) {
                     Log.e("User update/creation", "Something went wrong updating user");
@@ -117,5 +113,15 @@ public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
         });
 
         return view;
+    }
+
+    private void toggleIcon(ImageButton isReadButton, Notification notification){
+        if (notification.getRead()){
+            isReadButton.setImageResource(R.drawable.notification_bell_empty);
+            isReadButton.setTag(R.drawable.notification_bell_empty);
+        } else {
+            isReadButton.setImageResource(R.drawable.notification_bell_active);
+            isReadButton.setTag(R.drawable.notification_bell_active);
+        }
     }
 }

@@ -19,13 +19,19 @@ import com.example.napkinapp.MainActivity;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Notification;
+import com.example.napkinapp.models.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ListNotificationsFragment extends Fragment {
     private TitleUpdateListener titleUpdateListener;
     private Context mContext;
+    private User user;
 
-    public ListNotificationsFragment(){
+    public ListNotificationsFragment(User user){
+        this.user = user;
     }
 
     @Override
@@ -52,9 +58,13 @@ public class ListNotificationsFragment extends Fragment {
 
         // Update title
         titleUpdateListener.updateTitle("Notifications");
+        // Retrieve notifications from the parent activity
+        ArrayList<Notification> notifications = new ArrayList<>();
+        notifications = user.getNotifications();
+
 
         // Attach NotificationArrayAdapter to ListView
-        notificationArrayAdapter = new NotificationArrayAdapter(mContext, MainActivity.user.getNotifications());
+        notificationArrayAdapter = new NotificationArrayAdapter(mContext, notifications, user);
         notifications_list.setAdapter(notificationArrayAdapter);
 
         return view;

@@ -45,11 +45,8 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation("androidx.work:work-runtime:2.7.1")
+    implementation(libs.fragment.testing)
 
-    testImplementation(libs.junit)
-    testImplementation(libs.junit.jupiter)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
 
     implementation(platform(libs.firebase.bom.v3271))
     implementation(libs.firebase.firestore)
@@ -58,5 +55,21 @@ dependencies {
     implementation(libs.zxing.android.embedded)
     implementation(libs.core)
 
+
     implementation(libs.glide)
+
+    testImplementation("org.mockito:mockito-core:4.11.0")
+    testImplementation(libs.junit.jupiter)
+    androidTestImplementation ("org.mockito:mockito-android:4.11.0")
+
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    testImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+
 }

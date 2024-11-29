@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * A utility class for handling CRUD operations with Firebase Firestore.
@@ -59,20 +61,26 @@ public class DB_Client {
         database = FirebaseFirestore.getInstance();
     }
 
-    public FirebaseFirestore getDatabase() {
-        return database;
-    }
-
     /**
-     * Executes a query and returns the results based on the specified return type.
+     * Executes a query and returns a single result based on the specified return type.
      *
-     * @param query The Firestore query to execute.
+     * @param collection The Firestore collection name.
+     * @param conditions A list of query conditions.
      * @param callback A callback for handling success or failure of the query.
-     * @param returnType The expected class type of the results. null if no results expected
+     * @param returnType The expected class type of the results. null if no results expected.
      */
-    public <T> void executeQuery(Query query, DatabaseCallback<T> callback, Class<T> returnType) {
-        if (List.class.isAssignableFrom(returnType)) {
-            throw new IllegalArgumentException("Use executeQueryList() for List types.");
+    public <T> void executeQuery(
+            String collection,
+            List<Function<Query, Query>> conditions,
+            DatabaseCallback<T> callback,
+            Class<T> returnType
+    ) {
+        CollectionReference collectionRef = database.collection(collection);
+        Query query = collectionRef;
+
+        // Apply conditions to the query
+        for (Function<Query, Query> condition : conditions) {
+            query = condition.apply(query);
         }
 
         query.get().addOnCompleteListener(task -> {
@@ -93,8 +101,28 @@ public class DB_Client {
         });
     }
 
-    // Overloaded method for fetching a list of objects
-    public <T> void executeQueryList(Query query, DatabaseCallback<List<T>> callback, Class<T> elementType) {
+    /**
+     * Executes a query and returns a list of results based on the specified return type.
+     *
+     * @param collection The Firestore collection name.
+     * @param conditions A list of query conditions.
+     * @param callback A callback for handling success or failure of the query.
+     * @param elementType The expected class type of the elements in the list.
+     */
+    public <T> void executeQueryList(
+            String collection,
+            List<Function<Query, Query>> conditions,
+            DatabaseCallback<List<T>> callback,
+            Class<T> elementType
+    ) {
+        CollectionReference collectionRef = database.collection(collection);
+        Query query = collectionRef;
+
+        // Apply conditions to the query
+        for (Function<Query, Query> condition : conditions) {
+            query = condition.apply(query);
+        }
+
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<T> resultList = new ArrayList<>();
@@ -103,10 +131,11 @@ public class DB_Client {
                 }
                 callback.onSuccess(resultList);
             } else {
-                callback.onFailure(task.getException());
+                callback.onFailure(Objects.requireNonNull(task.getException()));
             }
         });
     }
+
 
 
 
