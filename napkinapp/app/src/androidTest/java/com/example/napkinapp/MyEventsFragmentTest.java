@@ -3,11 +3,13 @@ package com.example.napkinapp;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasSibling;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 
+import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertTrue;
 
 import androidx.fragment.app.Fragment;
@@ -39,6 +41,7 @@ public class MyEventsFragmentTest extends AbstractFragmentTest<MyEventsFragment>
         List<Object> mockEvents = new ArrayList<>();
 
         mockEvent1 = new Event();
+        mockEvent1.init();
         mockEvent1.setId("event1");
         mockEvent1.setName("Mock Event 1");
         mockEvent1.setOrganizerId(mockUser.getAndroidId());
@@ -72,9 +75,16 @@ public class MyEventsFragmentTest extends AbstractFragmentTest<MyEventsFragment>
     @Test
     public void testViewEventButton() {
         // Click the "View" button for the first event
-        onView(withText(mockEvent1.getName()))
-                .check(matches(hasDescendant(withText("View"))));
-        onView(withText("View")).perform(click());
+        onView(allOf(
+                withText("View"),
+                hasSibling(withText(mockEvent1.getName()))))
+                .check(matches(isDisplayed()));
+
+        // Perform click on the "View" button associated with the first event
+        onView(allOf(
+                withText("View"),
+                hasSibling(withText(mockEvent1.getName()))))
+                .perform(click());
 
         // Verify navigation to OrganizerViewEventFragment
         activityScenario.onActivity(activity -> {
