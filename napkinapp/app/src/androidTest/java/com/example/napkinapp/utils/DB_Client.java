@@ -31,6 +31,7 @@ public class DB_Client {
     private static Object findOneData;
     private static List<?> findAllData;
     private static List<?> findAllInData;
+
     private static Object executeQueryData;
     private static List<?> executeQueryListData;
     private static List<Object> insertedData = new ArrayList<>();
@@ -46,7 +47,7 @@ public class DB_Client {
     public static void setFindOneData(Object data) {
         findOneData = data;
     }
-
+  
     public static void setFindAllData(List<Object> data) {
         findAllData = data;
     }
@@ -54,7 +55,6 @@ public class DB_Client {
     public static void setFindAllInData(List<?> data) {
         findAllInData = data;
     }
-
 
     public static void setExecuteQueryData(Object data) {
         executeQueryData = data;
@@ -122,13 +122,15 @@ public class DB_Client {
         List<T> data = new ArrayList<>();
         if (findAllData != null) {
             for (Object obj : findAllData) {
+
+
                 data.add(returnType.cast(obj));
             }
         }
 
         new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(data));
     }
-
+  
     public <T> void findAllIn(String collection, String field, @NonNull List<Object> list, DatabaseCallback<List<T>> callback, Class<T> returnType) {
         if (exceptionToThrow != null) {
             callback.onFailure(exceptionToThrow);
