@@ -41,7 +41,7 @@ public class ListEventsFragment extends Fragment {
     private Context mContext;
     private User loggedInUser;
     private ChipGroup chips;
-    ArrayList<Event> events;
+    private ArrayList<Event> events;
     EventArrayAdapter eventArrayAdapter;
 
     public ListEventsFragment() {
