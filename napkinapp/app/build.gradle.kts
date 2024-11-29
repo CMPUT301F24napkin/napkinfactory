@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation("androidx.work:work-runtime:2.7.1")
+    implementation(libs.play.services.location)
 
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
