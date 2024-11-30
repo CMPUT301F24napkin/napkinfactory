@@ -76,30 +76,31 @@ public class ListNotificationsFragment extends Fragment {
 
         ArrayList<Notification> finalNotifications = notifications;
         notifications_list.setOnItemClickListener((parent, view1, position, id) -> {
-            String EventId = finalNotifications.get(position).getEventId();
-            Toast.makeText(mContext, "AAAA" + EventId, Toast.LENGTH_SHORT).show();
-            DB_Client db = new DB_Client();
-            db.findOne("Event", Map.of("id", EventId), new DB_Client.DatabaseCallback<Event>() {
-                @Override
-                public void onSuccess(@Nullable Event event) {
-                    if (event == null) {
-                        getParentFragmentManager().beginTransaction()
-                                .replace(R.id.content_fragmentcontainer, new ViewEventFragment(event, user)) // Use your actual container ID
-                                .addToBackStack(null) // Allows user to go back to ListEventsFragment
-                                .commit();
+            Log.d("Can't call from here", "Clicked an event at position " + position);
+//            String EventId = finalNotifications.get(position).getEventId();
+//            Toast.makeText(mContext, "AAAA" + EventId, Toast.LENGTH_SHORT).show();
+//            DB_Client db = new DB_Client();
+//            db.findOne("Event", Map.of("id", EventId), new DB_Client.DatabaseCallback<Event>() {
+//                @Override
+//                public void onSuccess(@Nullable Event event) {
+//                    if (event == null) {
+//                        getParentFragmentManager().beginTransaction()
+//                                .replace(R.id.content_fragmentcontainer, new ViewEventFragment(event, user)) // Use your actual container ID
+//                                .addToBackStack(null) // Allows user to go back to ListEventsFragment
+//                                .commit();
+//
+//                    } else {
+//                        Toast.makeText(mContext, "Cannot find event in Database!", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//
+//
+//                @Override
+//                public void onFailure(Exception e) {
+//                    Log.e("User Initialization", "Something went wrong initializing user. EventId: " + EventId);
+//                }
+//            }, Event.class);
 
-                    } else {
-                        Toast.makeText(mContext, "Cannot find event in Database!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-
-                @Override
-                public void onFailure(Exception e) {
-                    Log.e("User Initialization", "Something went wrong initializing user. EventId: " + EventId);
-                }
-            }, Event.class);
-            Log.d("ListEventsFragment", "Clicked an event at position " + position);
 
         });
         return view;

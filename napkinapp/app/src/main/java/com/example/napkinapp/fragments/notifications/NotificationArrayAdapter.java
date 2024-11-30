@@ -21,7 +21,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.napkinapp.MainActivity;
 import com.example.napkinapp.R;
-import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
@@ -108,6 +107,10 @@ public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
 
         titleTextView.setText(notification.getTitle());
         messageTextView.setText(notification.getMessage());
+
+        view.setOnClickListener(v -> {
+            Log.d("Can call from here", "Not");
+        });
 
         return view;
     }
