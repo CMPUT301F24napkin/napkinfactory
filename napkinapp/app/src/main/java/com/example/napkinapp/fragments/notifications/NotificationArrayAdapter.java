@@ -17,9 +17,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.napkinapp.MainActivity;
 import com.example.napkinapp.R;
+import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
@@ -106,11 +108,6 @@ public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
 
         titleTextView.setText(notification.getTitle());
         messageTextView.setText(notification.getMessage());
-
-        // Still need to update this method so that it can update this in the future
-        view.setOnClickListener(v -> {
-            Toast.makeText(context, "Will launch this: " + notification.getTitle(), Toast.LENGTH_SHORT).show();
-        });
 
         return view;
     }
