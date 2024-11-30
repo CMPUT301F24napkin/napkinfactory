@@ -178,12 +178,12 @@ public class OrganizerViewEventFragment extends Fragment {
 
         // notify everyone in waitlist. notify everyone in chosenListCopy.
         sendNotification(waitlistCopy, new Notification(
-                getText(R.string.notification_not_chosen_name).toString(),
+                getText(R.string.notification_not_chosen_name).toString() + event.getName(),
                 getText(R.string.notification_not_chosen_description).toString(), false, event.getId(), false));
 
         sendNotification(chosenListCopy, new Notification(
-                getText(R.string.notification_chosen_name).toString(),
-                getText(R.string.notification_chosen_description).toString(), false, event.getId(), false));
+                getText(R.string.notification_chosen_name).toString() + event.getName(),
+                getText(R.string.notification_chosen_description).toString() + event.getName(), false, event.getId(), false));
 
 
     }
@@ -421,22 +421,22 @@ public class OrganizerViewEventFragment extends Fragment {
             if (!users.isEmpty()) {
                 if (waitlistChip.isChecked()) {
                     sendNotification(event.getWaitlist(), new Notification(
-                            getText(R.string.notification_custom_name).toString(),
+                            getText(R.string.notification_custom_name).toString() + event.getName(),
                             messageTextField.getEditText().getText().toString(), false, event.getId(), false));
 
                 } else if (chosenChip.isChecked()) {
                     sendNotification(event.getChosen(), new Notification(
-                            getText(R.string.notification_custom_name).toString(),
+                            getText(R.string.notification_custom_name).toString() + event.getName(),
                             messageTextField.getEditText().getText().toString(), false, event.getId(), false));
 
                 } else if (cancelledChip.isChecked()) {
                     sendNotification(event.getCancelled(), new Notification(
-                            getText(R.string.notification_custom_name).toString(),
+                            getText(R.string.notification_custom_name).toString() + event.getName(),
                             messageTextField.getEditText().getText().toString(), false, event.getId(), false));
 
                 } else if (registeredChip.isChecked()) {
                     sendNotification(event.getRegistered(), new Notification(
-                            getText(R.string.notification_custom_name).toString(),
+                            getText(R.string.notification_custom_name).toString() + event.getName(),
                             messageTextField.getEditText().getText().toString(), false, event.getId(), false));
                 } else {
                     ArrayList<String> arrayList = new ArrayList<>(event.getWaitlist());

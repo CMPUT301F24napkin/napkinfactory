@@ -108,10 +108,6 @@ public class NotificationArrayAdapter extends ArrayAdapter<Notification> {
         titleTextView.setText(notification.getTitle());
         messageTextView.setText(notification.getMessage());
 
-        view.setOnClickListener(v -> {
-            Log.d("Can call from here", "Not");
-        });
-
         return view;
     }
 
