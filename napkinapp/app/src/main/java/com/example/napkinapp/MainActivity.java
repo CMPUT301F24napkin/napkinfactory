@@ -191,6 +191,8 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.footer_fragmentcontainer, footer)
                 .commit();
+
+
     }
 
     /**
@@ -220,6 +222,13 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                     OpenListEvents();
 
                     scheduleUserUpdateListener();
+
+                    for (Notification n :
+                            user.getNotifications()) {
+                        if (!n.getRead()){
+                            sendPushNotification(getBaseContext(), n.getTitle(), n.getMessage());
+                        }
+                    }
                 }else {
                     // User does not exist, open profile screen
                     Toast.makeText(getBaseContext(), "Create a profile for new Login!", Toast.LENGTH_SHORT).show();
@@ -319,7 +328,6 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
     }
-
 
     private void scheduleUserUpdateListener() {
         WorkManager workManager = WorkManager.getInstance(this);

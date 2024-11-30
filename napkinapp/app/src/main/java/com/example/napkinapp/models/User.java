@@ -15,6 +15,7 @@ public class User {
     private String email;
     private String address;
     private Boolean enNotifications;
+    private Boolean enLocation;
     private Boolean isAdmin;
     private ArrayList<Notification> notifications;
 
@@ -28,6 +29,7 @@ public class User {
         phoneNumber = "";
         email = "";
         address = "";
+        enLocation = false;
         enNotifications = false;
         isAdmin = false;
         notifications = new ArrayList<>();
@@ -38,13 +40,14 @@ public class User {
 
     // New user
     public User (String androidId, String name, String phoneNumber, String email,
-                 String address, Boolean enNotifications, Boolean isAdmin){
+                 String address, Boolean enNotifications, Boolean isAdmin, Boolean enLocation){
         this.androidId = androidId;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.address = address;
         this.enNotifications = enNotifications;
+        this.enLocation = enLocation;
         this.isAdmin = isAdmin;
 
         // Initialize the rest to defaults
@@ -58,13 +61,14 @@ public class User {
     public User (String androidId, String name, String phoneNumber, String email,
                  String address, Boolean enNotifications, Boolean isAdmin,
                  ArrayList<Notification> notifications, ArrayList<String> waitlist, ArrayList<String> chosen,
-                 ArrayList<String> cancelled, ArrayList<String> registered){
+                 ArrayList<String> cancelled, ArrayList<String> registered, Boolean enLocation){
         this.androidId = androidId;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.address = address;
         this.enNotifications = enNotifications;
+        this.enLocation = enLocation;
         this.isAdmin = isAdmin;
 
         this.notifications = notifications;
@@ -129,7 +133,7 @@ public class User {
     }
 
     public void addNotification(Notification notification) {
-        notifications.add(notification);
+        notifications.add(0, notification);
     }
 
     public void deleteNotification(Notification notification) {
@@ -208,5 +212,13 @@ public class User {
         if(registered == null)
             return new ArrayList<>();
         return registered;
+    }
+
+    public void setEnLocation (Boolean enLocation) {
+        this.enLocation = enLocation;
+    }
+
+    public boolean getEnLocation () {
+        return this.enLocation;
     }
 }
