@@ -34,6 +34,8 @@ public class ListNotificationsFragment extends Fragment {
         this.user = user;
     }
 
+    public ListNotificationsFragment(){}
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
