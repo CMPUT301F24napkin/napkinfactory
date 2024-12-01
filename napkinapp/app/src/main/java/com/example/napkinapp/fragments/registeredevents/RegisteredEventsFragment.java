@@ -232,7 +232,7 @@ public class RegisteredEventsFragment extends Fragment {
             @Override
             public void onSuccess(@Nullable Void data) {
                 DB_Client.DatabaseCallback.super.onSuccess(data);
-                Log.i("Cancelling User", "Successfully canelled user for " + event.getName());
+                Log.i("Cancelling User", "Successfully cancelled user for " + event.getName());
             }
 
             @Override

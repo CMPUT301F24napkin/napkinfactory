@@ -424,12 +424,13 @@ public class ListEventsFragment extends Fragment {
                 events.clear();
                 if(data != null){
                     events.addAll(data);
-                }
-                for(Event event: events){
-                    if (event.getChosen().contains(loggedInUser.getAndroidId()) || event.getRegistered().contains(loggedInUser.getAndroidId())){
-                        events.remove(event);
+                    for(Event event: data){
+                        if (event.getChosen().contains(loggedInUser.getAndroidId()) || event.getRegistered().contains(loggedInUser.getAndroidId()) || event.getCancelled().contains(loggedInUser.getAndroidId())){
+                            events.remove(event);
+                        }
                     }
                 }
+
                 eventArrayAdapter.notifyDataSetChanged();
             }
 
