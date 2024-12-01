@@ -425,6 +425,11 @@ public class ListEventsFragment extends Fragment {
                 if(data != null){
                     events.addAll(data);
                 }
+                for(Event event: events){
+                    if (event.getChosen().contains(loggedInUser.getAndroidId()) || event.getRegistered().contains(loggedInUser.getAndroidId())){
+                        events.remove(event);
+                    }
+                }
                 eventArrayAdapter.notifyDataSetChanged();
             }
 
