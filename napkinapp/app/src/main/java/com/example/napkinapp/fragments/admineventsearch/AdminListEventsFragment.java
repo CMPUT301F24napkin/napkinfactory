@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.google.firebase.firestore.Query;
 
@@ -131,6 +132,45 @@ public class AdminListEventsFragment extends Fragment {
             Log.e("RegisteredEventsFragment", "Event ID is null or empty. Cannot delete event.");
             return;
         }
+
+        // remove from users waitlists first
+        String eventId = event.getId();
+        ArrayList<String> userIds = event.getWaitlist();
+
+        for (String userID : userIds) {
+            Map<String, Object> filters = new HashMap<>();
+            filters.put("androidId", userID);
+            Log.d("RegisteredEventsFragment", "User ID: " + userID);
+
+            db.findOne("Users", filters, new DB_Client.DatabaseCallback<User>() {
+                @Override
+                public void onSuccess(@Nullable User user) {
+                    if (user == null) {
+                        Log.e("RegisteredEventsFragment", "Event not found for ID: " + eventId);
+                        return;
+                    }
+                    List<String> waitlist = (List<String>) user.getWaitlist();
+                    List<String> registered = (List<String>) user.getRegistered();
+                    // adjust the waitlist
+                    waitlist.remove(eventId);
+                    registered.remove(eventId);
+
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("waitlist", waitlist);
+                    updates.put("registered", registered);
+                    db.updateAll("Users", filters, updates, new DB_Client.DatabaseCallback<Void>() {});
+
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(mContext, "Failed to get event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("RegisteredEventsFragment", "Error getting evnet", e);
+                }
+            }, User.class);
+        }
+
+
 
         // Set up the filter to find the event by its ID
         Map<String, Object> filters = new HashMap<>();
