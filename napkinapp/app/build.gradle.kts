@@ -51,9 +51,13 @@ dependencies {
 
     implementation(platform(libs.firebase.bom.v3271))
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
     implementation(libs.zxing.android.embedded)
     implementation(libs.core)
+
+
+    implementation(libs.glide)
 
     testImplementation("org.mockito:mockito-core:4.11.0")
     testImplementation(libs.junit.jupiter)
@@ -68,4 +72,5 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
+
 }
