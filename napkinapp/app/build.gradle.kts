@@ -45,9 +45,9 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation("androidx.work:work-runtime:2.7.1")
+    implementation("com.google.firebase:firebase-storage:20.2.0")
     implementation(libs.play.services.location)
     implementation(libs.fragment.testing)
-
 
     implementation(platform(libs.firebase.bom.v3271))
     implementation(libs.firebase.firestore)
