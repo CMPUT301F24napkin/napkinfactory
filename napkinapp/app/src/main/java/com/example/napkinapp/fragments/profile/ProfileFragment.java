@@ -31,7 +31,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
+import com.bumbtech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.User;
@@ -168,6 +168,11 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+
+        FloatingActionButton removeProfileImage = view.findViewById(R.id.deleteProfileImageButton);
+        removeProfileImage.setOnClickListener((v) -> {
+
+        });
 
         FloatingActionButton editProfileImage = view.findViewById(R.id.editProfileImageButton);
         editProfileImage.setOnClickListener((v) -> {

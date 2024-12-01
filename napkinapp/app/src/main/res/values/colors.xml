@@ -5,4 +5,7 @@
     <color name="text_primary">#FF1D1B20</color>
     <color name="text_secondary">#FF49454F</color>
     <color name="highlight_purple">#E8DEF8</color>
+    <color name="colorRemove">#FF9292</color>
+    <color name="colorAdd">#98CEA2</color>
+
 </resources>
