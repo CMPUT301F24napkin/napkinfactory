@@ -311,7 +311,7 @@ public class OrganizerViewEventFragment extends Fragment {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month - 1, dayOfMonth); // Month is 0-based
                 Date date = calendar.getTime();
-                eventDetails.setText(formatter.format(date));
+                eventDate.setText(formatter.format(date));
 
                 // update db
                 event.setEventDate(date);

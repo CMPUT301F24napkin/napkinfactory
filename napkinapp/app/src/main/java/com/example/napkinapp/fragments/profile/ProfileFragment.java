@@ -81,7 +81,7 @@ public class ProfileFragment extends Fragment {
 
         locationSwitch.setOnClickListener((v) -> {
                     user.setEnLocation(locationSwitch.isChecked());
-                    updateUserInDB("Location: " + user.getEnLocation());
+                    updateUserInDB("Location: " + (user.getEnLocation() ? "Enabled" : "Disabled"));
 
                     if (user.getEnLocation() && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 102);
@@ -90,7 +90,7 @@ public class ProfileFragment extends Fragment {
 
         notificationSwitch.setOnClickListener((v) ->{
             user.setEnNotifications(notificationSwitch.isChecked());
-            updateUserInDB("Notifications: " + user.getEnNotifications());
+            updateUserInDB("Notifications: " + (user.getEnNotifications() ? "Enabled" : "Disabled"));
 
             if (user.getEnNotifications() && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
