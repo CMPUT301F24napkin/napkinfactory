@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -288,6 +289,11 @@ public class OrganizerViewEventFragment extends Fragment {
         mapController.setZoom(15.0);
         GeoPoint startPoint = new GeoPoint(53.527309714453466, -113.52931950296305);
         mapController.setCenter(startPoint);
+        map.setOnTouchListener((v, event) -> {
+            // Request parent to not intercept touch events when MapView is touched
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            return false;  // Let the MapView handle the touch event
+        });
 
         Chip waitlistChip = view.findViewById(R.id.chip_waitlist);
         Chip chosenChip = view.findViewById(R.id.chip_chosen);
