@@ -4,9 +4,12 @@
 
 package com.example.napkinapp.fragments.viewevents;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +29,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.fragments.EditTextPopupFragment;
@@ -40,6 +44,12 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.FieldValue;
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,6 +74,31 @@ public class OrganizerViewEventFragment extends Fragment {
     public OrganizerViewEventFragment(Event event) {
         this.event = event;
     }
+
+    final String[] permissionsToRequest = {
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    // Register the permissions callback, which handles the user's response to the
+    // system permissions dialog. Save the return value, an instance of
+    // ActivityResultLauncher, as an instance variable.
+    private final ActivityResultLauncher<String[]> requestMapPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
+                if (isGranted.values().stream().allMatch(granted -> granted == Boolean.TRUE)) {
+                    // Permission is granted. Continue the action or workflow in your
+                    // app.
+                    Log.i("Map", "all permissions granted");
+                } else {
+                    // Explain to the user that the feature is unavailable because the
+                    // feature requires a permission that the user has denied. At the
+                    // same time, respect the user's decision. Don't link to system
+                    // settings in an effort to convince the user to change their
+                    // decision.
+                    Log.i("Map", "some permissions not granted");
+                }
+            });
 
     private void sendNotification(@NonNull List<String> androidIds, Notification notification) {
         for (String androidId : androidIds) {
@@ -241,8 +276,18 @@ public class OrganizerViewEventFragment extends Fragment {
         Button editEventDate = view.findViewById(R.id.edit_event_date);
         Button editLotteryDate = view.findViewById(R.id.edit_lottery_date);
         Button shareQRCode = view.findViewById(R.id.share_qr_code);
-        SwitchCompat requireGeolocation = view.findViewById(R.id.require_geolocation);
         Button doLottery = view.findViewById(R.id.do_lottery);
+        SwitchCompat requireGeolocation = view.findViewById(R.id.require_geolocation);
+
+        // setup map
+        MapView map = view.findViewById(R.id.map);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        requestMapPermissionLauncher.launch(permissionsToRequest);
+        map.setMultiTouchControls(true);
+        IMapController mapController = map.getController();
+        mapController.setZoom(15.0);
+        GeoPoint startPoint = new GeoPoint(53.527309714453466, -113.52931950296305);
+        mapController.setCenter(startPoint);
 
         Chip waitlistChip = view.findViewById(R.id.chip_waitlist);
         Chip chosenChip = view.findViewById(R.id.chip_chosen);
@@ -453,6 +498,35 @@ public class OrganizerViewEventFragment extends Fragment {
             }
         });
 
+        // populate map
+        for(ArrayList<Double> location : event.getEntrantLocations().values()) {
+            if(location.size() < 2) {
+                Log.e("Map", "Event Entrant Locations coordinate has less than 2 elements! expecting 2, one for longitude and latitude.");
+            }
+            addMarker(map, location.get(0), location.get(1));
+        }
+
         return view;
+    }
+
+    /**
+     * Adds a marker to the map.
+     * @param longitude the longitude of the marker
+     * @param latitude the latitude of the marker
+     * @return the newly-created overlay item
+     */
+    public Marker addMarker(MapView map, double longitude, double latitude) {
+        Drawable icon = ResourcesCompat.getDrawable(getResources(), R.drawable.baseline_location_on_72, null);
+        icon.setTint(Color.parseColor("#FF007AFF"));
+
+        Marker marker = new Marker(map);
+        marker.setPosition(new GeoPoint(longitude, latitude));
+        marker.setIcon(icon);
+
+        // disable marker clicking
+        marker.setOnMarkerClickListener((marker1, mapView) -> {return false;}); // 2
+
+        map.getOverlays().add(marker);
+        return marker;
     }
 }
