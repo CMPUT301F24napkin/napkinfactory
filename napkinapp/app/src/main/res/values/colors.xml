@@ -7,5 +7,8 @@
     <color name="highlight_purple">#E8DEF8</color>
     <color name="colorRemove">#FF9292</color>
     <color name="colorAdd">#98CEA2</color>
+    <color name="goodGreen">#024E0F</color>
+    <color name="colorRemoveDark">#924444</color>
+    <color name="neutralGray">#556677</color>
 
 </resources>
