@@ -140,6 +140,7 @@ public class AdminListUsersFragment extends Fragment {
             Log.e("RegisteredEventsFragment", "Event ID is null or empty. Cannot delete event.");
             return;
         }
+        //remove from events waitlists
         String userID = user.getAndroidId();
         ArrayList<String> eventIds = user.getWaitlist();
 
@@ -176,6 +177,11 @@ public class AdminListUsersFragment extends Fragment {
             }, Event.class);
         }
 
+        // remove events which the deleted user has created
+        Map<String, Object> deleteFilters = new HashMap<>();
+        deleteFilters.put("organizerId", user.getAndroidId());
+
+        db.deleteAll("Events", deleteFilters, new DB_Client.DatabaseCallback<Void>() {});
 
         // Set up the filter to find the user by its ID
         Map<String, Object> filters = new HashMap<>();
