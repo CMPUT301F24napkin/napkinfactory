@@ -11,9 +11,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +28,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
@@ -104,6 +105,15 @@ public class ViewEventFragment extends Fragment {
                 }
                 organizerName.setText(data.getName());
                 organization.setText(data.getPhoneNumber());
+                if(data.getProfileImageUri() != null) {
+                    try {
+                        Glide.with(view).load(Uri.parse(data.getProfileImageUri())).into(organizerProfile);
+                        Log.i("Profile", "Loaded organizer profile url: " + data.getProfileImageUri());
+                    }
+                    catch (Exception e){
+                        Log.e("Profile", "failed to load profile image: ", e);
+                    }
+                }
             }
         }, User.class);
 
@@ -112,7 +122,6 @@ public class ViewEventFragment extends Fragment {
 
         btnToggleWaitlist = view.findViewById(R.id.toggle_waitlist);
         Button cancel = view.findViewById(R.id.event_cancel);
-        Button moreOptions = view.findViewById(R.id.more_options);
 
         btnToggleWaitlist.setOnClickListener((v) -> {
             // TODO: logic for applying to event
@@ -126,10 +135,6 @@ public class ViewEventFragment extends Fragment {
                 // TODO: there a is a bug hitting cancel after it loads with a qr code
                 requireActivity().getSupportFragmentManager().popBackStack();
             }
-        });
-        moreOptions.setOnClickListener((v) -> {
-           // TODO: Options selection
-            // i image these will change based on if admin or not
         });
 
         return view;
