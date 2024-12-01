@@ -56,12 +56,6 @@
             </LinearLayout>
 
             <!-- Menu Icon -->
-            <Button
-                android:id="@+id/more_options"
-                android:layout_width="39dp"
-                android:layout_height="43dp"
-                android:background="#00000000"
-                android:drawableTop="@drawable/more_vert" />
 
         </LinearLayout>
 
