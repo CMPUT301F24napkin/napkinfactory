@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ public class ViewEventFragment extends Fragment {
     private final Event event;
     private Button btnToggleWaitlist;
     private final User user;
+    private Context mContext;
 
     public ViewEventFragment(Event event, User user){
         this.event = event;
@@ -54,6 +56,7 @@ public class ViewEventFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        mContext = context;
 
         if(context instanceof TitleUpdateListener){
             titleUpdateListener = (TitleUpdateListener) context;
@@ -202,6 +205,7 @@ public class ViewEventFragment extends Fragment {
             @Override
             public void onSuccess(@Nullable Void data) {
                 DB_Client.DatabaseCallback.super.onSuccess(data);
+                Toast.makeText(mContext, "Accepted " + event.getName() + "!", Toast.LENGTH_SHORT).show();
                 Log.i("Register User", "Successfully registered user for " + event.getName());
             }
 
@@ -242,6 +246,7 @@ public class ViewEventFragment extends Fragment {
             @Override
             public void onSuccess(@Nullable Void data) {
                 DB_Client.DatabaseCallback.super.onSuccess(data);
+                Toast.makeText(mContext, "Declined " + event.getName() + "!", Toast.LENGTH_SHORT).show();
                 Log.i("Cancelling User", "Successfully cancelled user for " + event.getName());
             }
 
@@ -289,10 +294,12 @@ public class ViewEventFragment extends Fragment {
         if(event.getWaitlist().contains(user.getAndroidId())){
             // Waitlist
             btnToggleWaitlist.setText(R.string.remove_from_waitlist);
+            btnToggleWaitlist.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorRemoveDark)));
             btnToggleWaitlist.setSelected(true);
         }else{
             // Not
             btnToggleWaitlist.setText(R.string.add_to_waitlist);
+            btnToggleWaitlist.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.neutralGray)));
             btnToggleWaitlist.setSelected(false);
         }
     }
@@ -324,7 +331,7 @@ public class ViewEventFragment extends Fragment {
         dbClient.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(@Nullable Void data) {
-                Toast.makeText(getContext(), "Removed event from waitlist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Left waitlist for " + event.getName() + "!", Toast.LENGTH_SHORT).show();
                 Log.d("ViewEventFragment", "Removed event from user waitlist");
             }
 
@@ -359,7 +366,7 @@ public class ViewEventFragment extends Fragment {
                     db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
                         @Override
                         public void onSuccess(@Nullable Void data) {
-                            Toast.makeText(getContext(), "Added event to waitlist!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "Joined waitlist for " + event.getName() + "!", Toast.LENGTH_SHORT).show();
                             Log.d("ViewEventFragment", "Added event from user waitlist");
                         }
 

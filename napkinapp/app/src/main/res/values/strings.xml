@@ -14,8 +14,8 @@
     <string name="read_notification_button">Read Notification Button</string>
 
 <!--    Button captions-->
-    <string name="add_to_waitlist">Add to Waitlist</string>
-    <string name="remove_from_waitlist">Remove from Waitlist</string>
+    <string name="add_to_waitlist">Join the Waitlist</string>
+    <string name="remove_from_waitlist">Leave the Waitlist</string>
 
     <string name="edit_profile">Edit Profile</string>
 
