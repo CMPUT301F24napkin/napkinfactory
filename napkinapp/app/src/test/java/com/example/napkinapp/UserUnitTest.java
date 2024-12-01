@@ -31,7 +31,7 @@ public class UserUnitTest {
     @Test
     public void testParameterizedConstructor() {
         user = new User("android123", "John Doe", "123-456-7890", "john@example.com",
-                "123 Main St", true, false);
+                "123 Main St", true, false, false);
         assertEquals("android123", user.getAndroidId());
         assertEquals("John Doe", user.getName());
         assertEquals("123-456-7890", user.getPhoneNumber());
@@ -44,7 +44,7 @@ public class UserUnitTest {
     @Test
     public void testSettersAndGetters() {
         user = new User("android123", "John Doe", "123-456-7890", "john@example.com",
-                "123 Main St", true, false);
+                "123 Main St", true, false, false);
 
         user.setName("Jane Doe");
         assertEquals("Jane Doe", user.getName());
@@ -68,7 +68,7 @@ public class UserUnitTest {
     @Test
     public void testAddNotification() {
         user = new User("android123", "John Doe", "123-456-7890", "john@example.com",
-                "123 Main St", true, false);
+                "123 Main St", true, false, false);
         notification1 = new Notification("Welcome", "Hello and welcome");
         notification2 = new Notification("Reminder", "Ooga Booga");
         user.addNotification(notification1);
@@ -82,7 +82,7 @@ public class UserUnitTest {
     @Test
     public void testDeleteNotification() {
         user = new User("android123", "John Doe", "123-456-7890", "john@example.com",
-                "123 Main St", true, false);
+                "123 Main St", true, false, false);
         notification1 = new Notification("Welcome", "Hello and welcome");
         notification2 = new Notification("Reminder", "Ooga Booga");
         user.addNotification(notification1);
@@ -95,7 +95,7 @@ public class UserUnitTest {
     @Test
     public void testAllNotificationsRead() {
         user = new User("android123", "John Doe", "123-456-7890", "john@example.com",
-                "123 Main St", true, false);
+                "123 Main St", true, false, false);
         notification1 = new Notification("Welcome", "Hello and welcome");
         notification2 = new Notification("Reminder", "Ooga Booga");
         
@@ -113,7 +113,7 @@ public class UserUnitTest {
     @Test
     public void testSetNotifications() {
         user = new User("android123", "John Doe", "123-456-7890", "john@example.com",
-                "123 Main St", true, false);
+                "123 Main St", true, false, false);
         notification1 = new Notification("Welcome", "Hello and welcome");
         notification2 = new Notification("Reminder", "Ooga Booga");
         ArrayList<Notification> notifications = new ArrayList<>();

@@ -16,6 +16,7 @@ zxing = "core"
 zxingAndroidEmbedded = "4.3.0"
 junitJupiter = "5.8.1"
 glide = "4.16.0"
+playServicesLocation = "21.3.0"
 fragmentTesting = "1.8.5"
 
 
@@ -36,6 +37,7 @@ zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", ve
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "fragmentTesting" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 
 [plugins]

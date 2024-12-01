@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.location.Location;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -37,6 +38,7 @@ import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.ImageUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.napkinapp.utils.Location_Utils;
 
 public class ProfileFragment extends Fragment {
     private final User user;
@@ -146,7 +148,21 @@ public class ProfileFragment extends Fragment {
         notificationSwitch = view.findViewById(R.id.notification_switch);
         notificationSwitch.setChecked(user.getEnNotifications());
 
-        notificationSwitch.setOnClickListener((v) -> {
+        Switch locationSwitch = view.findViewById(R.id.location_switch);
+        locationSwitch.setChecked(user.getEnLocation());
+
+        locationSwitch.setOnClickListener((v) -> {
+                    user.setEnLocation(locationSwitch.isChecked());
+                    updateUserInDB("Location: " + (user.getEnLocation() ? "Enabled" : "Disabled"));
+
+                    if (user.getEnLocation() && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 102);
+                    }
+                });
+
+        notificationSwitch.setOnClickListener((v) ->{
+            user.setEnNotifications(notificationSwitch.isChecked());
+            updateUserInDB("Notifications: " + (user.getEnNotifications() ? "Enabled" : "Disabled"));
             if (user.getEnNotifications() && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
             }
@@ -180,6 +196,24 @@ public class ProfileFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void updateUserInDB(String successMessage){
+        DB_Client db = new DB_Client();
+
+        db.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("User update/creation", "Something went wrong updating user");
+                Toast.makeText(getContext(), "Error communication with database! Please try again!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                Log.i("User update/creation", "User updated/created");
+                Toast.makeText(getContext(), successMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

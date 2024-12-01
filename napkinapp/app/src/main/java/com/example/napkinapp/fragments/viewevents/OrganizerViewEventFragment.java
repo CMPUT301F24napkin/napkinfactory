@@ -65,9 +65,7 @@ public class OrganizerViewEventFragment extends Fragment {
         this.event = event;
     }
 
-    ;
-
-    private void sendNotification(List<String> androidIds, Notification notification) {
+    private void sendNotification(@NonNull List<String> androidIds, Notification notification) {
         for (String androidId : androidIds) {
             DB_Client db = new DB_Client();
             HashMap<String, Object> filter = new HashMap<>();
@@ -75,6 +73,7 @@ public class OrganizerViewEventFragment extends Fragment {
             db.findOne("Users", filter, new DB_Client.DatabaseCallback<User>() {
                 @Override
                 public void onSuccess(@Nullable User data) {
+                    assert data != null;
                     data.addNotification(notification);
                     db.writeData("Users", androidId, data, DB_Client.IGNORE);
                 }
@@ -101,6 +100,9 @@ public class OrganizerViewEventFragment extends Fragment {
         Collections.shuffle(waitlistCopy);
 
         // minimum between size of waitlist and space left in chosen list.
+        // FIX THIS SO THAT IT DOESN'T GRAB 0 DUDES
+        // ALSO CHECK IF 0 DUDES AND BLOCK
+        // DO SOME THING TO CHECK IF LOTTERY BEEN CALLED AND SOTP?
         int numUsersToMove = Math.min(waitlistCopy.size(), event.getParticipantLimit() - chosenListCopy.size());
         int i = numUsersToMove;
         Iterator<String> iterator = waitlistCopy.iterator();
@@ -115,35 +117,56 @@ public class OrganizerViewEventFragment extends Fragment {
 
         DB_Client db = new DB_Client();
 
-// Update the event's waitlist and chosen list
+        // Update the event's waitlist and chosen list
         Map<String, Object> eventUpdates = Map.of(
                 "waitlist", waitlistCopy,
                 "chosen", chosenListCopy
         );
 
-        db.writeData("Events", event.getId(), eventUpdates, new DB_Client.DatabaseCallback<Void>() {
+        db.updateAll("Events", Map.of("id", event.getId()), eventUpdates, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(Void data) {
                 Log.d("UPDATING EVENT LIST", "Event waitlist and chosen lists updated");
 
                 // Update users in the chosen list
                 for (String userId : chosenListCopy) {
-                    Map<String, Object> userUpdates = Map.of(
-                            "chosen", FieldValue.arrayUnion(event.getId()),
-                            "waitlist", FieldValue.arrayRemove(event.getId())
-                    );
-
-                    db.writeData("Users", userId, userUpdates, new DB_Client.DatabaseCallback<Void>() {
+                    // Retrieve a user
+                    db.findOne("Users", Map.of("androidId", userId), new DB_Client.DatabaseCallback<User>() {
                         @Override
-                        public void onSuccess(Void data) {
-                            Log.d("LOTTERY USER", "User " + userId + " moved to chosen");
+                        public void onSuccess(@Nullable User data) {
+                            if(data == null){
+                                Log.e("LOTTERY USER", "User does not exist " + userId);
+                                return;
+                            }
+
+                            // Update user list
+                            data.removeEventFromWaitList(event.getId());
+                            data.addEventToChosen(event.getId());
+
+                            Map<String, Object> userListUpdates = Map.of(
+                                    "waitlist", data.getWaitlist(),
+                                    "chosen", data.getChosen()
+                            );
+
+                            // Push to database
+                            db.updateAll("Users", Map.of("androidId", userId), userListUpdates, new DB_Client.DatabaseCallback<Void>() {
+                                @Override
+                                public void onSuccess(@Nullable Void data) {
+                                    Log.d("LOTTERY USER", "User " + userId + " moved to chosen");
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                    Log.e("LOTTERY USER", "Error updating user " + userId + ": " + e.getMessage());
+                                }
+                            });
                         }
 
                         @Override
                         public void onFailure(Exception e) {
-                            Log.e("LOTTERY USER", "Error updating user " + userId + ": " + e.getMessage());
+                            Log.e("LOTTERY USER", "Error retrieving user " + userId + ": " + e.getMessage());
                         }
-                    });
+                    }, User.class);
                 }
             }
 
@@ -155,12 +178,12 @@ public class OrganizerViewEventFragment extends Fragment {
 
         // notify everyone in waitlist. notify everyone in chosenListCopy.
         sendNotification(waitlistCopy, new Notification(
-                getText(R.string.notification_not_chosen_name).toString(),
+                getText(R.string.notification_not_chosen_name).toString() + event.getName(),
                 getText(R.string.notification_not_chosen_description).toString(), false, event.getId(), false));
 
         sendNotification(chosenListCopy, new Notification(
-                getText(R.string.notification_chosen_name).toString(),
-                getText(R.string.notification_chosen_description).toString(), false, event.getId(), false));
+                getText(R.string.notification_chosen_name).toString() + event.getName(),
+                getText(R.string.notification_chosen_description).toString() + event.getName(), false, event.getId(), false));
 
 
     }
@@ -288,7 +311,7 @@ public class OrganizerViewEventFragment extends Fragment {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month - 1, dayOfMonth); // Month is 0-based
                 Date date = calendar.getTime();
-                eventDetails.setText(formatter.format(date));
+                eventDate.setText(formatter.format(date));
 
                 // update db
                 event.setEventDate(date);
@@ -398,22 +421,22 @@ public class OrganizerViewEventFragment extends Fragment {
             if (!users.isEmpty()) {
                 if (waitlistChip.isChecked()) {
                     sendNotification(event.getWaitlist(), new Notification(
-                            getText(R.string.notification_custom_name).toString(),
+                            getText(R.string.notification_custom_name).toString() + event.getName(),
                             messageTextField.getEditText().getText().toString(), false, event.getId(), false));
 
                 } else if (chosenChip.isChecked()) {
                     sendNotification(event.getChosen(), new Notification(
-                            getText(R.string.notification_custom_name).toString(),
+                            getText(R.string.notification_custom_name).toString() + event.getName(),
                             messageTextField.getEditText().getText().toString(), false, event.getId(), false));
 
                 } else if (cancelledChip.isChecked()) {
                     sendNotification(event.getCancelled(), new Notification(
-                            getText(R.string.notification_custom_name).toString(),
+                            getText(R.string.notification_custom_name).toString() + event.getName(),
                             messageTextField.getEditText().getText().toString(), false, event.getId(), false));
 
                 } else if (registeredChip.isChecked()) {
                     sendNotification(event.getRegistered(), new Notification(
-                            getText(R.string.notification_custom_name).toString(),
+                            getText(R.string.notification_custom_name).toString() + event.getName(),
                             messageTextField.getEditText().getText().toString(), false, event.getId(), false));
                 } else {
                     ArrayList<String> arrayList = new ArrayList<>(event.getWaitlist());

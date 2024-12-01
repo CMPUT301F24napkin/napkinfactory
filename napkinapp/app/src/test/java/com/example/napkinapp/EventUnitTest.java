@@ -8,6 +8,7 @@ import com.example.napkinapp.models.Event;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class EventUnitTest {
     private Event event;
@@ -24,6 +25,7 @@ public class EventUnitTest {
     private ArrayList<String> chosen = new ArrayList<>();
     private ArrayList<String> cancelled = new ArrayList<>();
     private ArrayList<String> registered = new ArrayList<>();
+    private HashMap<String, ArrayList<Double>> entrantLocations = new HashMap<>();
 
     @Test
     public void testConstructorWithRequiredFields() {
@@ -43,7 +45,7 @@ public class EventUnitTest {
     @Test
     public void testConstructorWithAllFields() {
         Event dbEvent = new Event("event1", organizerId, name, eventDate, lotteryDate, description, entrantLimit,
-                participantLimit, requireGeolocation, qrHashCode, waitlist, chosen, cancelled, registered);
+                participantLimit, requireGeolocation, qrHashCode, waitlist, chosen, cancelled, registered, entrantLocations);
         assertEquals("event1", dbEvent.getId());
         assertEquals(organizerId, dbEvent.getOrganizerId());
         assertEquals(name, dbEvent.getName());
@@ -58,6 +60,7 @@ public class EventUnitTest {
         assertEquals(chosen, dbEvent.getChosen());
         assertEquals(cancelled, dbEvent.getCancelled());
         assertEquals(registered, dbEvent.getRegistered());
+        assertEquals(entrantLocations, dbEvent.getEntrantLocations());
     }
 
     @Test
