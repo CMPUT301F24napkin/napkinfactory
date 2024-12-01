@@ -49,7 +49,9 @@ public class AdminListUsersFragment extends Fragment {
             User user = (User) v.getTag();
             Log.i("Button", String.format("List Events: Clicked on event %s\n", user.getName()));
 
-            // Call the delete method with the event ID
+
+            // delete the user from the event waitlist
+
 
             Toast.makeText(mContext, "Delete User", Toast.LENGTH_SHORT).show();
             deleteUser(user);
@@ -131,17 +133,56 @@ public class AdminListUsersFragment extends Fragment {
 
     }
 
+
+
     private void deleteUser(User user) {
         if (user.getAndroidId() == null || user.getAndroidId().isEmpty()) {
             Log.e("RegisteredEventsFragment", "Event ID is null or empty. Cannot delete event.");
             return;
         }
+        String userID = user.getAndroidId();
+        ArrayList<String> eventIds = user.getWaitlist();
 
-        // Set up the filter to find the event by its ID
+        for (String eventId : eventIds) {
+            Map<String, Object> filters = new HashMap<>();
+            filters.put("id", eventId); // Assuming the event ID is stored as 'id'
+            Log.d("RegisteredEventsFragment", "Event ID: " + eventId);
+
+            db.findOne("Events", filters, new DB_Client.DatabaseCallback<Event>() {
+                @Override
+                public void onSuccess(@Nullable Event event) {
+                    if (event == null) {
+                        Log.e("RegisteredEventsFragment", "Event not found for ID: " + eventId);
+                        return;
+                    }
+                    List<String> waitlist = (List<String>) event.getWaitlist();
+                    List<String> registered = (List<String>) event.getRegistered();
+                    // adjust the waitlist
+                    waitlist.remove(userID);
+                    registered.remove(userID);
+
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("waitlist", waitlist);
+                    updates.put("registered", registered);
+                    db.updateAll("Events", filters, updates, new DB_Client.DatabaseCallback<Void>() {});
+
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(mContext, "Failed to get event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("RegisteredEventsFragment", "Error getting evnet", e);
+                }
+            }, Event.class);
+        }
+
+
+        // Set up the filter to find the user by its ID
         Map<String, Object> filters = new HashMap<>();
         filters.put("androidId", user.getAndroidId());
 
         // Call DB_Client's deleteOne method
+
         db.deleteOne("Users", filters, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
