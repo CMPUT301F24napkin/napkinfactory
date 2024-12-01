@@ -50,7 +50,9 @@ public class AdminListEventsFragment extends Fragment {
             Log.i("Button", String.format("List Events: Clicked on event %s\n", event.getName()));
 
             // Call the delete method with the event ID
+            Log.d("RegisteredEventsFragment", "Deleting event with ID: " + event.getId());
             deleteEvent(event);
+            Log.d("RegisteredEventsFragment", "Event deleted successfully.");
         });
     };
 
@@ -126,8 +128,7 @@ public class AdminListEventsFragment extends Fragment {
         }, Event.class);
     }
 
-    private void
-    deleteEvent(Event event) {
+    private void deleteEvent(Event event) {
         if (event.getId() == null || event.getId().isEmpty()) {
             Log.e("RegisteredEventsFragment", "Event ID is null or empty. Cannot delete event.");
             return;
@@ -136,6 +137,10 @@ public class AdminListEventsFragment extends Fragment {
         // remove from users waitlists first
         String eventId = event.getId();
         ArrayList<String> userIds = event.getWaitlist();
+        userIds.addAll(event.getRegistered());
+        userIds.addAll(event.getChosen());
+
+        Log.d("RegisteredEventsFragment", "User Ids: " + userIds);
 
         for (String userID : userIds) {
             Map<String, Object> filters = new HashMap<>();
@@ -145,21 +150,27 @@ public class AdminListEventsFragment extends Fragment {
             db.findOne("Users", filters, new DB_Client.DatabaseCallback<User>() {
                 @Override
                 public void onSuccess(@Nullable User user) {
-                    if (user == null) {
-                        Log.e("RegisteredEventsFragment", "Event not found for ID: " + eventId);
-                        return;
+                    if (user != null) {
+                        List<String> waitlist = (List<String>) user.getWaitlist();
+                        Log.d("RegisteredEventsFragment", "waitlist" + waitlist);
+                        List<String> registered = (List<String>) user.getRegistered();
+                        Log.d("RegisteredEventsFragment", "regisered" + registered);
+                        List<String> chosen = (List<String>) user.getChosen();
+                        // adjust the waitlist
+                        waitlist.remove(eventId);
+                        Log.d("RegisteredEventsFragment", "removed waitlist" + waitlist);
+                        registered.remove(eventId);
+                        Log.d("RegisteredEventsFragment", "removed regisered" + registered);
+                        chosen.remove(eventId);
+
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("waitlist", waitlist);
+                        updates.put("registered", registered);
+                        updates.put("chosen", chosen);
+                        Log.d("RegisteredEventsFragment", "updates" + updates);
+                        db.updateAll("Users", filters, updates, new DB_Client.DatabaseCallback<Void>() {
+                        });
                     }
-                    List<String> waitlist = (List<String>) user.getWaitlist();
-                    List<String> registered = (List<String>) user.getRegistered();
-                    // adjust the waitlist
-                    waitlist.remove(eventId);
-                    registered.remove(eventId);
-
-                    Map<String, Object> updates = new HashMap<>();
-                    updates.put("waitlist", waitlist);
-                    updates.put("registered", registered);
-                    db.updateAll("Users", filters, updates, new DB_Client.DatabaseCallback<Void>() {});
-
                 }
 
                 @Override
@@ -169,8 +180,6 @@ public class AdminListEventsFragment extends Fragment {
                 }
             }, User.class);
         }
-
-
 
         // Set up the filter to find the event by its ID
         Map<String, Object> filters = new HashMap<>();

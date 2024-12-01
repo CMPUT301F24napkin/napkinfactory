@@ -143,6 +143,8 @@ public class AdminListUsersFragment extends Fragment {
         //remove from events waitlists
         String userID = user.getAndroidId();
         ArrayList<String> eventIds = user.getWaitlist();
+        eventIds.addAll(user.getRegistered());
+        eventIds.addAll(user.getChosen());
 
         for (String eventId : eventIds) {
             Map<String, Object> filters = new HashMap<>();
@@ -152,27 +154,35 @@ public class AdminListUsersFragment extends Fragment {
             db.findOne("Events", filters, new DB_Client.DatabaseCallback<Event>() {
                 @Override
                 public void onSuccess(@Nullable Event event) {
-                    if (event == null) {
-                        Log.e("RegisteredEventsFragment", "Event not found for ID: " + eventId);
-                        return;
+                    if (event != null) {
+
+                        List<String> waitlist = (List<String>) event.getWaitlist();
+                        Log.d("RegisteredEventsFragment", "waitlist" + waitlist);
+                        List<String> registered = (List<String>) event.getRegistered();
+                        Log.d("RegisteredEventsFragment", "regisered" + registered);
+                        List<String> chosen = (List<String>) event.getChosen();
+                        // adjust the waitlist
+                        waitlist.remove(userID);
+                        Log.d("RegisteredEventsFragment", "removed waitlist" + waitlist);
+                        registered.remove(userID);
+                        Log.d("RegisteredEventsFragment", "removed regisered" + registered);
+                        chosen.remove(userID);
+
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("waitlist", waitlist);
+                        updates.put("registered", registered);
+                        updates.put("chosen", chosen);
+
+                        Log.d("RegisteredEventsFragment", "updates" + updates);
+                        db.updateAll("Events", filters, updates, new DB_Client.DatabaseCallback<Void>() {
+                        });
+
                     }
-                    List<String> waitlist = (List<String>) event.getWaitlist();
-                    List<String> registered = (List<String>) event.getRegistered();
-                    // adjust the waitlist
-                    waitlist.remove(userID);
-                    registered.remove(userID);
-
-                    Map<String, Object> updates = new HashMap<>();
-                    updates.put("waitlist", waitlist);
-                    updates.put("registered", registered);
-                    db.updateAll("Events", filters, updates, new DB_Client.DatabaseCallback<Void>() {});
-
                 }
-
                 @Override
                 public void onFailure(Exception e) {
                     Toast.makeText(mContext, "Failed to get event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.e("RegisteredEventsFragment", "Error getting evnet", e);
+                    Log.e("RegisteredEventsFragment", "Error getting event", e);
                 }
             }, Event.class);
         }
