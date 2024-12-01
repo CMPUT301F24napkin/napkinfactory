@@ -143,66 +143,114 @@ public class CreateEventFragment extends Fragment {
     }
 
     private void onCreateButtonClick() {
-        DB_Client db = new DB_Client();
+        boolean hasError = false;
+
+        // Reset errors
+        eventName.setError(null);
+        eventDate.setError(null);
+        lotteryDate.setError(null);
+        entrantLimit.setError(null);
+        participantLimit.setError(null);
+
+        // Validate event name
+        if (eventName.getText().toString().trim().isEmpty()) {
+            eventName.setError("Event name cannot be empty");
+            hasError = true;
+        }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        // Parse the date string into a Date object
-        Date date = new Date();
-        Date lottery = new Date();
+        Date date = null, lottery = null;
+
+        // Validate event date
         try {
             date = dateFormat.parse(eventDate.getText().toString());
-            lottery = dateFormat.parse(lotteryDate.getText().toString());
+            if (date.before(new Date())) {
+                eventDate.setError("Event date cannot be in the past");
+                hasError = true;
+            }
         } catch (ParseException e) {
-            e.printStackTrace();
+            eventDate.setError("Invalid event date format");
+            hasError = true;
         }
 
+        // Validate lottery date
+        try {
+            lottery = dateFormat.parse(lotteryDate.getText().toString());
+            if (date != null && lottery.before(date)) {
+                lotteryDate.setError("Lottery date cannot be before the event date");
+                hasError = true;
+            }
+        } catch (ParseException e) {
+            lotteryDate.setError("Invalid lottery date format");
+            hasError = true;
+        }
 
-        int participantLimitValue = Integer.MAX_VALUE;
-        int entrantLimitValue = 20;
-        try{
-            participantLimitValue = (participantLimitCheckbox.isChecked()) ? Integer.parseInt(participantLimit.getText().toString()) : Integer.MAX_VALUE;
+        int entrantLimitValue = 0, participantLimitValue = Integer.MAX_VALUE;
+
+        // Validate entrant limit
+        try {
             entrantLimitValue = Integer.parseInt(entrantLimit.getText().toString());
+            if (entrantLimitValue <= 0) {
+                entrantLimit.setError("Entrant limit must be greater than 0");
+                hasError = true;
+            }
+        } catch (NumberFormatException e) {
+            entrantLimit.setError("Invalid entrant limit");
+            hasError = true;
         }
-        catch (NumberFormatException e) {
-            // TODO what do we want to do?? maybe ask the user to enter it again.
+
+        // Validate participant limit if enabled
+        if (participantLimitCheckbox.isChecked()) {
+            try {
+                participantLimitValue = Integer.parseInt(participantLimit.getText().toString());
+                if (participantLimitValue <= 0 || participantLimitValue > entrantLimitValue) {
+                    participantLimit.setError("Participant limit must be greater than 0 and less than or equal to entrant limit");
+                    hasError = true;
+                }
+            } catch (NumberFormatException e) {
+                participantLimit.setError("Invalid participant limit");
+                hasError = true;
+            }
         }
 
-        String userID = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+        // If any validation errors exist, stop here
+        if (hasError) {
+            return;
+        }
 
-        // Create the Event object with the Date
-        Event event = new Event(loggedInUser.getAndroidId(), eventName.getText().toString(), date, lottery, eventDescription.getText().toString(),
-                entrantLimitValue, participantLimitValue, geolocationSwitch.isChecked());
+        // Create the Event object
+        Event event = new Event(
+                loggedInUser.getAndroidId(),
+                eventName.getText().toString().trim(),
+                date,
+                lottery,
+                eventDescription.getText().toString().trim(),
+                entrantLimitValue,
+                participantLimitValue,
+                geolocationSwitch.isChecked()
+        );
 
-
+        // Insert the event into the database
+        DB_Client db = new DB_Client();
         db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {
             @Override
             public void onSuccess(@Nullable String eventId) {
-                if (eventId == null){
+                if (eventId == null) {
                     Log.e("DB", "Failed to get event ID");
                     return;
                 }
 
                 String hash = QRCodeUtils.hashString(eventId);
-
-                if (hash == null){
+                if (hash == null) {
                     Log.e("QR", "Failed to generate QR Hash code");
                     return;
                 }
-                db.updateAll("Events", Map.of(
-                        "id", eventId
-                ), Map.of(
-                        "qrHashCode", hash
-                ), new DB_Client.DatabaseCallback<Void>() {});
 
-                if(eventImageUri != null) {
+                db.updateAll("Events", Map.of("id", eventId), Map.of("qrHashCode", hash), new DB_Client.DatabaseCallback<Void>() {});
+
+                if (eventImageUri != null) {
                     imageUtils.uploadImage(eventImageUri, eventId)
-                            .addOnSuccessListener(uri -> {
-                                db.updateAll("Events", Map.of(
-                                        "id", eventId
-                                ), Map.of(
-                                        "eventImageUri", uri.toString()
-                                ), new DB_Client.DatabaseCallback<Void>() {});
-                            })
+                            .addOnSuccessListener(uri -> db.updateAll("Events", Map.of("id", eventId), Map.of("eventImageUri", uri.toString()), new DB_Client.DatabaseCallback<Void>() {}))
                             .addOnFailureListener(e -> {
                                 Log.e("UploadImage", "Failed to upload image: " + e.getMessage());
                                 Toast.makeText(getContext(), "Failed uploading image! Please try again!", Toast.LENGTH_SHORT).show();
@@ -212,8 +260,9 @@ public class CreateEventFragment extends Fragment {
         });
 
         getParentFragmentManager().popBackStack();
-
     }
+
+
 
 
     private void showDatePickerDialog(EditText targetEditText) {
