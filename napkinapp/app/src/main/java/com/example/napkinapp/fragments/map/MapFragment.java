@@ -31,6 +31,7 @@ import com.example.napkinapp.fragments.facility.ViewFacilityFragment;
 import com.example.napkinapp.fragments.viewevents.OrganizerViewEventFragment;
 import com.example.napkinapp.models.Facility;
 import com.example.napkinapp.models.User;
+import com.example.napkinapp.utils.AbstractMapFragment;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -44,7 +45,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 import java.util.ArrayList;
 import org.osmdroid.views.overlay.Marker;
 
-public class MapFragment extends Fragment {
+public class MapFragment extends AbstractMapFragment {
     private final User user;
     private TitleUpdateListener titleUpdateListener;
     private Context m_context;
@@ -60,32 +61,7 @@ public class MapFragment extends Fragment {
         this.user = user;
     }
 
-    final String[] permissionsToRequest = {
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-
     CustomInfoWindow customInfoWindow = null;
-
-    // Register the permissions callback, which handles the user's response to the
-    // system permissions dialog. Save the return value, an instance of
-    // ActivityResultLauncher, as an instance variable.
-    private final ActivityResultLauncher<String[]> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
-                if (isGranted.values().stream().allMatch(granted -> granted == Boolean.TRUE)) {
-                    // Permission is granted. Continue the action or workflow in your
-                    // app.
-                    Log.i("Map", "all permissions granted");
-                } else {
-                    // Explain to the user that the feature is unavailable because the
-                    // feature requires a permission that the user has denied. At the
-                    // same time, respect the user's decision. Don't link to system
-                    // settings in an effort to convince the user to change their
-                    // decision.
-                    Log.i("Map", "some permissions not granted");
-                }
-            });
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -133,7 +109,7 @@ public class MapFragment extends Fragment {
         });
 
         // if permissions not granted
-        requestPermissionLauncher.launch(permissionsToRequest);
+        requestMapPermissions();
 
         // add my location overlay DOESN"T WORK
 //        MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(m_context), map);
@@ -165,14 +141,14 @@ public class MapFragment extends Fragment {
         markersOverlay.setFocusItemsOnTap(true);
         map.getOverlays().add(markersOverlay);
         //your items
-        addMarker("brian's best friend's house", "they might go bouldering together sometime idk", 53.401052538742526, -113.58270907542327); // Lat/Lon decimal degrees
-        addMarker("ui test factory", "throrough handwritten tests written here", 53.490991702911465, -113.51791513242499);
-        addMarker("intern", "he's doing his best", 53.52087332627619, -113.5328317301677);
-        addMarker("Your Location", ";-)", 53.527309714453466, -113.52931950296305);
-        addMarker("MVP's house", "literally wrote the most lines of code <3 omg hes so hot!!!", 53.508247805120284, -113.47414073221799);
-        addMarker("Certain Eastern-European Individual", "writes code occasionally i guess", 53.470003731447584, -113.39308303414089);
-        addMarker("Illegal Immigrant", "wrote, like, ALL the backend! Way to go!", 53.5282620031484, -113.57275089319474);
-        addMarker("Queen of Hackathon", "Wanted to be pretty princess but that is cringe", 53.406111, -113.458472);
+        addMarker(map, getDefaultIcon(), "brian's best friend's house", "they might go bouldering together sometime idk", 53.401052538742526, -113.58270907542327, customInfoWindow); // Lat/Lon decimal degrees
+        addMarker(map, getDefaultIcon(),"ui test factory", "throrough handwritten tests written here", 53.490991702911465, -113.51791513242499, customInfoWindow);
+        addMarker(map, getDefaultIcon(),"intern", "he's doing his best", 53.52087332627619, -113.5328317301677, customInfoWindow);
+        addMarker(map, getDefaultIcon(),"Your Location", ";-)", 53.527309714453466, -113.52931950296305, customInfoWindow);
+        addMarker(map, getDefaultIcon(),"MVP's house", "literally wrote the most lines of code <3 omg hes so hot!!!", 53.508247805120284, -113.47414073221799, customInfoWindow);
+        addMarker(map, getDefaultIcon(),"Certain Eastern-European Individual", "writes code occasionally i guess", 53.470003731447584, -113.39308303414089, customInfoWindow);
+        addMarker(map, getDefaultIcon(),"Illegal Immigrant", "wrote, like, ALL the backend! Way to go!", 53.5282620031484, -113.57275089319474, customInfoWindow);
+        addMarker(map, getDefaultIcon(),"Queen of Hackathon", "Wanted to be pretty princess but that is cringe", 53.406111, -113.458472, customInfoWindow);
 
         return view;
     }
@@ -195,31 +171,5 @@ public class MapFragment extends Fragment {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
-    }
-
-    /**
-     * Adds a marker to the map.
-     * @param title the title of the marker
-     * @param description the description of the marker
-     * @param longitude the longitude of the marker
-     * @param latitude the latitude of the marker
-     * @return the newly-created overlay item
-     */
-    public Marker addMarker(String title, String description, double longitude, double latitude) {
-        Drawable icon = ResourcesCompat.getDrawable(getResources(), R.drawable.baseline_location_on_72, null);
-        icon.setTint(Color.parseColor("#FF007AFF"));
-
-        Marker marker = new Marker(map);
-        marker.setPosition(new GeoPoint(longitude, latitude));
-        marker.setTitle(title);
-        marker.setSnippet(description);
-        marker.setInfoWindow(customInfoWindow);
-        marker.setIcon(icon);
-
-        // uncomment the next line to disable marker clicking
-//        marker.setOnMarkerClickListener((marker1, mapView) -> {return false;}); // 2
-
-        map.getOverlays().add(marker);
-        return marker;
     }
 }

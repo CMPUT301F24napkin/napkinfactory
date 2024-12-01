@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -12,7 +18,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/event_name_text_view2"
+            android:id="@+id/facility_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Event Name"
@@ -48,7 +54,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:srcCompat="@mipmap/ic_launcher" />
 
         <Button
             android:id="@+id/edit_facility_image"
@@ -81,7 +87,7 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
-            android:id="@+id/facilty_name"
+            android:id="@+id/facility_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="48dp"
@@ -104,11 +110,24 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ListView
-        android:id="@+id/events_list_view"
+    <!--        Map View -->
+
+    <TextView
+        android:id="@+id/location_text_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:nestedScrollingEnabled="true"/>
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/text_size_primary"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <include
+        layout="@layout/map_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -119,12 +138,13 @@
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Delete Facility"
+            android:text="Save"
             android:textColor="@color/white"
-            app:icon="@drawable/baseline_delete_24"
+            app:icon="@drawable/baseline_check_24"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

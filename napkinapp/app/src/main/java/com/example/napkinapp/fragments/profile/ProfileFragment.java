@@ -34,11 +34,16 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.facility.EditFacilityFragment;
+import com.example.napkinapp.fragments.viewevents.OrganizerViewEventFragment;
+import com.example.napkinapp.models.Facility;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.ImageUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.napkinapp.utils.Location_Utils;
+
+import java.util.List;
 
 public class ProfileFragment extends Fragment {
     private final User user;
@@ -197,6 +202,21 @@ public class ProfileFragment extends Fragment {
             else{
                 updateUserInfo(user);
             }
+        });
+
+        Button createFacilityButton = view.findViewById(R.id.create_facility_button);
+        createFacilityButton.setOnClickListener(v -> {
+
+            // check if this facility is a non-empty string
+
+
+            Facility facility = new Facility("Bobs house", "This is susch a sd a sdaklsjd laksj d eoi akdj lkas dm,vzhow v wjhf wioulsh zxnv hs no. , viu;w ehjwn,mNASIuh sd ms,d.", List.of(53.527309714453466, -113.52931950296305));
+
+            // Replace fragment
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragmentcontainer, new EditFacilityFragment(facility, user)) // Use your actual container ID
+                    .addToBackStack(null) // Allows user to go back to ListEventsFragment
+                    .commit();
         });
 
         return view;

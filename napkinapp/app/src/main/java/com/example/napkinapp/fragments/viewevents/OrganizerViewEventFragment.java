@@ -39,6 +39,7 @@ import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
+import com.example.napkinapp.utils.AbstractMapFragment;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.QRCodeUtils;
 import com.google.android.material.chip.Chip;
@@ -62,7 +63,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class OrganizerViewEventFragment extends Fragment {
+public class OrganizerViewEventFragment extends AbstractMapFragment {
     private Context mContext;
     private Event event;
     private TitleUpdateListener titleUpdateListener;
@@ -75,31 +76,6 @@ public class OrganizerViewEventFragment extends Fragment {
     public OrganizerViewEventFragment(Event event) {
         this.event = event;
     }
-
-    final String[] permissionsToRequest = {
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-
-    // Register the permissions callback, which handles the user's response to the
-    // system permissions dialog. Save the return value, an instance of
-    // ActivityResultLauncher, as an instance variable.
-    private final ActivityResultLauncher<String[]> requestMapPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
-                if (isGranted.values().stream().allMatch(granted -> granted == Boolean.TRUE)) {
-                    // Permission is granted. Continue the action or workflow in your
-                    // app.
-                    Log.i("Map", "all permissions granted");
-                } else {
-                    // Explain to the user that the feature is unavailable because the
-                    // feature requires a permission that the user has denied. At the
-                    // same time, respect the user's decision. Don't link to system
-                    // settings in an effort to convince the user to change their
-                    // decision.
-                    Log.i("Map", "some permissions not granted");
-                }
-            });
 
     private void sendNotification(@NonNull List<String> androidIds, Notification notification) {
         for (String androidId : androidIds) {
@@ -494,7 +470,7 @@ public class OrganizerViewEventFragment extends Fragment {
 
         if(event.isRequireGeolocation()) {
             map.setTileSource(TileSourceFactory.MAPNIK);
-            requestMapPermissionLauncher.launch(permissionsToRequest);
+            requestMapPermissions();
             map.setMultiTouchControls(true);
             IMapController mapController = map.getController();
             mapController.setZoom(15.0);
@@ -511,7 +487,7 @@ public class OrganizerViewEventFragment extends Fragment {
                 if(location.size() < 2) {
                     Log.e("Map", "Event Entrant Locations coordinate has less than 2 elements! expecting 2, one for longitude and latitude.");
                 }
-                addMarker(map, location.get(0), location.get(1));
+                addMarker(map, getDefaultIcon(), location.get(0), location.get(1));
             }
         } else {
             map.setVisibility(View.GONE);
@@ -520,24 +496,4 @@ public class OrganizerViewEventFragment extends Fragment {
         return view;
     }
 
-    /**
-     * Adds a marker to the map.
-     * @param longitude the longitude of the marker
-     * @param latitude the latitude of the marker
-     * @return the newly-created overlay item
-     */
-    public Marker addMarker(MapView map, double longitude, double latitude) {
-        Drawable icon = ResourcesCompat.getDrawable(getResources(), R.drawable.baseline_location_on_72, null);
-        icon.setTint(Color.parseColor("#FF007AFF"));
-
-        Marker marker = new Marker(map);
-        marker.setPosition(new GeoPoint(longitude, latitude));
-        marker.setIcon(icon);
-
-        // disable marker clicking
-        marker.setOnMarkerClickListener((marker1, mapView) -> {return false;}); // 2
-
-        map.getOverlays().add(marker);
-        return marker;
-    }
 }
