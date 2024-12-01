@@ -34,7 +34,7 @@
 
             </androidx.cardview.widget.CardView>
             <!-- Header Texts -->
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -43,21 +43,39 @@
 
                 <TextView
                     android:id="@+id/organizer_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="Unamed Organizer"
                     android:textColor="@color/text_primary"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/event_cancel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/event_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin"
+                    android:backgroundTint="@color/white"
+                    android:text="@string/close"
+                    android:textColor="@color/text_primary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:strokeColor="@color/text_secondary"
+                    app:strokeWidth="1dp" />
 
                 <TextView
                     android:id="@+id/organization"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="No Organizer Phone Number"
                     android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
-            </LinearLayout>
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toStartOf="@+id/event_cancel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/organizer_name" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Menu Icon -->
 
@@ -123,16 +141,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin"
-            android:layout_marginTop="8dp"
             android:layout_weight="1"
-            android:text="Decline"
+            android:backgroundTint="@color/colorRemoveDark"
 
             android:drawableTint="@color/white"
-            android:backgroundTint="@color/colorRemoveDark"
-            app:layout_constraintEnd_toStartOf="@+id/event_cancel"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/toggle_waitlist"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="Decline"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:layout_editor_absoluteY="4dp" />
 
         <Button
             android:id="@+id/toggle_waitlist"
@@ -149,28 +164,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/event_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/white"
-            android:text="@string/close"
-            android:textColor="@color/text_primary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@color/text_secondary"
-            app:strokeWidth="1dp" />
-
         <TextView
             android:id="@+id/textViewDone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="You already chose"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/event_cancel"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
