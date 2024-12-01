@@ -85,7 +85,7 @@ public class User {
         this.name = "placeholder_name";
         this.phoneNumber = "1234567890";
         this.email = "placehodler@test.com";
-        this.address = "1234 Test St ";
+        this.address = "1234 Test St";
         this.enNotifications = false;
         this.enLocation = false;
         this.isAdmin = false;
@@ -248,5 +248,13 @@ public class User {
 
     public boolean getEnLocation () {
         return this.enLocation;
+    }
+
+    public String getFacility() {
+        return facility;
+    }
+
+    public void setFacility(String facility) {
+        this.facility = facility;
     }
 }

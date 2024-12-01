@@ -50,7 +50,10 @@ public class DB_Client {
         }
     }
 
+    // suppress warnings because we are not specifying T here
+    @SuppressWarnings("rawtypes")
     public static final DB_Client.DatabaseCallback IGNORE = new DB_Client.DatabaseCallback() {};
+
 
     private final FirebaseFirestore database;
 

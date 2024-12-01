@@ -79,9 +79,9 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 break;
             case 3:
                 // QRscanner
-//                selectedFragment = new QRScannerFragment(user);
-                Facility facility = new Facility("Bobs house", "This is susch a sd a sdaklsjd laksj d eoi akdj lkas dm,vzhow v wjhf wioulsh zxnv hs no. , viu;w ehjwn,mNASIuh sd ms,d.", List.of(53.527309714453466, -113.52931950296305));
-                selectedFragment = new ViewFacilityFragment(facility, user);
+                selectedFragment = new QRScannerFragment(user);
+//                Facility facility = new Facility("Bobs house", "This is susch a sd a sdaklsjd laksj d eoi akdj lkas dm,vzhow v wjhf wioulsh zxnv hs no. , viu;w ehjwn,mNASIuh sd ms,d.", List.of(53.527309714453466, -113.52931950296305));
+//                selectedFragment = new ViewFacilityFragment(facility, user);
                 break;
             case 4:
                 // Myevents

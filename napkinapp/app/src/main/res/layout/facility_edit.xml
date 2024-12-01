@@ -30,7 +30,7 @@
             app:layout_constraintStart_toStartOf="parent"/>
 
         <Button
-            android:id="@+id/edit_event_name"
+            android:id="@+id/edit_facility_name"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:foreground="@drawable/baseline_edit_24"
@@ -47,14 +47,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/event_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@mipmap/ic_launcher" />
+            app:shapeAppearanceOverlay="@style/rounded_corners_lg" />
 
         <Button
             android:id="@+id/edit_facility_image"
@@ -76,7 +78,7 @@
         android:layout_marginTop="8dp">
 
         <TextView
-            android:id="@+id/facility_name_title"
+            android:id="@+id/facility_description_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Facility Details"
@@ -94,10 +96,10 @@
             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
             android:textColor="@color/text_secondary"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/facility_name_title"/>
+            app:layout_constraintTop_toBottomOf="@+id/facility_description_text_view"/>
 
         <Button
-            android:id="@+id/edit_event_image"
+            android:id="@+id/edit_facility_description"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginBottom="16dp"

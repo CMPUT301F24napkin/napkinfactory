@@ -41,6 +41,7 @@ import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.ImageUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class ProfileFragment extends Fragment {
@@ -58,6 +59,8 @@ public class ProfileFragment extends Fragment {
 
     private Uri profileImageUri = null;
     private ImageView profileImage;
+
+    Facility facility = null;
 
     public ProfileFragment(){
         this.user = new User();
@@ -93,6 +96,8 @@ public class ProfileFragment extends Fragment {
         );
     }
 
+    // update the User model based on the values in the UI elements.
+    // upload the updated user to the DB
     private void updateUserInfo(User user) {
         user.setName(nameText.getText().toString());
         user.setEmail(emailText.getText().toString());
@@ -230,24 +235,43 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        // facility stuff
         Button createFacilityButton = view.findViewById(R.id.create_facility_button);
+        String facilityId = user.getFacility();
+
+        DB_Client db = new DB_Client();
+        HashMap<String, Object> filters = new HashMap<>();
+        filters.put("id", facilityId);
+
+        db.findOne("Facilities", filters, new DB_Client.DatabaseCallback<Facility>() {
+            @Override
+            public void onSuccess(@Nullable Facility data) {
+                // Replace fragment
+                if(data != null) {
+                    facility = data;
+                    createFacilityButton.setText("Edit Facility");
+                }
+            }
+        }, Facility.class);
+
+
         createFacilityButton.setOnClickListener(v -> {
 
-            // check if this facility is a non-empty string
+            if(facility == null) {
+                facility = new Facility("Facility Name", "Facility Description", List.of(53.527309714453466, -113.52931950296305));
+            }
 
-
-            Facility facility = new Facility("Bobs house", "This is susch a sd a sdaklsjd laksj d eoi akdj lkas dm,vzhow v wjhf wioulsh zxnv hs no. , viu;w ehjwn,mNASIuh sd ms,d.", List.of(53.527309714453466, -113.52931950296305));
-
-            // Replace fragment
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.content_fragmentcontainer, new EditFacilityFragment(facility, user)) // Use your actual container ID
                     .addToBackStack(null) // Allows user to go back to ListEventsFragment
                     .commit();
+
         });
 
         return view;
     }
 
+    // update the user stored in the DB with the member variable user.
     private void updateUserInDB(String successMessage){
         DB_Client db = new DB_Client();
 

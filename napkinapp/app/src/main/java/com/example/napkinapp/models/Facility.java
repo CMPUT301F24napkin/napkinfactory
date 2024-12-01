@@ -12,9 +12,10 @@ public class Facility {
     List<Double> location;
     String name;
     String description;
+    String imageUri;
 
     public Facility(){
-
+        init();
     }
 
     public Facility(String name, String description, List<Double> location) {
@@ -25,8 +26,21 @@ public class Facility {
         this.description = description;
     }
 
+    public void init() {
+        // create reasonable defaults
+        this.id = null;
+        this.name = "placeholder_name";
+        this.description = "placeholder_description";
+        this.location = List.of(53.527309714453466, -113.52931950296305);
+        this.imageUri = null;
+    }
+
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public List<Double> getLocation() {
@@ -53,12 +67,11 @@ public class Facility {
         this.description = description;
     }
 
-    public void init() {
-        // create reasonable defaults
-        this.name = "placeholder_name";
-        this.description = "placeholder_description";
-        this.id = "placeholder_facility";
-        this.location = List.of(53.527309714453466, -113.52931950296305);
+    public String getImageUri() {
+        return imageUri;
+    }
 
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 }
