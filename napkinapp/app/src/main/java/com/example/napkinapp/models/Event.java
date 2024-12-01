@@ -323,4 +323,8 @@ public class Event {
     public HashMap<String, ArrayList<Double>> getEntrantLocations(){
         return this.entrantLocations;
     }
+
+    public String getEventImageUri(){
+        return eventImageUri;
+    }
 }
