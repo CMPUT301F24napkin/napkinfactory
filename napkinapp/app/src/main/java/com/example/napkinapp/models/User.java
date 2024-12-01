@@ -1,5 +1,7 @@
 package com.example.napkinapp.models;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 
 /**
@@ -19,6 +21,8 @@ public class User {
     private Boolean isAdmin;
     private ArrayList<Notification> notifications;
 
+    private String profileImageUri;
+
     private ArrayList<String> waitlist;
     private ArrayList<String> chosen;
     private ArrayList<String> registered;
@@ -36,6 +40,7 @@ public class User {
         waitlist = new ArrayList<>();
         chosen = new ArrayList<>();
         registered = new ArrayList<>();
+        profileImageUri = null;
     }
 
     // New user
@@ -55,13 +60,15 @@ public class User {
         this.waitlist = new ArrayList<>();
         this.chosen = new ArrayList<>();
         this.registered = new ArrayList<>();
+        this.profileImageUri = null;
     }
 
     // User from database
     public User (String androidId, String name, String phoneNumber, String email,
                  String address, Boolean enNotifications, Boolean isAdmin,
                  ArrayList<Notification> notifications, ArrayList<String> waitlist, ArrayList<String> chosen,
-                 ArrayList<String> cancelled, ArrayList<String> registered, Boolean enLocation){
+                 ArrayList<String> cancelled, ArrayList<String> registered, Boolean enLocation, String profileImageUri){
+
         this.androidId = androidId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -76,6 +83,7 @@ public class User {
         this.waitlist = waitlist;
         this.chosen = chosen;
         this.registered = registered;
+        this.profileImageUri = profileImageUri;
     }
 
     public void setAndroidId(String id) { this.androidId = id; }
@@ -214,6 +222,14 @@ public class User {
         return registered;
     }
 
+    public String getProfileImageUri() {
+        return profileImageUri;
+    }
+
+    public void setProfileImageUri(String profileImageUri) {
+        this.profileImageUri = profileImageUri;
+    }
+  
     public void setEnLocation (Boolean enLocation) {
         this.enLocation = enLocation;
     }
