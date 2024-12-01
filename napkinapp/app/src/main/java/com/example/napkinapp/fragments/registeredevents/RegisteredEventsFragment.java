@@ -29,9 +29,11 @@ import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class RegisteredEventsFragment extends Fragment {
     private TitleUpdateListener titleUpdateListener;
@@ -53,11 +55,11 @@ public class RegisteredEventsFragment extends Fragment {
     RegisteredEventArrayAdapter.RegisteredEventListCustomizer customizer = (button1, button2, text3, event) -> {
         Log.i("IsEventInUser", "Chosen: " + loggedInUser.getChosen().contains(event.getId()) + "\n Registered: " + loggedInUser.getRegistered().contains(event.getId()));
         // TODO: Bug where when user registers for event and then leaves screen, both chosen and registered lists return true for containing event
-        if (loggedInUser.getRegistered().contains(event.getId())) {
+        if (event.getRegistered().contains(loggedInUser.getAndroidId())) {
             // this user has been chosen and then accepted. display a text.
             button1.setVisibility(View.GONE);
             button2.setVisibility(View.GONE);
-            text3.setText("You have accepted this event.");
+            text3.setText("You have accepted this event");
             Log.i("RegisteredEventsFragment", String.format("ARRAY ADDAPTER eventid %s is in registered", event.getId()));
         } else if (loggedInUser.getChosen().contains(event.getId())) {
             // this user has been chosen but not yet accepted nor decline. display buttons.
@@ -68,7 +70,7 @@ public class RegisteredEventsFragment extends Fragment {
             Log.i("RegisteredEventsFragment", String.format("eventid %s is none!", event.getId()));
             button1.setVisibility(View.GONE);
             button2.setVisibility(View.GONE);
-            text3.setText(String.format("Evvent id=%s error", event.getId()));
+            text3.setText("You have declined this event");
         }
     };
 
@@ -123,27 +125,33 @@ public class RegisteredEventsFragment extends Fragment {
      */
     private void initializeList() {
         DB_Client db = new DB_Client();
-        ArrayList<String> androidIds = loggedInUser.getChosen();
-        androidIds.addAll(loggedInUser.getRegistered());
+        List<Function<Query, Query>> conditions = List.of(
+                query -> query.whereNotEqualTo("organizerId", loggedInUser.getAndroidId())
+        );
+        db.executeQueryList("Events", conditions, new DB_Client.DatabaseCallback<List<Event>>() {
+                    @Override
+                    public void onSuccess(@Nullable List<Event> data) {
+                        events.clear();
+                        if (data != null) {
+                            events.addAll(data);
+                            for (Event event : data) {
+                                if (event.getChosen().contains(loggedInUser.getAndroidId()) || event.getRegistered().contains(loggedInUser.getAndroidId())) {
+                                    continue;
+                                } else {
+                                    events.remove(event);
+                                }
+                            }
+                        }
 
-        // Query requires non empty list
-        if (androidIds.isEmpty()) {
-            return;
-        }
-
-        db.findAllIn("Events", "id", new ArrayList<>(androidIds), new DB_Client.DatabaseCallback<List<Event>>() {
-            @Override
-            public void onSuccess(@Nullable List<Event> data) {
-                events.clear();
-                if (data != null) {
-                    events.addAll(data);
-                }
-                eventArrayAdapter.notifyDataSetChanged();
-
-                Log.d("RegisteredEventsFragment", "Event list loaded with " + events.size() + " items.");
-            }
-        }, Event.class);
+                        eventArrayAdapter.notifyDataSetChanged();
+                    }
+                    @Override
+                    public void onFailure(Exception e) {
+                        DB_Client.DatabaseCallback.super.onFailure(e);
+                    }
+                }, Event.class);
     }
+
 
     /**
      * set up event card in the case that the event is in the chosen list
@@ -158,15 +166,21 @@ public class RegisteredEventsFragment extends Fragment {
         accept.setOnClickListener(v -> {
             // Register user for event
             registerUser(event);
+            txt.setText("You have accepted this event");
+            txt.setVisibility(View.VISIBLE);
         });
+        accept.setVisibility(View.VISIBLE);
 
         decline.setText("Decline");
         decline.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_close_24, 0, 0, 0);
         decline.setOnClickListener(v -> {
             // Reject event
             declineEvent(event);
+            txt.setVisibility(View.VISIBLE);
+            txt.setText("You have decline this event");
             Log.i("Button", String.format("List Events: Clicked on event %s\n", event.getName()));
         });
+        decline.setVisibility(View.VISIBLE);
         txt.setVisibility(View.GONE);
 
         Log.i("RegisteredEventsFragment", String.format("eventid %s is in chosen", event.getId()));
@@ -177,8 +191,6 @@ public class RegisteredEventsFragment extends Fragment {
      * @param event the event to register in
      */
     private void registerUser(Event event) {
-        // move this event from Chosen to Registered
-        // add to this user's copy
         loggedInUser.addEventToRegistered(event.getId());
         loggedInUser.removeEventFromChosen(event.getId());
 
@@ -232,7 +244,7 @@ public class RegisteredEventsFragment extends Fragment {
             @Override
             public void onSuccess(@Nullable Void data) {
                 DB_Client.DatabaseCallback.super.onSuccess(data);
-                Log.i("Cancelling User", "Successfully canelled user for " + event.getName());
+                Log.i("Cancelling User", "Successfully cancelled user for " + event.getName());
             }
 
             @Override

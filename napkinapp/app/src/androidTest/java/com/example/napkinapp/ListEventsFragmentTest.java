@@ -1,5 +1,22 @@
 package com.example.napkinapp;
 
+import static androidx.test.espresso.Espresso.onData;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static androidx.test.espresso.matcher.ViewMatchers.hasSibling;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import androidx.fragment.app.Fragment;
+
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Event;
@@ -12,28 +29,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static org.hamcrest.Matchers.anything;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import androidx.fragment.app.Fragment;
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.matcher.ViewMatchers;
-
-import static androidx.test.espresso.Espresso.onData;
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
-import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
-import static androidx.test.espresso.matcher.ViewMatchers.hasSibling;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
-import static org.junit.Assert.assertTrue;
 
 public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragment> {
 
@@ -95,7 +90,7 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
         // Check that the button for the first event has "Remove from Waitlist"
         onView(allOf(
                 withId(R.id.button),
-                withText("Remove from Waitlist"),
+                withText(R.string.remove_from_waitlist),
                 hasSibling(withText("Mock Event 1"))))
                 .check(matches(isDisplayed()));
 
@@ -108,7 +103,7 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
         // Check that the button for the second event has "Add to Waitlist"
         onView(allOf(
                 withId(R.id.button),
-                withText("Add to Waitlist"),
+                withText(R.string.add_to_waitlist),
                 hasSibling(withText("Mock Event 2"))))
                 .check(matches(isDisplayed()));
 
@@ -121,14 +116,14 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
         // Click the "Add to Waitlist" button for the second event (Mock Event 2)
         onView(allOf(
                 withId(R.id.button),
-                withText("Add to Waitlist"),
+                withText(R.string.add_to_waitlist),
                 hasSibling(withText("Mock Event 2"))))
                 .perform(click());
 
         // Check that the button for the second event has "Remove from Waitlist"
         onView(allOf(
                 withId(R.id.button),
-                withText("Remove from Waitlist"),
+                withText(R.string.remove_from_waitlist),
                 hasSibling(withText("Mock Event 2"))))
                 .check(matches(isDisplayed()));
     }
@@ -140,14 +135,13 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
 
         onView(allOf(
                 withId(R.id.button),
-                withText("Remove from Waitlist"),
+                withText(R.string.remove_from_waitlist),
                 hasSibling(withText("Mock Event 1"))))
                 .perform(click());
 
-        // Check that the button for the second event has "Remove from Waitlist"
         onView(allOf(
                 withId(R.id.button),
-                withText("Add to Waitlist"),
+                withText(R.string.add_to_waitlist),
                 hasSibling(withText("Mock Event 1"))))
                 .check(matches(isDisplayed()));
 
