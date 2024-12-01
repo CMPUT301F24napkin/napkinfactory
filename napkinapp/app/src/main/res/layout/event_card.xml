@@ -33,7 +33,7 @@
             android:layout_margin="@dimen/margin"
             android:layout_weight="1"
             android:focusableInTouchMode="false"
-            android:text="EventName"
+            android:hint="Unamed Event"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_size_primary" />
 
@@ -44,7 +44,7 @@
             android:layout_margin="@dimen/margin"
             android:layout_weight="1"
             android:focusableInTouchMode="false"
-            android:text="EventDate"
+            android:hint="No Date Specified"
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/text_size_secondary" />
 

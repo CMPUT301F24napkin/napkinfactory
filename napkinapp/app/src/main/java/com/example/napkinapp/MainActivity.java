@@ -33,6 +33,8 @@ import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.ListenForUserUpdatesWorker;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick,
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
     public static String userID;
 
     public static final String CHANNEL_ID = "napkin_app_notifications";
+
 
     public void updateHeaderNotificationIcon() {
         if (header != null) {
@@ -119,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_fragmentcontainer, new ListNotificationsFragment())
+                .replace(R.id.content_fragmentcontainer, new ListNotificationsFragment(user))
                 .addToBackStack(null)
                 .commit();
 
@@ -146,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         footer.resetButtons();
     }
 
-    @Override
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // EdgeToEdge.enable(this);
@@ -188,6 +191,8 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.footer_fragmentcontainer, footer)
                 .commit();
+
+
     }
 
     /**
@@ -217,6 +222,13 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                     OpenListEvents();
 
                     scheduleUserUpdateListener();
+
+                    for (Notification n :
+                            user.getNotifications()) {
+                        if (!n.getRead()){
+                            sendPushNotification(getBaseContext(), n.getTitle(), n.getMessage());
+                        }
+                    }
                 }else {
                     // User does not exist, open profile screen
                     Toast.makeText(getBaseContext(), "Create a profile for new Login!", Toast.LENGTH_SHORT).show();
@@ -257,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
 
                     if(currFrag instanceof ListNotificationsFragment){
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.content_fragmentcontainer, new ListNotificationsFragment())
+                                .replace(R.id.content_fragmentcontainer, new ListNotificationsFragment(user))
                                 .addToBackStack(null)
                                 .commit();
                     }
@@ -316,7 +328,6 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
     }
-
 
     private void scheduleUserUpdateListener() {
         WorkManager workManager = WorkManager.getInstance(this);
