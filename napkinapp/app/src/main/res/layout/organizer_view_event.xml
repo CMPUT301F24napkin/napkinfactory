@@ -25,13 +25,19 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <!-- Icon -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="20dp">
+
             <ImageView
                 android:id="@+id/organizer_profile"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:backgroundTint="#C4C4C4"
                 android:src="@drawable/blank_profile" />
+
+            </androidx.cardview.widget.CardView>
 
             <!-- Header Texts -->
             <LinearLayout
