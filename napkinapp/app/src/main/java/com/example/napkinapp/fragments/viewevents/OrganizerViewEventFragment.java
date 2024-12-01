@@ -277,6 +277,7 @@ public class OrganizerViewEventFragment extends Fragment {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         eventDate.setText(formatter.format(event.getEventDate()));
         lotteryDate.setText(formatter.format(event.getLotteryDate()));
+        requireGeolocation.setChecked(event.isRequireGeolocation());
 
         editEventName.setOnClickListener(v -> {
             EditTextPopupFragment popup = new EditTextPopupFragment("Edit Event Name", eventName.getText().toString(), text -> {
@@ -358,7 +359,7 @@ public class OrganizerViewEventFragment extends Fragment {
         });
 
         requireGeolocation.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Toast.makeText(mContext, String.format("set Require Geolocation to %b", isChecked), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Require Geolocation " + (isChecked ? "Enabled" : "Disabled"), Toast.LENGTH_SHORT).show();
             // update db
             event.setRequireGeolocation(isChecked);
             db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
