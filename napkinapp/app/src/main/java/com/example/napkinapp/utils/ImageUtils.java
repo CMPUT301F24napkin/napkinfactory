@@ -70,8 +70,8 @@ public class ImageUtils {
      * @param firebaseImage Uri of the image on Firebase to be deleted.
      * @return Task<Void> that resolves on successful deletion.
      */
-    public Task<Void> deleteImage(Uri firebaseImage) {
-        StorageReference imageRef = FirebaseInt.getReferenceFromUrl(firebaseImage.toString());
+    public Task<Void> deleteImage(String firebaseImage) {
+        StorageReference imageRef = FirebaseInt.getReferenceFromUrl(firebaseImage);
         return imageRef.delete();
     }
 

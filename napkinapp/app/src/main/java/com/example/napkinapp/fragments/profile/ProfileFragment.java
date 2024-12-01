@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.location.Location;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -31,14 +30,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.bumbtech.glide.Glide;
+import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.ImageUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.example.napkinapp.utils.Location_Utils;
 
 public class ProfileFragment extends Fragment {
     private final User user;
@@ -95,7 +93,6 @@ public class ProfileFragment extends Fragment {
         user.setEmail(emailText.getText().toString());
         user.setPhoneNumber(phoneText.getText().toString());
         user.setAddress(addressText.getText().toString());
-        user.setEnNotifications(notificationSwitch.isChecked());
 
         DB_Client db = new DB_Client();
         db.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
@@ -170,8 +167,29 @@ public class ProfileFragment extends Fragment {
 
 
         FloatingActionButton removeProfileImage = view.findViewById(R.id.deleteProfileImageButton);
+        if (user.getProfileImageUri() == null) {
+            removeProfileImage.setVisibility(View.GONE);
+        } else {
+            removeProfileImage.setVisibility(View.VISIBLE);
+        }
         removeProfileImage.setOnClickListener((v) -> {
+            String imageUri = user.getProfileImageUri();
+            profileImageUri = null;
+            user.setProfileImageUri(null);
+            updateUserInDB("Removed Profile Picture");
+            profileImage.setImageURI(profileImageUri);
+            try {
+                new ImageUtils().deleteImage(imageUri);
+                if (user.getProfileImageUri() == null) {
+                    removeProfileImage.setVisibility(View.GONE);
+                } else {
+                    removeProfileImage.setVisibility(View.VISIBLE);
+                }
+            } catch (Exception e) {
+                Log.e("ImageUtils", "Failed to delete the image, image may already be deleted", e);
+            }
 
+            removeProfileImage.setVisibility(View.GONE);
         });
 
         FloatingActionButton editProfileImage = view.findViewById(R.id.editProfileImageButton);
@@ -182,13 +200,16 @@ public class ProfileFragment extends Fragment {
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
         confirmButton.setOnClickListener((v) -> {
-
-            // if there is a point that profileImageUri is not null, this means profile image has changed
             if(profileImageUri != null) {
                 imageUtils.uploadImage(profileImageUri, user.getAndroidId())
                         .addOnSuccessListener(uri -> {
                             user.setProfileImageUri(uri.toString());
                             updateUserInfo(user);
+                            if (user.getProfileImageUri() == null) {
+                                removeProfileImage.setVisibility(View.GONE);
+                            } else {
+                                removeProfileImage.setVisibility(View.VISIBLE);
+                            }
                         })
                         .addOnFailureListener(e -> {
                             Log.e("UploadImage", "Failed to upload image: " + e.getMessage());
