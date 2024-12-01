@@ -370,15 +370,10 @@
 
         <!--        Map View -->
 
-        <ImageView
-            android:id="@+id/map"
+        <include
+            layout="@layout/map_widget"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
-
+            android:layout_height="wrap_content" />
 
 <!--        Chip Carousel-->
         <androidx.constraintlayout.widget.ConstraintLayout
