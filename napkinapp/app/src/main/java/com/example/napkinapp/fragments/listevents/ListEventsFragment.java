@@ -176,7 +176,7 @@ public class ListEventsFragment extends Fragment {
         db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(@Nullable Void data) {
-                Toast.makeText(mContext, "Removed " + event.getName() + " from waitlist!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Left waitlist for " + event.getName() + "!", Toast.LENGTH_SHORT).show();
                 Log.d("ListEventsFragment", "Removed event from waitlist! " + event.getName() + " id: " + event.getId() + loggedInUser.getName());
             }
 
@@ -226,7 +226,7 @@ public class ListEventsFragment extends Fragment {
                     db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
                         @Override
                         public void onSuccess(@Nullable Void data) {
-                            Toast.makeText(mContext, "Added " + event.getName() + " to waitlist!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "Joined waitlist for " + event.getName() + "!", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
@@ -424,7 +424,13 @@ public class ListEventsFragment extends Fragment {
                 events.clear();
                 if(data != null){
                     events.addAll(data);
+                    for(Event event: data){
+                        if (event.getChosen().contains(loggedInUser.getAndroidId()) || event.getRegistered().contains(loggedInUser.getAndroidId()) || event.getCancelled().contains(loggedInUser.getAndroidId())){
+                            events.remove(event);
+                        }
+                    }
                 }
+
                 eventArrayAdapter.notifyDataSetChanged();
             }
 
