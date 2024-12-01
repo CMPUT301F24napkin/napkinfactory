@@ -59,14 +59,6 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <!-- Menu Icon -->
-            <Button
-                android:id="@+id/more_options"
-                android:layout_width="39dp"
-                android:layout_height="43dp"
-                android:background="#00000000"
-                android:drawableTop="@drawable/more_vert" />
-
         </LinearLayout>
 
         <!-- Event Name and Date -->
@@ -111,7 +103,7 @@
                 android:layout_marginTop="16dp"
                 android:text="Event Name"
                 android:textColor="@color/text_primary"
-                android:textSize="18sp"
+                android:textSize="@dimen/text_size_primary"
                 android:textStyle="bold"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="4dp" />
@@ -136,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:text="Event Image"
                 android:textColor="@color/text_primary"
-                android:textSize="18sp"
+                android:textSize="@dimen/text_size_primary"
                 android:textStyle="bold"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="4dp" />
@@ -168,7 +160,7 @@
                 android:layout_height="wrap_content"
                 android:text="Event Details"
                 android:textColor="@color/text_primary"
-                android:textSize="18sp"
+                android:textSize="@dimen/text_size_primary"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -180,6 +172,7 @@
                 android:layout_marginEnd="48dp"
                 android:hint="Event details are empty"
                 android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_size_secondary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/event_details_text_view"/>
 
@@ -210,7 +203,7 @@
                 android:layout_height="wrap_content"
                 android:text="Event Date"
                 android:textColor="@color/text_primary"
-                android:textSize="18sp"
+                android:textSize="@dimen/text_size_primary"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -221,7 +214,7 @@
                 android:layout_height="wrap_content"
                 android:text="mm/dd/yyyy"
                 android:textColor="@color/text_secondary"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_size_secondary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textView" />
 
@@ -251,7 +244,7 @@
                 android:layout_height="wrap_content"
                 android:text="Lottery Date"
                 android:textColor="@color/text_primary"
-                android:textSize="18sp"
+                android:textSize="@dimen/text_size_primary"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -262,7 +255,7 @@
                 android:layout_height="wrap_content"
                 android:text="mm/dd/yyyy"
                 android:textColor="@color/text_secondary"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_size_secondary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/lottery_date_text_view" />
 
@@ -312,7 +305,7 @@
                 android:layout_height="wrap_content"
                 android:text="QR Code"
                 android:textColor="@color/text_primary"
-                android:textSize="18sp"
+                android:textSize="@dimen/text_size_primary"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -354,7 +347,7 @@
                 android:layout_height="wrap_content"
                 android:text="Require Geolocation"
                 android:textColor="@color/text_primary"
-                android:textSize="18sp"
+                android:textSize="@dimen/text_size_primary"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
