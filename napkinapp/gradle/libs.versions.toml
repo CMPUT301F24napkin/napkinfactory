@@ -39,7 +39,6 @@ osmdroid-android = { group = "org.osmdroid", name = "osmdroid-android", version.
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "fragmentTesting" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
-osmdroid-android = { group = "org.osmdroid", name = "osmdroid-android", version.ref = "osmdroidAndroid" }
 
 
 [plugins]

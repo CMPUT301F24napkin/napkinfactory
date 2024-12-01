@@ -279,22 +279,7 @@ public class OrganizerViewEventFragment extends Fragment {
         Button shareQRCode = view.findViewById(R.id.share_qr_code);
         Button doLottery = view.findViewById(R.id.do_lottery);
         SwitchCompat requireGeolocation = view.findViewById(R.id.require_geolocation);
-
-        // setup map
         MapView map = view.findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPNIK);
-        requestMapPermissionLauncher.launch(permissionsToRequest);
-        map.setMultiTouchControls(true);
-        IMapController mapController = map.getController();
-        mapController.setZoom(15.0);
-        GeoPoint startPoint = new GeoPoint(53.527309714453466, -113.52931950296305);
-        mapController.setCenter(startPoint);
-        map.setOnTouchListener((v, event) -> {
-            // Request parent to not intercept touch events when MapView is touched
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            return false;  // Let the MapView handle the touch event
-        });
-
         Chip waitlistChip = view.findViewById(R.id.chip_waitlist);
         Chip chosenChip = view.findViewById(R.id.chip_chosen);
         Chip cancelledChip = view.findViewById(R.id.chip_cancelled);
@@ -505,12 +490,29 @@ public class OrganizerViewEventFragment extends Fragment {
             }
         });
 
-        // populate map
-        for(ArrayList<Double> location : event.getEntrantLocations().values()) {
-            if(location.size() < 2) {
-                Log.e("Map", "Event Entrant Locations coordinate has less than 2 elements! expecting 2, one for longitude and latitude.");
+        if(event.isRequireGeolocation()) {
+            map.setTileSource(TileSourceFactory.MAPNIK);
+            requestMapPermissionLauncher.launch(permissionsToRequest);
+            map.setMultiTouchControls(true);
+            IMapController mapController = map.getController();
+            mapController.setZoom(15.0);
+            GeoPoint startPoint = new GeoPoint(53.527309714453466, -113.52931950296305);
+            mapController.setCenter(startPoint);
+            map.setOnTouchListener((v, event) -> {
+                // Request parent to not intercept touch events when MapView is touched
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;  // Let the MapView handle the touch event
+            });
+
+            // populate map
+            for(ArrayList<Double> location : event.getEntrantLocations().values()) {
+                if(location.size() < 2) {
+                    Log.e("Map", "Event Entrant Locations coordinate has less than 2 elements! expecting 2, one for longitude and latitude.");
+                }
+                addMarker(map, location.get(0), location.get(1));
             }
-            addMarker(map, location.get(0), location.get(1));
+        } else {
+            map.setVisibility(View.GONE);
         }
 
         return view;
