@@ -176,13 +176,14 @@ public class ListEventsFragment extends Fragment {
         db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(@Nullable Void data) {
-                Toast.makeText(mContext, "Added event to waitlist! " + event.getName() + " id: " + event.getId(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Removed " + event.getName() + " from waitlist!", Toast.LENGTH_SHORT).show();
+                Log.d("ListEventsFragment", "Removed event from waitlist! " + event.getName() + " id: " + event.getId() + loggedInUser.getName());
             }
 
             @Override
             public void onFailure(Exception e) {
                 DB_Client.DatabaseCallback.super.onFailure(e);
-                Log.e("Adding Event to waitlist", "Something went wrong! " + e);
+                Log.e("Remove Event from waitlist", "Something went wrong! " + e);
             }
         });
 
@@ -190,13 +191,13 @@ public class ListEventsFragment extends Fragment {
         db.writeData("Users", loggedInUser.getAndroidId(), loggedInUser, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(@Nullable Void data) {
-                Toast.makeText(mContext, "Removed event from users waitlist! " + loggedInUser.getName(), Toast.LENGTH_SHORT).show();
+                Log.d("ListEventsFragment", "Removed event from users waitlist " + loggedInUser.getName());
             }
 
             @Override
             public void onFailure(Exception e) {
                 DB_Client.DatabaseCallback.super.onFailure(e);
-                Log.e("Adding Event to waitlist", "Something went wrong! " + e);
+                Log.e("Remove Event to waitlist", "Something went wrong! " + e);
             }
         });
 
@@ -225,7 +226,7 @@ public class ListEventsFragment extends Fragment {
                     db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
                         @Override
                         public void onSuccess(@Nullable Void data) {
-                            Toast.makeText(mContext, "Added event to waitlist! " + event.getName(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "Added " + event.getName() + " to waitlist!", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
@@ -239,7 +240,7 @@ public class ListEventsFragment extends Fragment {
                     db.writeData("Users", loggedInUser.getAndroidId(), loggedInUser, new DB_Client.DatabaseCallback<Void>() {
                         @Override
                         public void onSuccess(@Nullable Void data) {
-                            Toast.makeText(mContext, "Added event to users waitlist! " + loggedInUser.getName(), Toast.LENGTH_SHORT).show();
+                            Log.d("Adding Event to waitlist", "Added event to users waitlist! " + loggedInUser.getName());
                         }
 
                         @Override
