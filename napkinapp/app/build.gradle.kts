@@ -51,8 +51,6 @@ dependencies {
     implementation(libs.osmdroid.android)
     implementation(libs.play.services.location)
     implementation(libs.fragment.testing)
-    implementation(libs.osmdroid.android)
-
 
     implementation(platform(libs.firebase.bom.v3271))
     implementation(libs.firebase.firestore)
