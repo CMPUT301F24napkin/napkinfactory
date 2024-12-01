@@ -21,14 +21,17 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <!-- Icon -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:cardCornerRadius="20dp" >
             <ImageView
                 android:id="@+id/organizer_profile"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:backgroundTint="#C4C4C4"
-                android:src="@drawable/blank_profile" />
+                android:src="@drawable/blank_profile" /> <!-- Image inside the CardView -->
 
+            </androidx.cardview.widget.CardView>
             <!-- Header Texts -->
             <LinearLayout
                 android:layout_width="0dp"
@@ -56,12 +59,6 @@
             </LinearLayout>
 
             <!-- Menu Icon -->
-            <Button
-                android:id="@+id/more_options"
-                android:layout_width="39dp"
-                android:layout_height="43dp"
-                android:background="#00000000"
-                android:drawableTop="@drawable/more_vert" />
 
         </LinearLayout>
 
