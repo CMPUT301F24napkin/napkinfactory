@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +12,7 @@
         android:id="@+id/event_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Unamed Event"
+        android:hint="Unnamed Event"
         android:padding="12dp"
         android:layout_marginBottom="8dp" />
 
@@ -64,23 +65,43 @@
     </LinearLayout>
 
     <!-- Image Selection Area -->
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:background="#d0d0d0"
-        android:layout_marginBottom="8dp">
+        android:layout_height="259dp"
+        android:layout_marginBottom="8dp"
+        android:background="#d0d0d0">
 
+        <!-- Image View for Displaying the Event Image -->
+        <ImageView
+            android:id="@+id/event_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="#d0d0d0" />
 
+        <!-- Delete Button (Bottom Left) -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/delete_event_image_button"
+            android:layout_width="58dp"
+            android:layout_height="54dp"
+            android:layout_gravity="bottom|start"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            app:backgroundTint="@color/colorRemove"
+            app:srcCompat="@drawable/remove" />
 
-        <ImageButton
-            android:id="@+id/edit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_edit_24"
-            android:background="?attr/selectableItemBackgroundBorderless" />
-    </LinearLayout>
+        <!-- Edit Button (Bottom Right) -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/edit_event_image_button"
+            android:layout_width="58dp"
+            android:layout_height="54dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            app:backgroundTint="@color/colorAdd"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+    </FrameLayout>
+
 
     <!-- Event Description Input -->
     <EditText
