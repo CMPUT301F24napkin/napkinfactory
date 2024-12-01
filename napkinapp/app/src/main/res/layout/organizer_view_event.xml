@@ -123,35 +123,37 @@
 
             <ImageView
                 android:id="@+id/event_image"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/event_image_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/edit_event_image"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
                 android:id="@+id/event_image_text_view"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Event Image"
+                android:text="Event Poster"
                 android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="4dp" />
+                app:layout_constraintBottom_toBottomOf="@+id/edit_event_image"
+                app:layout_constraintEnd_toStartOf="@+id/edit_event_image"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/edit_event_image"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginBottom="16dp"
-                android:theme="@style/ThemeOverlay.Material3.Button.ElevatedButton"
                 android:foreground="@drawable/baseline_edit_24"
                 android:foregroundGravity="center"
                 android:foregroundTint="@color/text_secondary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:theme="@style/ThemeOverlay.Material3.Button.ElevatedButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
