@@ -280,6 +280,8 @@ public class OrganizerViewEventFragment extends Fragment {
         Button doLottery = view.findViewById(R.id.do_lottery);
         SwitchCompat requireGeolocation = view.findViewById(R.id.require_geolocation);
 
+        MapView map = view.findViewById(R.id.map);
+
         Chip waitlistChip = view.findViewById(R.id.chip_waitlist);
         Chip chosenChip = view.findViewById(R.id.chip_chosen);
         Chip cancelledChip = view.findViewById(R.id.chip_cancelled);
