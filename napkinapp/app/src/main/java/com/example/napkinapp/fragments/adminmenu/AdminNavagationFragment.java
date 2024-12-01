@@ -22,6 +22,7 @@ import com.example.napkinapp.fragments.profile.ProfileFragment;
 import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.fragments.admineventsearch.AdminListEventsFragment;
+import com.example.napkinapp.fragments.adminimagesearch.adminImageFragment;
 
 public class AdminNavagationFragment extends Fragment {
 
@@ -100,6 +101,12 @@ public class AdminNavagationFragment extends Fragment {
 
         browseImagesButton.setOnClickListener(v -> {
             Log.d("AdminNavagationFragment", "Browse Images button clicked");
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragmentcontainer, new adminImageFragment())
+                    .addToBackStack(null)
+                    .commit();
+
         });
 
         editProfileButton.setOnClickListener(v -> {

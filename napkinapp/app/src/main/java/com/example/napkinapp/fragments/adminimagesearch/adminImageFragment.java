@@ -3,6 +3,7 @@ package com.example.napkinapp.fragments.adminimagesearch;
 import static androidx.test.InstrumentationRegistry.getContext;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,7 @@ public class adminImageFragment extends Fragment {
 
     private void fetchImagesFromStorage() {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference().child("images"); // Replace "images" with your folder name.
+        StorageReference storageReference = storage.getReference().child("gs://napkin-d16df.firebasestorage.app/IMAGES/PROFILES"); // Replace "images" with your folder name.
 
         storageReference.listAll()
                 .addOnSuccessListener(listResult -> {
