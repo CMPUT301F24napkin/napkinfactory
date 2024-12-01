@@ -280,21 +280,6 @@ public class OrganizerViewEventFragment extends Fragment {
         Button doLottery = view.findViewById(R.id.do_lottery);
         SwitchCompat requireGeolocation = view.findViewById(R.id.require_geolocation);
 
-        // setup map
-        MapView map = view.findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPNIK);
-        requestMapPermissionLauncher.launch(permissionsToRequest);
-        map.setMultiTouchControls(true);
-        IMapController mapController = map.getController();
-        mapController.setZoom(15.0);
-        GeoPoint startPoint = new GeoPoint(53.527309714453466, -113.52931950296305);
-        mapController.setCenter(startPoint);
-        map.setOnTouchListener((v, event) -> {
-            // Request parent to not intercept touch events when MapView is touched
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            return false;  // Let the MapView handle the touch event
-        });
-
         Chip waitlistChip = view.findViewById(R.id.chip_waitlist);
         Chip chosenChip = view.findViewById(R.id.chip_chosen);
         Chip cancelledChip = view.findViewById(R.id.chip_cancelled);
