@@ -87,7 +87,7 @@ public class AdminUserArrayAdapter extends ArrayAdapter<User> {
 
         userName.setText(user.getName());  // Display user name
         userEmail.setText(user.getEmail());  // Display user email or any other property
-        ImageView userImage = view.findViewById(R.id.userImage);
+
         // Customize the button behavior
         userListCustomizer.CustomizeUserCardButton(button);
 

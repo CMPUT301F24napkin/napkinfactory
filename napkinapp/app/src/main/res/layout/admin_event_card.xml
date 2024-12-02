@@ -51,6 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <Button
@@ -72,7 +73,7 @@
                 android:backgroundTint="@color/neutralGray"
                 android:drawableStart="@drawable/add"
                 android:drawableTint="@color/white"
-                android:text="Clear QR"/>
+                android:text="Clear QR" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
