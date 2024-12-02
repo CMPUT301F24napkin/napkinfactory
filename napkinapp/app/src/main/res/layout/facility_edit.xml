@@ -28,28 +28,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <TextView
+        <EditText
             android:id="@+id/facility_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="My Facility"
+            android:hint="Unamed Facility"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_size_primary"
             app:layout_constraintTop_toBottomOf="@id/facility_name_text_view"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
-
-        <Button
-            android:id="@+id/edit_facility_name"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:foreground="@drawable/baseline_edit_24"
-            android:foregroundGravity="center"
-            android:foregroundTint="@color/text_secondary"
-            android:theme="@style/ThemeOverlay.Material3.Button.ElevatedButton"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -99,27 +87,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <TextView
+        <EditText
             android:id="@+id/facility_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="48dp"
-            android:hint="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+            android:hint="No facility details are specified"
             android:textColor="@color/text_secondary"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/facility_description_text_view"/>
-
-        <Button
-            android:id="@+id/edit_facility_description"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginBottom="16dp"
-            android:theme="@style/ThemeOverlay.Material3.Button.ElevatedButton"
-            android:foreground="@drawable/baseline_edit_24"
-            android:foregroundGravity="center"
-            android:foregroundTint="@color/text_secondary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/facility_description_text_view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

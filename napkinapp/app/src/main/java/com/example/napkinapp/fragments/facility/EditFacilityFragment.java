@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -110,9 +111,10 @@ public class EditFacilityFragment extends AbstractMapFragment {
 
         MapView map = view.findViewById(R.id.map);
 
-        Button editName = view.findViewById(R.id.edit_facility_name);
+        EditText facilityName = view.findViewById(R.id.facility_name);
+        EditText facilityDescription = view.findViewById(R.id.facility_description);
+
         Button editImage = view.findViewById(R.id.edit_facility_image);
-        Button editDescription = view.findViewById(R.id.edit_facility_description);
         Button savebutton = view.findViewById(R.id.button);
 
         nameTextView.setText(facility.getName());
@@ -128,22 +130,6 @@ public class EditFacilityFragment extends AbstractMapFragment {
                 Log.e("Edit Facility", "failed to load image: ", e);
             }
         }
-
-        editName.setOnClickListener(v-> {
-            EditTextPopupFragment popup = new EditTextPopupFragment("Edit Facility Name", nameTextView.getText().toString(), text -> {
-                facility.setName(text);
-                nameTextView.setText(text);
-            });
-            popup.show(getActivity().getSupportFragmentManager(), "popup");
-        });
-
-        editDescription.setOnClickListener(v-> {
-            EditTextPopupFragment popup = new EditTextPopupFragment("Edit Facility Description", descriptionTextView.getText().toString(), text -> {
-                facility.setDescription(text);
-                descriptionTextView.setText(text);
-            });
-            popup.show(getActivity().getSupportFragmentManager(), "popup");
-        });
 
         // edit
         editImage.setOnClickListener((v) -> {
@@ -195,6 +181,17 @@ public class EditFacilityFragment extends AbstractMapFragment {
 
         savebutton.setOnClickListener(v-> {
             DB_Client db = new DB_Client();
+
+            facilityName.setError(null);
+
+            if (facilityName.getText().toString().isBlank()){
+                facilityName.setError("Facility needs a name");
+                return;
+            }
+
+            facility.setName(facilityName.getText().toString());
+            facility.setDescription(facilityDescription.getText().toString());
+
 
             // guarantees to set the facility.getId() to non-null
             if(facility.getId() != null) {
