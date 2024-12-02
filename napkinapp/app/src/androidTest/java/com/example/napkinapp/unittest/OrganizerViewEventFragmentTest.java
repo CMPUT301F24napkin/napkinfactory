@@ -193,11 +193,7 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
         DB_Client.addFindOneData(mockEntrant3);
 
         // Perform the lottery
-        fragment.doLottery(new ArrayList<>(
-                List.of(mockEntrant2.getAndroidId(),
-                        mockEntrant3.getAndroidId(),
-                        mockEntrant1.getAndroidId()
-                )));
+        fragment.doLottery();
 
         // Validate chosen list
         assertEquals(mockEvent.getChosen(), expectedChosen);

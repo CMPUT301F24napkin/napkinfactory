@@ -118,7 +118,7 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         // FIX THIS SO THAT IT DOESN'T GRAB 0 DUDES
         // ALSO CHECK IF 0 DUDES AND BLOCK
         // DO SOME THING TO CHECK IF LOTTERY BEEN CALLED AND SOTP?
-        int numUsersToMove = Math.min(shuffledWaitlist.size(), event.getParticipantLimit() - event.getChosen().size());
+        int numUsersToMove = Math.min(shuffledWaitlist.size(), event.getEntrantLimit() - event.getChosen().size() - event.getRegistered().size());
         int i = numUsersToMove;
         Iterator<String> iterator = shuffledWaitlist.iterator();
         while (i > 0 && iterator.hasNext()) {
