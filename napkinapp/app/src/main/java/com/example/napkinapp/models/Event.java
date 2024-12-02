@@ -1,11 +1,9 @@
 package com.example.napkinapp.models;
 
-import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Model class of an Event.
@@ -32,7 +30,7 @@ public class Event {
 
     private String qrHashCode;
 
-    private List<Tag> tags;
+    private ArrayList<String> tags;
 
     private ArrayList<String> waitlist;
     private ArrayList<String> chosen;
@@ -59,7 +57,7 @@ public class Event {
     public Event(String id, String organizerId, String name, Date eventDate, Date lotteryDate, String description,
                  int entrantLimit, int participantLimit, boolean requireGeolocation, String qrHashCode,
                  ArrayList<String> waitlist, ArrayList<String> chosen, ArrayList<String> cancelled, ArrayList<String> registered,
-                 HashMap<String, ArrayList<Double>> entrantLocations) {
+                 HashMap<String, ArrayList<Double>> entrantLocations, ArrayList<String> tags) {
         init(); // provide sensible defaults
 
         this.id = id;
@@ -78,6 +76,8 @@ public class Event {
         this.cancelled = cancelled;
         this.registered = registered;
         this.entrantLocations = entrantLocations;
+
+        this.tags = tags;
     }
 
     // provide sensible defaults for members to avoid bugs
@@ -324,5 +324,13 @@ public class Event {
 
     public HashMap<String, ArrayList<Double>> getEntrantLocations(){
         return this.entrantLocations;
+    }
+
+    public ArrayList<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList<String> tags) {
+        this.tags = tags;
     }
 }

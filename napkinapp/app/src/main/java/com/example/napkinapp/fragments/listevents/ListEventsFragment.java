@@ -32,6 +32,7 @@ import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.models.Tag;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.Location_Utils;
@@ -40,7 +41,9 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class ListEventsFragment extends Fragment {
@@ -334,7 +337,6 @@ public class ListEventsFragment extends Fragment {
                 .show();
     }
 
-
     /**
      * Load the chips based on harcoded defaults.
      * @param inflater inflated to use to inflate new chip obejcts from
@@ -342,16 +344,35 @@ public class ListEventsFragment extends Fragment {
     private void loadChips(@NonNull LayoutInflater inflater) {
         ArrayList<String> tags = new ArrayList<>();
         tags.add("Waitlist");
+        Log.d("TAG", "loading chips");
 
-        // Grab tags from tag object
+        DB_Client db = new DB_Client();
+        db.findAll("Tags", null, new DB_Client.DatabaseCallback<List<Tag>>() {
 
-        for (String tag : tags) {
-            Chip chip = (Chip)inflater.inflate(R.layout.chip_base, chips, false);
+            @Override
+            public void onSuccess(@Nullable List<Tag> data) {
+                if(data == null){
+                    return;
+                }
 
-            chip.setText(tag);
+                data.forEach(tag -> tags.add(tag.getName()));
 
-            chips.addView(chip);
-        }
+                Log.d("TAGS", "Retrieved tags: " + tags);
+
+                for (String tag : tags) {
+                    Log.d("GENERATING TAG", "Generating tag for name: " + tag);
+                    Chip chip = (Chip)inflater.inflate(R.layout.chip_base, chips, false);
+                    chip.setText(tag);
+
+                    chips.addView(chip);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                DB_Client.DatabaseCallback.super.onFailure(e);
+            }
+        }, Tag.class);
     }
 
     /**
@@ -360,8 +381,8 @@ public class ListEventsFragment extends Fragment {
      * @param checkedIds
      */
     private void handleChipSelection(ChipGroup group, List<Integer> checkedIds) {
-
         ArrayList<String> selectedCategories = new ArrayList<>();
+
         for (int id : checkedIds) {
             Chip selectedChip = group.findViewById(id);
 
@@ -375,19 +396,16 @@ public class ListEventsFragment extends Fragment {
         if (selectedCategories.isEmpty()) {
             displayAllEvents();
         } else {
-            filterEventsWaitlist(selectedCategories);
+            filterEvents(selectedCategories);
         }
     }
 
-    private void filterEvents(ArrayList<String> selectedCategories) {
-        // Implement when tags are added
-    }
-
     /**
-     * filters the events by who is on the waitlist. notifies the arrayAdapter that data changed.
+     * filters the events by selected tags. notifies the arrayAdapter that data changed.
      * @param selectedCategories
      */
-    private void filterEventsWaitlist(ArrayList<String> selectedCategories) {
+    private void filterEvents(ArrayList<String> selectedCategories) {
+        // Implement when tags are added
         DB_Client db = new DB_Client();
 
         events.clear();
@@ -397,17 +415,55 @@ public class ListEventsFragment extends Fragment {
                 db.findAllIn("Events", "id", new ArrayList<>(loggedInUser.getWaitlist()), new DB_Client.DatabaseCallback<List<Event>>() {
                     @Override
                     public void onSuccess(@Nullable List<Event> data) {
-                        if (data != null) {
+                        if (data == null)
+                            return;
+
+                        // Check if anything other than waitlist checked
+                        if(selectedCategories.size() > 1){
+                            // Doing add event ensures no dupes are shown by spamming
+                            ArrayList<String> tempList = new ArrayList<>(selectedCategories.subList(1, selectedCategories.size()));
+                            for(Event event: data){
+                                if(event.getTags() != null && event.getTags().containsAll(tempList)){
+                                    events.add(event);
+                                }
+                            }
+                        }else{
                             events.addAll(data);
-                            eventArrayAdapter.notifyDataSetChanged();
-                            Log.i("Chip Query", "Filter by Waitlist Success");
                         }
+
+                        eventArrayAdapter.notifyDataSetChanged();
+                        Log.i("Chip Query", "Filter by Waitlist Success");
                     }
                 }, Event.class);
             }
-        }
+        } else {
+            List<Function<Query, Query>> conditions = List.of(
+                    query -> query.whereNotEqualTo("organizerId", loggedInUser.getAndroidId())
+            );
 
-        // Implement when tags are added
+            db.executeQueryList("Events", conditions, new DB_Client.DatabaseCallback<List<Event>>() {
+                @Override
+                public void onSuccess(@Nullable List<Event> data) {
+                    if(data == null)
+                        return;
+
+                    for(Event event: data){
+                        if(event.getTags() != null && event.getTags().containsAll(selectedCategories)){
+                            events.add(event);
+                        }
+                    }
+
+                    eventArrayAdapter.notifyDataSetChanged();
+
+                    Log.i("Chip Query", "Filter by tags: " + selectedCategories + " Was Successful");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    DB_Client.DatabaseCallback.super.onFailure(e);
+                }
+            }, Event.class);
+        }
     }
 
     /**

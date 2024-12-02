@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.models.Tag;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.AbstractFragmentTest;
 import com.example.napkinapp.utils.DB_Client;
@@ -35,6 +36,7 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
     private User mockUser;
     private Event mockEvent1;
     private Event mockEvent2;
+    private String mockTag1;
 
     @Override
     protected void setUpMockData() {
@@ -42,6 +44,8 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
         mockUser = new User();
         mockUser.setAndroidId("test_user_id");
         mockUser.setName("Test User");
+
+        mockTag1 = "Basketball";
 
         mockEvent1 = new Event();
         mockEvent1.init();
@@ -61,12 +65,14 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
         mockEvent2.setEventDate(new Date());
         mockEvent2.setDescription("This is a detailed description of Mock Event 2.");
         mockEvent2.setOrganizerId("organizer_user_id_2");
+        mockEvent2.setTags(new ArrayList<>(List.of(mockTag1)));
 
         List<Object> mockEventList = new ArrayList<>();
         mockEventList.add(mockEvent1);
         mockEventList.add(mockEvent2);
 
         DB_Client.setExecuteQueryListData(mockEventList);
+        DB_Client.setFindAllData(new ArrayList<>(List.of(new Tag(mockTag1))));
     }
 
     @Override
@@ -128,7 +134,6 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
                 .check(matches(isDisplayed()));
     }
 
-
     @Test
     public void testRemoveFromWaitlist(){
         ListEventsFragment fragment = getFragment();
@@ -169,10 +174,7 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
         ListEventsFragment fragment = getFragment();
 
         // Click on the "Waitlist" chip in the chip group
-        onView(allOf(
-                withId(R.id.chipGroup), // Ensure it's in the chip group
-                hasDescendant(withText("Waitlist")))) // Match the specific chip by text
-                .perform(click());
+        onView(allOf(withText("Waitlist"))).perform(click());
 
         // Verify that "Mock Event 1" is displayed
         onView(allOf(withId(R.id.eventName), withText("Mock Event 1")))
@@ -183,7 +185,44 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
                 .check(doesNotExist());
     }
 
+    @Test
+    public void testTagsFilterNoWaitlist(){
+        List<Object> mockEventList = new ArrayList<>();
+        mockEventList.add(mockEvent2);
 
+        DB_Client.setExecuteQueryListData(mockEventList);
 
+        ListEventsFragment fragment = getFragment();
 
+        // Click on the "Basketball" chip in the chip group
+        onView(allOf(withText("Basketball"))).perform(click());
+
+        // Verify that "Mock Event 1" is displayed
+        onView(allOf(withId(R.id.eventName), withText("Mock Event 1")))
+                .check(doesNotExist());
+
+        // Verify that "Mock Event 2" is not displayed
+        onView(allOf(withId(R.id.eventName), withText("Mock Event 2")))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testTagsFilterWithWaitlist() {
+        List<Object> mockEventList = new ArrayList<>();
+        mockEventList.add(mockEvent1);
+
+        DB_Client.setFindAllInData(mockEventList);
+
+        ListEventsFragment fragment = getFragment();
+
+        onView(allOf(withText("Waitlist"))).perform(click());
+        onView(allOf(withText("Basketball"))).perform(click());
+        // Verify that "Mock Event 1" is displayed
+        onView(allOf(withId(R.id.eventName), withText("Mock Event 1")))
+                .check(doesNotExist());
+
+        // Verify that "Mock Event 2" is not displayed
+        onView(allOf(withId(R.id.eventName), withText("Mock Event 2")))
+                .check(doesNotExist());
+    }
 }
