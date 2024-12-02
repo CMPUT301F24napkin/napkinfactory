@@ -324,6 +324,10 @@ public class Event {
         return this.entrantLocations;
     }
 
+    public void setEventImageUri(String eventImageUri){
+        this.eventImageUri = eventImageUri;
+    }
+
     public String getEventImageUri(){
         return eventImageUri;
     }
