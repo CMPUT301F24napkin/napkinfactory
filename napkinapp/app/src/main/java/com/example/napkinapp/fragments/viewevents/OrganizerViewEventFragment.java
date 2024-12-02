@@ -426,7 +426,9 @@ public class OrganizerViewEventFragment extends Fragment {
         });
 
         // Do chips
-        ArrayList<User> users = new ArrayList<>();
+        ArrayList<String> users = new ArrayList<>();
+        users.addAll(event.getWaitlist());
+
         UserArrayAdapter userArrayAdapter = new UserArrayAdapter(mContext, users);
         entrantsListView.setAdapter(userArrayAdapter);
 
@@ -458,20 +460,9 @@ public class OrganizerViewEventFragment extends Fragment {
                 }
             }
 
-            // update db
-            if (!arrayList.isEmpty()) {
-                db.findAllIn("Users", "androidId", new ArrayList<Object>(arrayList), new DB_Client.DatabaseCallback<List<User>>() {
-                    @Override
-                    public void onSuccess(@Nullable List<User> data) {
-                        users.clear();
-                        users.addAll(data);
-                        userArrayAdapter.notifyDataSetChanged();
-                    }
-                }, User.class);
-            } else {
-                users.clear();
-                userArrayAdapter.notifyDataSetChanged();
-            }
+            users.clear();
+            users.addAll(arrayList);
+            userArrayAdapter.notifyDataSetChanged();
         });
 
         chipGroup.setOnCheckedStateChangeListener(listener); // cal the listener one time to initially populate the data

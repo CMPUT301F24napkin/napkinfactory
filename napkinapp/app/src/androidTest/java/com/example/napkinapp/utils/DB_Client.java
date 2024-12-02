@@ -27,6 +27,8 @@ public class DB_Client {
         default void onFailure(Exception e) {}
     }
 
+    public static final DB_Client.DatabaseCallback IGNORE = new DB_Client.DatabaseCallback() {};
+
     // Variables to store predefined data for methods
     private static Object findOneData;
     private static List<?> findAllData;

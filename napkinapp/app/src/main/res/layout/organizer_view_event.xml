@@ -10,6 +10,7 @@
 
     <!-- Main Content Section with Weight -->
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true">
@@ -386,7 +387,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <TextView
                 android:id="@+id/qr_code_text_view"
                 android:layout_width="match_parent"
@@ -397,7 +397,6 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
-
             <ImageView
                 android:id="@+id/qr_code"
                 android:src="@mipmap/qrcode_foreground"
