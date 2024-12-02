@@ -34,6 +34,7 @@ import com.example.napkinapp.R;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
+import com.example.napkinapp.utils.DateUtils;
 import com.example.napkinapp.utils.ImageUtils;
 import com.example.napkinapp.utils.QRCodeUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -174,7 +175,7 @@ public class CreateEventFragment extends Fragment {
                 eventDate.setError("Invalid event date");
                 hasError = true;
             }
-            if (date.before(new Date())) {
+            if (DateUtils.compareDates(date, new Date()) < 0) {
                 eventDate.setError("Event date cannot be in the past");
                 hasError = true;
             }
@@ -190,7 +191,11 @@ public class CreateEventFragment extends Fragment {
                 lotteryDate.setError("Invalid lottery date");
                 hasError = true;
             }
-            if ((date != null && lottery.after(date))) {
+            if (DateUtils.compareDates(lottery, new Date()) < 0) {
+                lotteryDate.setError("Event date cannot be in the past");
+                hasError = true;
+            }
+            if (DateUtils.compareDates(lottery, date) > 0) {
                 lotteryDate.setError("Lottery date cannot be after the event date");
                 hasError = true;
             }
