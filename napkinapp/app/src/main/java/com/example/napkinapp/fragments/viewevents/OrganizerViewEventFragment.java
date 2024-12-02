@@ -35,6 +35,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import com.example.napkinapp.utils.DateUtils;
 
 import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
@@ -358,8 +359,12 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
                     "Edit Event Name",
                     eventName.getText().toString(),
                     newName -> {
-                        eventName.setText(newName);
-                        updateEventName(newName);
+                        if (newName.isBlank()){
+                            Toast.makeText(mContext, "Event must be named", Toast.LENGTH_SHORT).show();
+                        } else {
+                            eventName.setText(newName);
+                            updateEventName(newName);
+                        }
                     }
             );
             popup.show(getActivity().getSupportFragmentManager(), "popup");
@@ -383,6 +388,7 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
             popup.show(getActivity().getSupportFragmentManager(), "popup");
         });
 
+
         // Event Date
         editEventDate.setOnClickListener(v -> {
             DatePickerDialog popup = new DatePickerDialog(
@@ -391,8 +397,16 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(year, month, dayOfMonth);
                         Date newDate = calendar.getTime();
-                        eventDate.setText(formatter.format(newDate));
-                        updateEventDate(newDate);
+                        if (DateUtils.compareDates(newDate, new Date()) < 0){
+                            Toast.makeText(mContext, "Event date cannot be in the past", Toast.LENGTH_SHORT).show();
+                            Log.e("OrganizerViewEvent", "tried to set event date to " + newDate + " but today is " + new Date());
+                        } else if (DateUtils.compareDates(newDate, event.getLotteryDate()) < 0) {
+                            Toast.makeText(mContext, "Event date cannot be after before Lottery date", Toast.LENGTH_SHORT).show();
+                            Log.e("OrganizerViewEvent", "tried to set event date to " + newDate + " but lottery is " + event.getLotteryDate());
+                        } else {
+                            eventDate.setText(formatter.format(newDate));
+                            updateEventDate(newDate);
+                        }
                     },
                     2024, 9, 11
             );
@@ -407,8 +421,16 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(year, month, dayOfMonth);
                         Date newDate = calendar.getTime();
-                        lotteryDate.setText(formatter.format(newDate));
-                        updateLotteryDate(newDate);
+                        if (DateUtils.compareDates(newDate, new Date()) < 0) { // newdate is before today
+                            Toast.makeText(mContext, "Event date cannot be in the past", Toast.LENGTH_SHORT).show();
+                            Log.e("OrganizerViewEvent", "tried to set lottery date to " + newDate + " but today is " + new Date());
+                        } else if (DateUtils.compareDates(newDate, event.getEventDate()) > 0) { // new lottery date is after the event date
+                            Toast.makeText(mContext, "Lottery date cannot be after Event date", Toast.LENGTH_SHORT).show();
+                            Log.e("OrganizerViewEvent", "tried to set lottery date to " + newDate + " but event date is " + event.getEventDate());
+                        } else {
+                            lotteryDate.setText(formatter.format(newDate));
+                            updateLotteryDate(newDate);
+                        }
                     },
                     2024, 9, 11
             );
