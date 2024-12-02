@@ -21,7 +21,9 @@ import com.example.napkinapp.utils.DB_Client;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<OrganizerViewEventFragment> {
     private User mockUser;
@@ -41,6 +43,8 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
         mockEvent1.setEventDate(new Date()); // Set the event date
         mockEvent1.setDescription("This is a detailed description of Mock Event 1."); // Set description
         mockEvent1.setOrganizerId("organizer_user_id"); // Set organizer ID
+        mockEvent1.setWaitlist(new ArrayList<>(List.of("1", "2", "3")));
+        mockEvent1.setRegistered(new ArrayList<>(List.of("1", "2", "3")));
 
         mockEvent1.addUserToWaitlist(mockUser.getAndroidId()); // Add test user to waitlist
         mockUser.addEventToWaitlist(mockEvent1.getId());
@@ -160,38 +164,80 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
     }
 
     @Test
-    public void testEdit() {
+    public void testEditEntrantLimit() {
         // Ensure the initial text is correct
-        onView(withId(R.id.event_details)).check(matches(withText(mockEvent1.getDescription())));
+        onView(withId(R.id.entrant_limit))
+                .check(matches(withText(String.valueOf(mockEvent1.getEntrantLimit()))));
 
         // Click the button to open the edit dialog
-        onView(withId(R.id.edit_event_details)).perform(click());
+        onView(withId(R.id.edit_entrant_limit)).perform(click());
 
         // Verify the dialog opens
         onView(withId(R.id.edit_text)).check(matches(isDisplayed()));
 
         // Verify the default text in the EditText
-        onView(withId(R.id.edit_text)).check(matches(withText(mockEvent1.getDescription())));
+        onView(withId(R.id.edit_text))
+                .check(matches(withText(String.valueOf(mockEvent1.getEntrantLimit()))));
 
-        // New name to type into the EditText
-        String newDescription = "new description!";
-
-        // Perform typeText to change the name (use replaceText to overwrite)
-        onView(withId(R.id.edit_text)).perform(replaceText(newDescription));
-
-        // Click the OK button
+        // Set an invalid entrant limit
+        String invalidLimit = "2";
+        onView(withId(R.id.edit_text)).perform(replaceText(invalidLimit));
         onView(withText("OK")).perform(click());
 
-        // Ensure the dialog is dismissed and the correct fragment is displayed
+        // Ensure the dialog remains open on invalid input
+        onView(withId(R.id.edit_text)).check(matches(isDisplayed()));
+
+        // Set a valid entrant limit
+        String validLimit = "50";
+        onView(withId(R.id.edit_text)).perform(replaceText(validLimit));
+        onView(withText("OK")).perform(click());
+
+        // Ensure the dialog is dismissed on valid input
         onView(withId(R.id.edit_text)).check(doesNotExist());
 
-        // Ensure the text field is updated
-        onView(withId(R.id.event_details)).check(matches(withText(newDescription)));
-
-        // Additional check: Verify the model is updated
-        activityScenario.onActivity(activity -> {
-            assertEquals(newDescription, mockEvent1.getDescription());
-        });
+        // Ensure the TextView is updated
+        onView(withId(R.id.entrant_limit)).check(matches(withText(validLimit)));
     }
+
+    @Test
+    public void testEditParticipantLimit() {
+
+        String participantLimitText = (mockEvent1.getParticipantLimit() == Integer.MAX_VALUE) ? "" : String.valueOf(mockEvent1.getParticipantLimit());
+
+        // Ensure the initial text is correct
+        onView(withId(R.id.participant_limit))
+                .check(matches(withText(participantLimitText)));
+
+        // Click the button to open the edit dialog
+        onView(withId(R.id.edit_participant_limit)).perform(click());
+
+        // Verify the dialog opens
+        onView(withId(R.id.edit_text)).check(matches(isDisplayed()));
+
+        // Verify the default text in the EditText
+        onView(withId(R.id.edit_text))
+                .check(matches(withText(participantLimitText)));
+
+        // Set an invalid participant limit
+        String invalidLimit = "2";
+        onView(withId(R.id.edit_text)).perform(replaceText(invalidLimit));
+        onView(withText("OK")).perform(click());
+
+        // Ensure the dialog remains open on invalid input
+        onView(withId(R.id.edit_text)).check(matches(isDisplayed()));
+
+        // Set a valid participant limit
+        String validLimit = "50";
+        onView(withId(R.id.edit_text)).perform(replaceText(validLimit));
+        onView(withText("OK")).perform(click());
+
+        // Ensure the dialog is dismissed on valid input
+        onView(withId(R.id.edit_text)).check(doesNotExist());
+
+        // Ensure the TextView is updated
+        onView(withId(R.id.participant_limit)).check(matches(withText(validLimit)));
+
+    }
+
 
 }
