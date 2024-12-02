@@ -23,12 +23,12 @@ import com.example.napkinapp.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserArrayAdapter extends ArrayAdapter<String> {
+public class UserArrayAdapter extends ArrayAdapter<User> {
 
-    private final ArrayList<String> users;
+    private final ArrayList<User> users;
     private final Context mContext;
 
-    public UserArrayAdapter(@NonNull Context context, @NonNull ArrayList<String> users) {
+    public UserArrayAdapter(@NonNull Context context, @NonNull ArrayList<User> users) {
         super(context, 0, users);
 
         this.mContext = context;
@@ -46,10 +46,10 @@ public class UserArrayAdapter extends ArrayAdapter<String> {
             view = convertView;
         }
 
-        String user = users.get(position);
+        User user = users.get(position);
 
         TextView userName = view.findViewById(R.id.user_name);
-        userName.setText(user);
+        userName.setText(user.getName());
 
         return view;
     }

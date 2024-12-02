@@ -478,11 +478,28 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         });
 
         // Do chips
-        ArrayList<String> users = new ArrayList<>();
-        users.addAll(event.getWaitlist());
-
+        ArrayList<User> users = new ArrayList<>();
+        // update db
+        ArrayList<String> androidIdList = new ArrayList<>();
+        androidIdList.addAll(event.getWaitlist());
+        androidIdList.addAll(event.getChosen());
+        androidIdList.addAll(event.getCancelled());
+        androidIdList.addAll(event.getRegistered());
         UserArrayAdapter userArrayAdapter = new UserArrayAdapter(mContext, users);
         entrantsListView.setAdapter(userArrayAdapter);
+
+        if (!androidIdList.isEmpty()) {
+            db.findAllIn("Users", "androidId", new ArrayList<>(androidIdList), new DB_Client.DatabaseCallback<List<User>>() {
+                @Override
+                public void onSuccess(@Nullable List<User> data) {
+                    users.clear();
+                    if(data != null) {
+                        users.addAll(data);
+                    }
+                    userArrayAdapter.notifyDataSetChanged();
+                }
+            }, User.class);
+        }
 
         ChipGroup.OnCheckedStateChangeListener listener = ((group, checkedIds) -> {
             ArrayList<String> arrayList = new ArrayList<>();
@@ -511,10 +528,22 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
                     Log.e("chipGroup.setOnCheckedStateChangeListener", String.format("unknown chip id %d", checkedIds.get(0)));
                 }
             }
-
-            users.clear();
-            users.addAll(arrayList);
-            userArrayAdapter.notifyDataSetChanged();
+            // update db
+            if (!arrayList.isEmpty()) {
+                db.findAllIn("Users", "androidId", new ArrayList<>(arrayList), new DB_Client.DatabaseCallback<List<User>>() {
+                    @Override
+                    public void onSuccess(@Nullable List<User> data) {
+                        users.clear();
+                        if(data != null) {
+                            users.addAll(data);
+                        }
+                        userArrayAdapter.notifyDataSetChanged();
+                    }
+                }, User.class);
+            } else {
+                users.clear();
+                userArrayAdapter.notifyDataSetChanged();
+            }
         });
 
         chipGroup.setOnCheckedStateChangeListener(listener); // cal the listener one time to initially populate the data

@@ -43,6 +43,7 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
     private User mockUser;
     private Event mockEvent1;
     private User mockOrganizer;
+    private DB_Client mockDbClient;
 
     public static Matcher<View> hasHintText(final String hint) {
         return new TypeSafeMatcher<View>() {
@@ -75,13 +76,12 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
         mockEvent1.setEventDate(new Date()); // Set the event date
         mockEvent1.setDescription("This is a detailed description of Mock Event 1."); // Set description
         mockEvent1.setOrganizerId("organizer_user_id"); // Set organizer ID
-        mockEvent1.setWaitlist(new ArrayList<>(List.of("1", "2", "3")));
-        mockEvent1.setChosen(new ArrayList<>());
-        mockEvent1.setCancelled(new ArrayList<>(List.of("1")));
-        mockEvent1.setRegistered(new ArrayList<>(List.of("1", "2")));
 
         mockEvent1.addUserToWaitlist(mockUser.getAndroidId()); // Add test user to waitlist
         mockUser.addEventToWaitlist(mockEvent1.getId());
+
+        mockUser.setAndroidId("test_user_id");
+        mockUser.setName("Test User");
 
         mockOrganizer = new User();
         mockOrganizer.setAndroidId("organizer_user_id");
@@ -91,6 +91,19 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
 
         // Set DB_Client mock data
         DB_Client.setFindOneData(mockOrganizer);
+
+        ArrayList<User> arrayList = new ArrayList<>();
+        ArrayList<String> userNames = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
+            User u = new User();
+            String userName = "name " + i;
+            u.setName(userName);
+            arrayList.add(u);
+            userNames.add(userName);
+        }
+        DB_Client.setFindAllInData(arrayList);
+        mockEvent1.setWaitlist(userNames);
+
     }
 
     @Override
@@ -368,11 +381,12 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
 
         onView(withId(R.id.nested_scroll_view)).perform(swipeUp());
 
-        onView(withId(R.id.entrants_list_view)).check(matches(hasChildCount(4+2+1+0)));
+
+        onView(withId(R.id.entrants_list_view)).check(matches(hasChildCount(3)));
 
         // Ensure the initial list has the correct number of items (for example, 3 items on 'Waitlist' chip)
         onView(withId(R.id.chip_waitlist)).perform(click());
-        onView(withId(R.id.entrants_list_view)).check(matches(hasChildCount(4)));
+        onView(withId(R.id.entrants_list_view)).check(matches(hasChildCount(3)));
 
         // Select the 'Chosen' chip and check if the list updates to 2 items
         onView(withId(R.id.chip_chosen)).perform(click());
@@ -380,11 +394,11 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
 
         // Select the 'Cancelled' chip and check if the list updates to 1 item
         onView(withId(R.id.chip_cancelled)).perform(click());
-        onView(withId(R.id.entrants_list_view)).check(matches(hasChildCount(1)));
+        onView(withId(R.id.entrants_list_view)).check(matches(hasChildCount(0)));
 
         // Select the 'Registered' chip and check if the list updates to 4 items
         onView(withId(R.id.chip_registered)).perform(scrollTo(), click());
-        onView(withId(R.id.entrants_list_view)).check(matches(hasChildCount(2)));
+        onView(withId(R.id.entrants_list_view)).check(matches(hasChildCount(0)));
     }
 
     @Test
