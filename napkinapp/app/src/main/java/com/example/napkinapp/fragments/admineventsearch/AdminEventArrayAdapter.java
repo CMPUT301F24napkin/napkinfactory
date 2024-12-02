@@ -90,7 +90,7 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
                 .placeholder(R.drawable.default_image)  //laceholder while loading
                 .error(R.drawable.default_image) // Fallback in case of error
                 .into(eventImage);
-        
+
         Button button = view.findViewById(R.id.button);
 
         eventName.setText(event.getName());
