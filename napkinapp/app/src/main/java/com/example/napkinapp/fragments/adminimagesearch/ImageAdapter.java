@@ -19,9 +19,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     private List<String> imageUrls;
     private OnButtonClickListener buttonClickListener;
 
-    public ImageAdapter(List<String> imageUrls, OnButtonClickListener buttonClickListener) {
+    public ImageAdapter(List<String> imageUrls, OnButtonClickListener listener) {
         this.imageUrls = imageUrls;
-        this.buttonClickListener = buttonClickListener;
+        this.buttonClickListener = listener;
     }
 
     @NonNull
@@ -34,17 +34,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         String imageUrl = imageUrls.get(position);
-
-        // Load the image using Glide
         Glide.with(holder.imageView.getContext())
                 .load(imageUrl)
                 .into(holder.imageView);
 
-        // Set the button click listener, passing the index (position) of the clicked item
-        holder.actionButton.setOnClickListener(v -> {
-            if (buttonClickListener != null) {
-                buttonClickListener.onButtonClick(position); // Pass the position here
-            }
+        // Handle button click
+        holder.deleteButton.setOnClickListener(v -> {
+            // Notify the listener (fragment) to delete this item
+            buttonClickListener.onButtonClick(position);
         });
     }
 
@@ -53,19 +50,19 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         return imageUrls.size();
     }
 
-    public interface OnButtonClickListener {
-        void onButtonClick(int position); // Will receive the index of the clicked item
-    }
-
     static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        Button actionButton;
+        Button deleteButton;
 
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
-            actionButton = itemView.findViewById(R.id.actionButton); // Button ID
+            deleteButton = itemView.findViewById(R.id.actionButton);
         }
+    }
+
+    public interface OnButtonClickListener {
+        void onButtonClick(int position);
     }
 }
 
