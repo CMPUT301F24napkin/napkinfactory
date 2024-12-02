@@ -5,16 +5,20 @@
 package com.example.napkinapp.fragments.admineventsearch;
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.models.Event;
 
@@ -73,7 +77,16 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
 
         TextView eventName = view.findViewById(R.id.eventName);
         TextView eventDate = view.findViewById(R.id.eventDate);
-
+        ImageView eventImage = view.findViewById(R.id.image);
+        if(event.getEventImageUri() != null) {
+            try {
+                Glide.with(view).load(Uri.parse(event.getEventImageUri())).into(eventImage);
+                Log.i("Event", "Loaded event image url: " + event.getEventImageUri());
+            }
+            catch (Exception e){
+                Log.e("Event", "failed to load event image: ", e);
+            }
+        }
         Button button = view.findViewById(R.id.button);
 
         eventName.setText(event.getName());

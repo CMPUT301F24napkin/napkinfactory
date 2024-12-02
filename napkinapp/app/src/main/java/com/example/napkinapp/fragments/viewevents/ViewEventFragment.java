@@ -85,7 +85,6 @@ public class ViewEventFragment extends Fragment {
         ImageView organizerProfile = view.findViewById(R.id.organizer_profile);
         ImageView qrBitmap = view.findViewById(R.id.event_qr_code);
 
-        // TODO: properly populate all data
         eventName.setText(event.getName());
         eventDate.setText(event.getEventDate().toString());
         eventDetails.setText(event.getDescription());
@@ -94,6 +93,18 @@ public class ViewEventFragment extends Fragment {
         } else {
             qrBitmap.setImageResource(R.mipmap.error);
         }
+
+        if(event.getEventImageUri() != null) {
+            try {
+                Glide.with(view).load(Uri.parse(event.getEventImageUri())).into(eventImage);
+                Log.i("Event", "Loaded event image url: " + event.getEventImageUri());
+            }
+            catch (Exception e){
+                Log.e("Event", "failed to load event image: ", e);
+            }
+        }
+
+
 
         // database queries
         HashMap<String,Object> filter = new HashMap<>();
