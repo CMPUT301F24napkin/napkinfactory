@@ -1,7 +1,5 @@
 package com.example.napkinapp.models;
 
-import android.util.Pair;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +19,7 @@ public class Event {
     private String name;
     private Date eventDate;
     private Date lotteryDate;
-    private Image poster_image;
+    private String eventImageUri;
     private String description;
     private int entrantLimit;       // the number of users that can join the waitlist
     private int participantLimit;   // the number of users that are chosen out of the waitlist
@@ -59,7 +57,7 @@ public class Event {
     public Event(String id, String organizerId, String name, Date eventDate, Date lotteryDate, String description,
                  int entrantLimit, int participantLimit, boolean requireGeolocation, String qrHashCode,
                  ArrayList<String> waitlist, ArrayList<String> chosen, ArrayList<String> cancelled, ArrayList<String> registered,
-                 HashMap<String, ArrayList<Double>> entrantLocations) {
+                 HashMap<String, ArrayList<Double>> entrantLocations, String eventImageUri) {
         init(); // provide sensible defaults
 
         this.id = id;
@@ -67,6 +65,7 @@ public class Event {
         this.name = name;
         this.eventDate = eventDate;
         this.lotteryDate = lotteryDate;
+        this.eventImageUri = eventImageUri;
         this.description = description;
         this.entrantLimit = entrantLimit;
         this.participantLimit = participantLimit;
@@ -92,7 +91,6 @@ public class Event {
         this.participantLimit = Integer.MAX_VALUE;
         this.requireGeolocation = false;
 
-        this.poster_image = new Image();
         this.facility = new Facility();
         this.qrHashCode = "qrHashCode_placeholder";
         this.tags = new ArrayList<>();
@@ -324,5 +322,9 @@ public class Event {
 
     public HashMap<String, ArrayList<Double>> getEntrantLocations(){
         return this.entrantLocations;
+    }
+
+    public String getEventImageUri(){
+        return eventImageUri;
     }
 }

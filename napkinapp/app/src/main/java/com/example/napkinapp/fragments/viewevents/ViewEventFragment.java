@@ -10,10 +10,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
@@ -44,6 +46,7 @@ public class ViewEventFragment extends Fragment {
     private final Event event;
     private Button btnToggleWaitlist;
     private final User user;
+    private Context mContext;
 
     public ViewEventFragment(Event event, User user){
         this.event = event;
@@ -53,6 +56,7 @@ public class ViewEventFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        mContext = context;
 
         if(context instanceof TitleUpdateListener){
             titleUpdateListener = (TitleUpdateListener) context;
@@ -104,6 +108,15 @@ public class ViewEventFragment extends Fragment {
                 }
                 organizerName.setText(data.getName());
                 organization.setText(data.getPhoneNumber());
+                if(data.getProfileImageUri() != null) {
+                    try {
+                        Glide.with(view).load(Uri.parse(data.getProfileImageUri())).into(organizerProfile);
+                        Log.i("Profile", "Loaded organizer profile url: " + data.getProfileImageUri());
+                    }
+                    catch (Exception e){
+                        Log.e("Profile", "failed to load profile image: ", e);
+                    }
+                }
             }
         }, User.class);
 
@@ -111,15 +124,13 @@ public class ViewEventFragment extends Fragment {
 
 
         btnToggleWaitlist = view.findViewById(R.id.toggle_waitlist);
+        Button decline = view.findViewById(R.id.declineButton);
         Button cancel = view.findViewById(R.id.event_cancel);
-        Button moreOptions = view.findViewById(R.id.more_options);
+        TextView actionCompleteTextView = view.findViewById(R.id.textViewDone);
 
-        btnToggleWaitlist.setOnClickListener((v) -> {
-            // TODO: logic for applying to event
-            handleToggleWaitlist();
-        });
+        initButtons(event, btnToggleWaitlist, decline, actionCompleteTextView);
 
-        updateButtons();
+
 
         cancel.setOnClickListener((v) -> {
             if (getActivity() != null) {
@@ -127,13 +138,140 @@ public class ViewEventFragment extends Fragment {
                 requireActivity().getSupportFragmentManager().popBackStack();
             }
         });
-        moreOptions.setOnClickListener((v) -> {
-           // TODO: Options selection
-            // i image these will change based on if admin or not
-        });
+
 
         return view;
     }
+
+    private void initButtons(Event event, Button accept, Button decline, TextView actionCompleteTextView){
+        if (event.getCancelled().contains(user.getAndroidId())){
+            accept.setVisibility(View.GONE);
+            decline.setVisibility(View.GONE);
+            actionCompleteTextView.setVisibility(View.VISIBLE);
+            actionCompleteTextView.setText("You declined this event");
+        } else if (event.getRegistered().contains(user.getAndroidId())){
+            accept.setVisibility(View.GONE);
+            decline.setVisibility(View.GONE);
+            actionCompleteTextView.setVisibility(View.VISIBLE);
+            actionCompleteTextView.setText("You accepted this event");
+        } else if (event.getChosen().contains(user.getAndroidId())){
+            AcceptDeclineView(event, accept, decline, actionCompleteTextView);
+        } else {
+            accept.setVisibility(View.VISIBLE);
+            decline.setVisibility(View.GONE);
+            actionCompleteTextView.setVisibility(View.GONE);
+            accept.setOnClickListener((v) -> {
+                // TODO: logic for applying to event
+                handleToggleWaitlist();
+            });
+
+            updateButtons();
+        }
+    }
+
+
+    private void AcceptDeclineView(Event event, Button accept, Button decline, TextView txt) {
+        accept.setText("Accept");
+        accept.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_check_24, 0, 0, 0);
+        accept.setOnClickListener(v -> {
+            registerUser(event);
+            initButtons(event, accept, decline, txt);
+        });
+
+        decline.setText("Decline");
+        decline.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_close_24, 0, 0, 0);
+        decline.setOnClickListener(v -> {
+            declineEvent(event);
+            initButtons(event, accept, decline, txt);
+        });
+        txt.setVisibility(View.GONE);
+    }
+
+    /**
+     * helper function to register the currently logged in user in an event. Does it deeply.
+     * @param event the event to register in
+     */
+    private void registerUser(Event event) {
+        // move this event from Chosen to Registered
+        // add to this user's copy
+        user.addEventToRegistered(event.getId());
+        user.removeEventFromChosen(event.getId());
+
+        event.addUserToRegistered(user.getAndroidId());
+        event.removeUserFromChosen(user.getAndroidId());
+
+        DB_Client db = new DB_Client();
+        db.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                DB_Client.DatabaseCallback.super.onSuccess(data);
+                Toast.makeText(mContext, "Accepted " + event.getName() + "!", Toast.LENGTH_SHORT).show();
+                Log.i("Register User", "Successfully registered user for " + event.getName());
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                DB_Client.DatabaseCallback.super.onFailure(e);
+                Log.e("Register User", "Something went wrong registering user " + user.getName() + " " + user.getAndroidId() + " for event " + event.getName());
+            }
+        });
+
+        db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                DB_Client.DatabaseCallback.super.onSuccess(data);
+                Log.i("Register User - Event", "Successfully registered user for " + event.getName());
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                DB_Client.DatabaseCallback.super.onFailure(e);
+                Log.e("Register User - Event", "Something went wrong registering user " + user.getName() + " " + user.getAndroidId() + " for event " + event.getName());
+            }
+        });
+    }
+
+    /**
+     * Make the currently logged in user decline this event. Does it deeply.
+     * Works by moving the currently logged in user's androidId out of the chosen list into the cancelled list.
+     * @param event the event to decline
+     */
+    private void declineEvent(Event event) {
+        user.removeEventFromChosen(event.getId());
+        event.addUserToCancelled(user.getAndroidId());
+        event.removeUserFromChosen(user.getAndroidId());
+
+        DB_Client db = new DB_Client();
+        db.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                DB_Client.DatabaseCallback.super.onSuccess(data);
+                Toast.makeText(mContext, "Declined " + event.getName() + "!", Toast.LENGTH_SHORT).show();
+                Log.i("Cancelling User", "Successfully cancelled user for " + event.getName());
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                DB_Client.DatabaseCallback.super.onFailure(e);
+                Log.e("Cancelling User", "Something went wrong cancelling user " + user.getName() + " " + user.getAndroidId() + " for event " + event.getName());
+            }
+        });
+
+        db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                DB_Client.DatabaseCallback.super.onSuccess(data);
+                Log.i("Cancel User - Event", "Successfully cancelled user for " + event.getName());
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                DB_Client.DatabaseCallback.super.onFailure(e);
+                Log.e("Cancel User - Event", "Something went wrong cancelling user " + user.getName() + " " + user.getAndroidId() + " for event " + event.getName());
+            }
+        });
+    }
+
 
     /**
      * Add or remove the event from the waitlist based on the state of btnToggleWaitlist.
@@ -156,10 +294,12 @@ public class ViewEventFragment extends Fragment {
         if(event.getWaitlist().contains(user.getAndroidId())){
             // Waitlist
             btnToggleWaitlist.setText(R.string.remove_from_waitlist);
+            btnToggleWaitlist.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorRemoveDark)));
             btnToggleWaitlist.setSelected(true);
         }else{
             // Not
             btnToggleWaitlist.setText(R.string.add_to_waitlist);
+            btnToggleWaitlist.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.neutralGray)));
             btnToggleWaitlist.setSelected(false);
         }
     }
@@ -177,7 +317,7 @@ public class ViewEventFragment extends Fragment {
         dbClient.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(@Nullable Void data) {
-                Toast.makeText(getContext(), "Removed user from event waitlist", Toast.LENGTH_SHORT).show();
+                Log.d("ViewEventFragment", "Removed user from event waitlist");
             }
 
             @Override
@@ -191,7 +331,8 @@ public class ViewEventFragment extends Fragment {
         dbClient.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(@Nullable Void data) {
-                Toast.makeText(getContext(), "Removed event from user waitlist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Left waitlist for " + event.getName() + "!", Toast.LENGTH_SHORT).show();
+                Log.d("ViewEventFragment", "Removed event from user waitlist");
             }
 
             @Override
@@ -225,7 +366,8 @@ public class ViewEventFragment extends Fragment {
                     db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
                         @Override
                         public void onSuccess(@Nullable Void data) {
-                            Toast.makeText(getContext(), "Added event to waitlist! " + event.getName(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "Joined waitlist for " + event.getName() + "!", Toast.LENGTH_SHORT).show();
+                            Log.d("ViewEventFragment", "Added event from user waitlist");
                         }
 
                         @Override
@@ -239,7 +381,7 @@ public class ViewEventFragment extends Fragment {
                     db.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
                         @Override
                         public void onSuccess(@Nullable Void data) {
-                            Toast.makeText(getContext(), "Added event to users waitlist! " + user.getName(), Toast.LENGTH_SHORT).show();
+                            Log.d("ViewEventFragment", "Added event from user waitlist");
                         }
 
                         @Override
