@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.adminfacilitysearch.AdminListFacilitiesFragment;
 import com.example.napkinapp.fragments.adminusersearch.AdminListUsersFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
 import com.example.napkinapp.models.User;
@@ -82,8 +83,7 @@ public class AdminNavigationFragment extends Fragment {
 
             Fragment currFrag = requireActivity().getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
 
-            if (!(currFrag instanceof AdminListEventsFragment)) {
-                // Switch to SearchEventFragment
+            if (!(currFrag instanceof AdminListUsersFragment)) {
                 requireActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.content_fragmentcontainer, new AdminListUsersFragment())
                         .addToBackStack(null)
@@ -106,7 +106,14 @@ public class AdminNavigationFragment extends Fragment {
         });
 
         facilitiesMapButton.setOnClickListener(v -> {
-            Log.d("AdminNavagationFragment", "Facilities Map button clicked");
+            Fragment currFrag = requireActivity().getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
+
+            if (!(currFrag instanceof AdminListFacilitiesFragment)) {
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content_fragmentcontainer, new AdminListFacilitiesFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         browseImagesButton.setOnClickListener(v -> {
