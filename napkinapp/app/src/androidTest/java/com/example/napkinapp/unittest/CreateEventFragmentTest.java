@@ -4,32 +4,31 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import android.app.Activity;
-import android.provider.Settings;
+import android.net.Uri;
 
-import androidx.fragment.app.testing.FragmentScenario;
-import androidx.test.core.app.ApplicationProvider;
-
-import com.example.napkinapp.R;
 import com.example.napkinapp.fragments.createevent.CreateEventFragment;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.User;
+import com.example.napkinapp.utils.AbstractFragmentTest;
 import com.example.napkinapp.utils.DB_Client;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CreateEventFragmentTest {
+public class CreateEventFragmentTest extends AbstractFragmentTest<CreateEventFragment> {
 
     private DB_Client mockDbClient;
     private User testUser;
 
-    @Before
-    public void setUp() {
+    @Override
+    protected CreateEventFragment createFragment() {
+        return new CreateEventFragment();
+    }
+
+    @Override
+    public void setUpMockData() {
         // Initialize the mock DB client
         mockDbClient = new DB_Client();
         DB_Client.reset();
@@ -40,13 +39,8 @@ public class CreateEventFragmentTest {
         testUser.setName("Test User");
     }
 
-    @After
-    public void tearDown() {
-        DB_Client.reset();
-    }
-
     @Test
-    public void testCreateEvent_SuccessfulCreation() throws Exception {
+    public void testCreateEvent() throws Exception {
         // Mock input data
         String eventName = "Test Event";
         String eventDescription = "This is a test event.";
@@ -56,37 +50,34 @@ public class CreateEventFragmentTest {
         int entrantLimit = 100;
         int participantLimit = 50;
         boolean geolocationEnabled = true;
+        Uri imageUri = Uri.parse("content://mock/path/to/image");
 
-        // Set up scenario
-        FragmentScenario<CreateEventFragment> scenario = FragmentScenario.launchInContainer(
-                CreateEventFragment.class,
-                null
-        );
+        CreateEventFragment fragment = getFragment();
 
-        scenario.onFragment(fragment -> {
-            fragment.createEvent(
-                    eventName,
-                    eventDate,
-                    lotteryDate,
-                    eventDescription,
-                    entrantLimit,
-                    participantLimit,
-                    geolocationEnabled
-            );
+        fragment.createEvent(
+                testUser.getAndroidId(),
+                eventName,
+                eventDate,
+                lotteryDate,
+                eventDescription,
+                entrantLimit,
+                participantLimit,
+                geolocationEnabled,
+                imageUri);
 
-            // Verify that the event was inserted into the mock DB
-            assertEquals(1, DB_Client.getInsertedData().size());
-            Event createdEvent = (Event) DB_Client.getInsertedData().get(0);
+        // Verify that the event was inserted into the mock DB
+        assertEquals(1, DB_Client.getInsertedData().size());
+        Event createdEvent = (Event) DB_Client.getInsertedData().get(0);
 
-            // Validate the event properties
-            assertEquals(testUser.getAndroidId(), createdEvent.getOrganizerId());
-            assertEquals(eventName, createdEvent.getName());
-            assertEquals(eventDescription, createdEvent.getDescription());
-            assertEquals(eventDate, createdEvent.getEventDate());
-            assertEquals(lotteryDate, createdEvent.getLotteryDate());
-            assertEquals(entrantLimit, createdEvent.getEntrantLimit());
-            assertEquals(participantLimit, createdEvent.getParticipantLimit());
-            assertEquals(geolocationEnabled, createdEvent.isRequireGeolocation());
-        });
+
+        // Validate the event properties
+        assertEquals(testUser.getAndroidId(), createdEvent.getOrganizerId());
+        assertEquals(eventName, createdEvent.getName());
+        assertEquals(eventDescription, createdEvent.getDescription());
+        assertEquals(eventDate, createdEvent.getEventDate());
+        assertEquals(lotteryDate, createdEvent.getLotteryDate());
+        assertEquals(entrantLimit, createdEvent.getEntrantLimit());
+        assertEquals(participantLimit, createdEvent.getParticipantLimit());
+        assertEquals(geolocationEnabled, createdEvent.isRequireGeolocation());
     }
 }
