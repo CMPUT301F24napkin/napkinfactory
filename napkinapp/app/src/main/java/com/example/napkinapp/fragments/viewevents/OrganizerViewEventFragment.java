@@ -583,5 +583,4 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
 
         return view;
     }
-
 }
