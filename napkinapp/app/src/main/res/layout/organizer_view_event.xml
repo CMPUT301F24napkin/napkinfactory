@@ -80,7 +80,7 @@
                 android:id="@+id/event_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="Event is Unamed"
+                android:hint="Event is Unnamed"
                 android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"

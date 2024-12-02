@@ -2,6 +2,7 @@ package com.example.napkinapp.fragments.facility;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
@@ -32,6 +34,7 @@ import com.example.napkinapp.models.Facility;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.AbstractMapFragment;
 import com.example.napkinapp.utils.DB_Client;
+import com.google.firebase.firestore.Query;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -78,6 +81,15 @@ public class ViewFacilityFragment extends AbstractMapFragment {
         TextView descriptionTextView = view.findViewById(R.id.facility_description);
         MapView map = view.findViewById(R.id.map);
         ImageView facilityImage = view.findViewById(R.id.image);
+
+        Button facilityEvents = view.findViewById(R.id.viewEventsButton);
+
+        facilityEvents.setOnClickListener((v) -> {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragmentcontainer, new ViewFacilityEventsListFragment(facility, user)) // Use your actual container ID
+                    .addToBackStack(null) // Allows user to go back to ListEventsFragment
+                    .commit();
+        });
 
         nameTextView.setText(facility.getName());
         descriptionTextView.setText(facility.getDescription());
