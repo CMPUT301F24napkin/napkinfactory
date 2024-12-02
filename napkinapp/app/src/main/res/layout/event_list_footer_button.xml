@@ -6,14 +6,15 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <Button
-            android:id="@+id/trailing_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:drawableTint="@color/white"
-            android:foreground="@drawable/add"
-            android:foregroundGravity="center"
-            android:foregroundTint="@color/white"
-            android:minWidth="0dp" />
+    <Button
+        android:id="@+id/trailing_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/colorAdd"
+        android:drawableTint="@color/black"
+        android:foreground="@drawable/add"
+        android:foregroundGravity="center"
+        android:foregroundTint="@color/black"
+        android:minWidth="0dp" />
     </LinearLayout>

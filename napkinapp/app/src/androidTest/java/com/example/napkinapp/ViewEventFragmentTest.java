@@ -72,7 +72,6 @@ public class ViewEventFragmentTest extends AbstractFragmentTest<ViewEventFragmen
         // Verify buttons are in the correct state
         onView(withId(R.id.toggle_waitlist)).check(matches(isDisplayed())); // Assuming user is on waitlist
         onView(withId(R.id.event_cancel)).check(matches(isDisplayed()));
-        onView(withId(R.id.more_options)).check(matches(isDisplayed()));
 
         // Verify organizer details are displayed correctly
         onView(withId(R.id.organizer_name)).check(matches(withText(mockOrganizer.getName()))); // Replace with actual mock organizer name

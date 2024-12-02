@@ -28,9 +28,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.napkinapp.fragments.EditTextPopupFragment;
+import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.EditTextPopupFragment;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
@@ -39,7 +40,6 @@ import com.example.napkinapp.utils.QRCodeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.firestore.FieldValue;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -232,6 +232,7 @@ public class OrganizerViewEventFragment extends Fragment {
         TextView eventDetails = view.findViewById(R.id.event_details);
 
         ImageView organizerProfile = view.findViewById(R.id.organizer_profile);
+
         eventImage = view.findViewById(R.id.event_image);
         ImageView qrCode = view.findViewById(R.id.qr_code);
 
@@ -263,6 +264,16 @@ public class OrganizerViewEventFragment extends Fragment {
                 if (data != null) {
                     organizerName.setText(data.getName());
                     organization.setText(data.getPhoneNumber());
+                    if(data.getProfileImageUri() != null) {
+                        try {
+                            Glide.with(view).load(Uri.parse(data.getProfileImageUri())).into(organizerProfile);
+                            Log.i("Profile", "Loaded organizer profile url: " + data.getProfileImageUri());
+                        }
+                        catch (Exception e){
+                            Log.e("Profile", "failed to load profile image: ", e);
+                        }
+                    }
+
                 } else {
                     organizerName.setText("Unknown Organizer");
                     organization.setText("Unknown Organization");

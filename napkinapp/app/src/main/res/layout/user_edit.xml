@@ -15,8 +15,10 @@
           android:layout_width="58dp"
           android:layout_height="54dp"
           android:clickable="true"
+          app:backgroundTint="@color/colorAdd"
           app:layout_constraintBottom_toBottomOf="@+id/image"
           app:layout_constraintEnd_toEndOf="@+id/image"
+          app:layout_constraintTop_toBottomOf="@+id/image"
           app:srcCompat="@android:drawable/ic_menu_edit" />
       
         <com.google.android.material.imageview.ShapeableImageView
@@ -31,17 +33,41 @@
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/rounded_corners_lg" />
 
-        <EditText
-            android:id="@+id/editTextName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:hint="Name"
-            android:inputType="text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image" />
+      <com.google.android.material.floatingactionbutton.FloatingActionButton
+          android:id="@+id/deleteProfileImageButton"
+          android:layout_width="58dp"
+          android:layout_height="54dp"
+          android:clickable="true"
+          app:backgroundTint="@color/colorRemove"
+          app:layout_constraintBottom_toBottomOf="@+id/image"
+          app:layout_constraintStart_toStartOf="@+id/image"
+          app:layout_constraintTop_toBottomOf="@+id/image"
+          app:srcCompat="@drawable/remove" />
+
+
+      <com.google.android.material.imageview.ShapeableImageView
+          android:id="@+id/image"
+          android:layout_width="250dp"
+          android:layout_height="250dp"
+          android:layout_marginTop="50dp"
+          android:scaleType="centerCrop"
+          android:src="@mipmap/ic_launcher"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:shapeAppearanceOverlay="@style/rounded_corners_lg" />
+
+      <EditText
+          android:id="@+id/editTextName"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="32dp"
+          android:ems="10"
+          android:hint="Name"
+          android:inputType="text"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/image" />
 
         <EditText
             android:id="@+id/editTextEmailAddress"
@@ -99,15 +125,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/notification_switch" />
 
-        <Button
-            android:id="@+id/confirmButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Confirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/location_switch" />
+      <Button
+          android:id="@+id/confirmButton"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:text="Confirm"
+          app:backgroundTint="@color/goodGreen"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/location_switch" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
