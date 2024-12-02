@@ -1,6 +1,7 @@
 package com.example.napkinapp.fragments.adminfacilitysearch;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
@@ -96,6 +98,8 @@ public class AdminFacilityArrayAdapter extends ArrayAdapter<Facility> {
                 .into(facilityImage);
 
         Button button = view.findViewById(R.id.button);
+        button.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorRemoveDark)));
+
 
         eventName.setText(facility.getName());
         eventDate.setText(facility.getDescription().toString());
