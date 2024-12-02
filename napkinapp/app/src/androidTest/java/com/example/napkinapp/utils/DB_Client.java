@@ -27,6 +27,8 @@ public class DB_Client {
         default void onFailure(Exception e) {}
     }
 
+    public static final DB_Client.DatabaseCallback IGNORE = new DB_Client.DatabaseCallback() {};
+
     // Variables to store predefined data for methods
     private static List<Object> findOneDataList = new ArrayList<>();
     private static int findOneCallIndex = 0;
@@ -145,7 +147,7 @@ public class DB_Client {
             data = null;
         }
 
-        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(data));
+        callback.onSuccess(data);
     }
 
     public <T> void findAll(String collection, Map<String, Object> filters, DatabaseCallback<List<T>> callback, Class<T> returnType) {
@@ -162,7 +164,7 @@ public class DB_Client {
             findAllCallIndex++;
         }
 
-        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(data));
+        callback.onSuccess(data);
     }
 
     public <T> void findAllIn(String collection, String field, @NonNull List<Object> list, DatabaseCallback<List<T>> callback, Class<T> returnType) {
@@ -180,7 +182,7 @@ public class DB_Client {
         }
 
         // Simulate asynchronous behavior
-        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(data));
+        callback.onSuccess(data);
     }
 
     public <T> void executeQuery(
@@ -207,7 +209,7 @@ public class DB_Client {
         }
 
         // Simulate asynchronous behavior
-        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(data));
+       callback.onSuccess(data);
     }
 
 
@@ -232,7 +234,7 @@ public class DB_Client {
         }
 
         // Simulate asynchronous behavior
-        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(data));
+        callback.onSuccess(data);
     }
 
 
