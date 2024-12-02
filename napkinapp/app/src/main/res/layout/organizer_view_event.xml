@@ -82,8 +82,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Event is Unamed"
-                android:textColor="@color/text_primary"
-                android:textSize="20sp"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_size_secondary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/edit_event_name"
                 app:layout_constraintStart_toStartOf="parent"
@@ -105,7 +105,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/event_name_text_view2"
+                android:id="@+id/event_name_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -113,8 +113,7 @@
                 android:textColor="@color/text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="4dp" />
+                app:layout_constraintTop_toTopOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -189,7 +188,6 @@
                 android:id="@+id/edit_event_details"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginBottom="16dp"
                 android:foreground="@drawable/baseline_edit_24"
                 android:foregroundGravity="center"
                 android:foregroundTint="@color/text_secondary"
@@ -221,7 +219,7 @@
                 android:id="@+id/event_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="mm/dd/yyyy"
+                android:hint="mm/dd/yyyy"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -262,7 +260,7 @@
                 android:id="@+id/lottery_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="mm/dd/yyyy"
+                android:hint="mm/dd/yyyy"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -281,9 +279,90 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- Entrant Count-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/entrant_limit_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Entrant Limit"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_primary"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/entrant_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="48dp"
+                android:hint="Entrant limit is not set."
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_size_secondary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/entrant_limit_text_view"/>
+
+            <Button
+                android:id="@+id/edit_entrant_limit"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:foreground="@drawable/baseline_edit_24"
+                android:foregroundGravity="center"
+                android:foregroundTint="@color/text_secondary"
+                android:theme="@style/ThemeOverlay.Material3.Button.ElevatedButton"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Participant Count-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/participant_limit_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Participant Limit"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_primary"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/participant_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="48dp"
+                android:hint="Participant limit is not set."
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_size_secondary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/participant_limit_text_view"/>
+
+            <Button
+                android:id="@+id/edit_participant_limit"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:foreground="@drawable/baseline_edit_24"
+                android:foregroundGravity="center"
+                android:foregroundTint="@color/text_secondary"
+                android:theme="@style/ThemeOverlay.Material3.Button.ElevatedButton"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-<!--        Do Lottery Button-->
+        <!--        Do Lottery Button-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
