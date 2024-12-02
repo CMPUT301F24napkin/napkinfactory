@@ -418,6 +418,7 @@ public class ListEventsFragment extends Fragment {
         events.clear();
 
         if(selectedCategories.contains("Waitlist")) {
+            Log.i("Chips", "Selected categories contains waitlist!");
             if(!loggedInUser.getWaitlist().isEmpty()) {
                 db.findAllIn("Events", "id", new ArrayList<>(loggedInUser.getWaitlist()), new DB_Client.DatabaseCallback<List<Event>>() {
                     @Override
@@ -471,6 +472,7 @@ public class ListEventsFragment extends Fragment {
                 }
             }, Event.class);
         }
+        eventArrayAdapter.notifyDataSetChanged(); // already cleared later, just update adapter
     }
 
     /**
