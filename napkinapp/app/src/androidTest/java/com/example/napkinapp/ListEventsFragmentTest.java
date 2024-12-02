@@ -169,7 +169,7 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
         List<Object> mockEventList = new ArrayList<>();
         mockEventList.add(mockEvent1);
 
-        DB_Client.setFindAllInData(mockEventList);
+        DB_Client.addFindAllInData(mockEventList);
         // Ensure the fragment is loaded
         ListEventsFragment fragment = getFragment();
 

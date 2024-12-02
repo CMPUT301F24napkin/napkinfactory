@@ -334,6 +334,10 @@ public class Event {
         this.tags = tags;
     }
   
+    public void setEventImageUri(String eventImageUri){
+        this.eventImageUri = eventImageUri;
+    }
+
     public String getEventImageUri(){
         return eventImageUri;
     }

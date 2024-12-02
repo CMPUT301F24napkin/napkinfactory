@@ -27,10 +27,17 @@ public class DB_Client {
         default void onFailure(Exception e) {}
     }
 
+    public static final DB_Client.DatabaseCallback IGNORE = new DB_Client.DatabaseCallback() {};
+
     // Variables to store predefined data for methods
-    private static Object findOneData;
-    private static List<?> findAllData;
-    private static List<?> findAllInData;
+    private static List<Object> findOneDataList = new ArrayList<>();
+    private static int findOneCallIndex = 0;
+
+    private static List<List<?>> findAllDataList = new ArrayList<>();
+    private static int findAllCallIndex = 0;
+
+    private static List<List<?>> findAllInDataList = new ArrayList<>();
+    private static int findAllInCallIndex = 0;
 
     private static Object executeQueryData;
     private static List<?> executeQueryListData;
@@ -47,17 +54,16 @@ public class DB_Client {
     private static Object documentSnapshotData;
     private static List<Object> collectionSnapshotData;
 
-    // Methods to set predefined data
-    public static void setFindOneData(Object data) {
-        findOneData = data;
-    }
-  
-    public static void setFindAllData(List<Object> data) {
-        findAllData = data;
+        public static void addFindOneData(Object data) {
+        findOneDataList.add(data);
     }
 
-    public static void setFindAllInData(List<?> data) {
-        findAllInData = data;
+    public static void addFindAllData(List<?> data) {
+        findAllDataList.add(data);
+    }
+
+    public static void addFindAllInData(List<?> data) {
+        findAllInDataList.add(data);
     }
 
     public static void setExecuteQueryData(Object data) {
@@ -103,9 +109,15 @@ public class DB_Client {
 
     // Reset method to clear data between tests
     public static void reset() {
-        findOneData = null;
-        findAllData = null;
-        findAllInData = null;
+        findOneDataList.clear();
+        findOneCallIndex = 0;
+
+        findAllDataList.clear();
+        findAllCallIndex = 0;
+
+        findAllInDataList.clear();
+        findAllInCallIndex = 0;
+
         executeQueryData = null;
         executeQueryListData = null;
         insertedData.clear();
@@ -128,13 +140,14 @@ public class DB_Client {
         }
 
         T data;
-        if (findOneData != null) {
-            data = returnType.cast(findOneData);
+        if (findOneCallIndex < findOneDataList.size()) {
+            data = returnType.cast(findOneDataList.get(findOneCallIndex));
+            findOneCallIndex++;
         } else {
             data = null;
         }
 
-        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(data));
+        callback.onSuccess(data);
     }
 
     public <T> void findAll(String collection, Map<String, Object> filters, DatabaseCallback<List<T>> callback, Class<T> returnType) {
@@ -144,32 +157,32 @@ public class DB_Client {
         }
 
         List<T> data = new ArrayList<>();
-        if (findAllData != null) {
-            for (Object obj : findAllData) {
-
-
+        if (findAllCallIndex < findAllDataList.size()) {
+            for (Object obj : findAllDataList.get(findAllCallIndex)) {
                 data.add(returnType.cast(obj));
             }
+            findAllCallIndex++;
         }
 
-        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(data));
+        callback.onSuccess(data);
     }
-  
+
     public <T> void findAllIn(String collection, String field, @NonNull List<Object> list, DatabaseCallback<List<T>> callback, Class<T> returnType) {
         if (exceptionToThrow != null) {
             callback.onFailure(exceptionToThrow);
             return;
         }
 
-        List<T> result = new ArrayList<>();
-        if (findAllInData != null) {
-            for (Object obj : findAllInData) {
-                result.add(returnType.cast(obj));
+        List<T> data = new ArrayList<>();
+        if (findAllInCallIndex < findAllInDataList.size()) {
+            for (Object obj : findAllInDataList.get(findAllInCallIndex)) {
+                data.add(returnType.cast(obj));
             }
+            findAllInCallIndex++;
         }
 
         // Simulate asynchronous behavior
-        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(result));
+        callback.onSuccess(data);
     }
 
     public <T> void executeQuery(
@@ -196,7 +209,7 @@ public class DB_Client {
         }
 
         // Simulate asynchronous behavior
-        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(data));
+       callback.onSuccess(data);
     }
 
 
@@ -221,7 +234,7 @@ public class DB_Client {
         }
 
         // Simulate asynchronous behavior
-        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(data));
+        callback.onSuccess(data);
     }
 
 
