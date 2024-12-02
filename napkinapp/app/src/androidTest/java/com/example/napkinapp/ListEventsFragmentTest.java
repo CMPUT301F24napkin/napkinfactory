@@ -72,7 +72,7 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
         mockEventList.add(mockEvent2);
 
         DB_Client.setExecuteQueryListData(mockEventList);
-        DB_Client.setFindAllData(new ArrayList<>(List.of(new Tag(mockTag1))));
+        DB_Client.addFindAllData(new ArrayList<>(List.of(new Tag(mockTag1))));
     }
 
     @Override
@@ -211,7 +211,7 @@ public class ListEventsFragmentTest extends AbstractFragmentTest<ListEventsFragm
         List<Object> mockEventList = new ArrayList<>();
         mockEventList.add(mockEvent1);
 
-        DB_Client.setFindAllInData(mockEventList);
+        DB_Client.addFindAllData(mockEventList);
 
         ListEventsFragment fragment = getFragment();
 

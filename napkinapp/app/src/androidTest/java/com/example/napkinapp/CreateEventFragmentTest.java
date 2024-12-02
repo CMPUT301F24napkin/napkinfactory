@@ -4,6 +4,7 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -43,7 +44,7 @@ public class CreateEventFragmentTest extends AbstractFragmentTest<CreateEventFra
         tags.add(new Tag("Basketball"));
         tags.add(new Tag("Outdoors"));
         tags.add(new Tag("Soccer"));
-        DB_Client.setFindAllData(new ArrayList<>(tags));
+        DB_Client.addFindAllData(new ArrayList<>(tags));
     }
 
     @Override
@@ -62,11 +63,12 @@ public class CreateEventFragmentTest extends AbstractFragmentTest<CreateEventFra
         onView(withId(R.id.event_description)).check(matches(isDisplayed()));
         onView(withId(R.id.entrant_limit)).check(matches(isDisplayed()));
         onView(withId(R.id.participant_limit_checkbox)).check(matches(isDisplayed()));
+        onView(withId(R.id.tag_autocomplete)).check(matches(isDisplayed()));
         onView(withId(R.id.create_button)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void testEnterEventDetailsAndCreate() throws InterruptedException {
+    public void testEnterEventDetailsAndCreate() {
         // Enter event name
         onView(withId(R.id.event_name)).perform(replaceText("Test Event"));
 
@@ -89,7 +91,7 @@ public class CreateEventFragmentTest extends AbstractFragmentTest<CreateEventFra
         onView(withId(R.id.participant_limit)).perform(replaceText("50"));
 
         // Enter tagautocomplete and start typing
-        onView(withId(R.id.tag_autocomplete)).perform(click(), replaceText("Ba"));
+        onView(withId(R.id.tag_autocomplete)).perform(scrollTo(), click(), replaceText("Ba"));
 
         // Select basketball
         onData(equalTo("Basketball")).inRoot(RootMatchers.isPlatformPopup()).perform(click());
@@ -98,11 +100,12 @@ public class CreateEventFragmentTest extends AbstractFragmentTest<CreateEventFra
         onView(allOf(
                 withParent(withId(R.id.tag_chip_group)),
                 withText("Basketball"))).check(matches(isDisplayed()));
+
         // Toggle geolocation switch
-        onView(withId(R.id.geolocation_switch)).perform(click());
+        onView(withId(R.id.geolocation_switch)).perform(scrollTo(), click());
 
         // Click Create button
-        onView(withId(R.id.create_button)).perform(click());
+        onView(withId(R.id.create_button)).perform(scrollTo(), click());
     }
 
     @Test
