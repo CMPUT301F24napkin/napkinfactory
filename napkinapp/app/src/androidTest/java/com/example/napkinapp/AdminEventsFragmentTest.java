@@ -4,6 +4,7 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition;
@@ -122,12 +123,23 @@ public class AdminEventsFragmentTest extends AbstractFragmentTest<AdminListEvent
     @Test
     public void testSearchedEventDisplayed(){
         // Type "Mock Event 1" into the search box
+        List<Object> mockEventList = new ArrayList<>();
+        mockEventList.add(mockEvent1);
+
+        DB_Client.setExecuteQueryListData(mockEventList);
+
         onView(withId(R.id.search_event_name)).perform(typeText("Mock Event 1"));
+        onView(withId(R.id.search_button)).perform(click());
 
         onView(allOf(
                 withId(R.id.eventName),
                 withText("Mock Event 1")))
                 .check(matches(isDisplayed()));
+
+        onView(allOf(
+                withId(R.id.eventName),
+                withText("Mock Event 2")))
+                .check(doesNotExist());
     }
 
 }
