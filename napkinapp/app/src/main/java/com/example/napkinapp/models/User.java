@@ -1,7 +1,5 @@
 package com.example.napkinapp.models;
 
-import android.net.Uri;
-
 import java.util.ArrayList;
 
 /**
