@@ -111,6 +111,7 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
 
         ArrayList<String> shuffledWaitlist = new ArrayList<>(event.getWaitlist());
         Collections.shuffle(shuffledWaitlist);
+        Log.i("DoLottery", "initial shuffledWaitlist.size() " + shuffledWaitlist.size());
 
         ArrayList<String> newlyChosen = new ArrayList<>(); // on first call, will be empty, otherwise, could have elements
 
@@ -129,6 +130,12 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         }
         ArrayList<String> chosen = new ArrayList<>(event.getChosen());
         chosen.addAll(newlyChosen);
+
+        Log.i("DoLottery", "num Users to move is " + numUsersToMove);
+        Log.i("DoLottery", "newlyChosen.size() is " + newlyChosen.size());
+        Log.i("DoLottery", "chosen.size() " + chosen.size());
+        Log.i("DoLottery", "final shuffledWaitlist.size() " + shuffledWaitlist.size());
+
 
         event.setWaitlist(shuffledWaitlist);
         event.setChosen(chosen);

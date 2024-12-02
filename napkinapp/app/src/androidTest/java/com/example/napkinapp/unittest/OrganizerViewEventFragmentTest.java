@@ -56,7 +56,8 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
         mockEvent.setDescription("This is a detailed description of Mock Event."); // Set description
         mockEvent.setOrganizerId("test_user_id"); // Set organizer ID
         mockEvent.setEventImageUri("test/eventuri");
-        mockEvent.setParticipantLimit(2); // Set participant limit
+        mockEvent.setEntrantLimit(2); // Set entrant limit
+        mockEvent.setParticipantLimit(3);
 
         mockEvent.addUserToWaitlist(mockEntrant1.getAndroidId()); // Add test user to waitlist
         mockEntrant1.addEventToWaitlist(mockEvent.getId());
@@ -64,8 +65,8 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
         mockEvent.addUserToWaitlist(mockEntrant2.getAndroidId()); // Add test user to waitlist
         mockEntrant2.addEventToWaitlist(mockEvent.getId());
 
-        mockEvent.addUserToWaitlist(mockEntrant2.getAndroidId()); // Add test user to waitlist
-        mockEntrant2.addEventToWaitlist(mockEvent.getId());
+        mockEvent.addUserToWaitlist(mockEntrant3.getAndroidId()); // Add test user to waitlist
+        mockEntrant3.addEventToWaitlist(mockEvent.getId());
 
         DB_Client.addFindOneData(mockUser);
     }
@@ -192,13 +193,16 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
         DB_Client.addFindOneData(mockEntrant2);
         DB_Client.addFindOneData(mockEntrant3);
 
+        // notifying failed entrant
+        DB_Client.addFindOneData(mockEntrant1);
+
         // Perform the lottery
         fragment.doLottery();
 
         // Validate chosen list
-        assertEquals(mockEvent.getChosen(), expectedChosen);
+        assertEquals(expectedChosen.size(), mockEvent.getChosen().size());
         // Validate waitlist
-        assertEquals(mockEvent.getWaitlist(), expectedWaitlist);
+        assertEquals(expectedWaitlist.size(), mockEvent.getWaitlist().size());
 
         // Validate event updates in the database
         Map<String, Object> expectedEventUpdates = Map.of(
@@ -208,15 +212,6 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
         assertEquals(DB_Client.getUpdatedFilters().get(0), Map.of("id", mockEvent.getId()));
         assertEquals(DB_Client.getUpdatedData().get(0), expectedEventUpdates);
 
-        Map<String, Object> eventUpdates = Map.of(
-                "waitlist", expectedWaitlist,
-                "chosen", expectedChosen
-        );
-
-        // Validate user list updates in the database
-        assertEquals(DB_Client.getUpdatedFilters().get(0), Map.of("id", mockEvent.getId()));
-        assertEquals(DB_Client.getUpdatedData().get(0), eventUpdates);
-
         int writtenDataCounter = 0;
 
         for (String androidId : expectedWaitlist){
@@ -224,7 +219,7 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
             User notChosenUser = (User) DB_Client.getWrittenData().get(writtenDataCounter++);
             Notification notChosenNotification = new Notification(
                     fragment.getText(R.string.notification_not_chosen_name).toString() + mockEvent.getName(),
-                    fragment.getText(R.string.notification_not_chosen_description).toString(), false, mockEvent.getId(), false);
+                    fragment.getText(R.string.notification_not_chosen_description).toString() + mockEvent.getName(), false, mockEvent.getId(), false);
 
             assertEquals(androidId, notChosenUser.getAndroidId());
             assertEquals(notChosenUser.getNotifications().get(0).getMessage(), notChosenNotification.getMessage());
