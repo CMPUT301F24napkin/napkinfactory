@@ -296,8 +296,6 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         Button editEventDetails = view.findViewById(R.id.edit_event_details);
         Button editEventDate = view.findViewById(R.id.edit_event_date);
         Button editLotteryDate = view.findViewById(R.id.edit_lottery_date);
-        Button editEntrantLimit = view.findViewById(R.id.edit_entrant_limit);
-        Button editParticipantLimit = view.findViewById(R.id.edit_participant_limit);
         Button shareQRCode = view.findViewById(R.id.share_qr_code);
         Button doLottery = view.findViewById(R.id.do_lottery);
         SwitchCompat requireGeolocation = view.findViewById(R.id.require_geolocation);
@@ -414,48 +412,13 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
             popup.show();
         });
 
+        // entrant count
         entrantLimit.setHint("Unlimited");
         if(event.getEntrantLimit() != Integer.MAX_VALUE) entrantLimit.setText(String.valueOf(event.getEntrantLimit()));
-        editEntrantLimit.setOnClickListener(v->{
-            EditNumberPopupFragment popup = new EditNumberPopupFragment("Edit Entrant Limit", entrantLimit.getText().toString(),
-                    new EditNumberPopupFragment.ButtonCallbacks() {
-                        @Override
-                        public void onPositive(Integer number) {
-                            event.setEntrantLimit(number);
-                            entrantLimit.setText((number == Integer.MAX_VALUE) ? "" : number.toString());
-                            db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
-                            });
-                        }
-
-                        @Override
-                        public Pair<Boolean, String> checkValid(Integer number) {
-                            return new Pair<>(number >= event.getWaitlist().size(), "Entrant limit cannot be less than number of people already waitlisted!");
-                        }
-                    });
-
-            popup.show(getActivity().getSupportFragmentManager(), "popup");
-        });
 
         // participant count
         participantLimit.setHint("Unlimited");
         if(event.getParticipantLimit() != Integer.MAX_VALUE) participantLimit.setText(String.valueOf(event.getParticipantLimit()));
-        editParticipantLimit.setOnClickListener(v->{
-            EditNumberPopupFragment popup = new EditNumberPopupFragment("Edit Participant Limit", participantLimit.getText().toString(), new EditNumberPopupFragment.ButtonCallbacks() {
-                @Override
-                public void onPositive(Integer number) {
-                    event.setParticipantLimit(number);
-                    participantLimit.setText((number == Integer.MAX_VALUE) ? "" : number.toString());
-                    db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
-                    });
-                }
-
-                @Override
-                public Pair<Boolean, String> checkValid(Integer number) {
-                    return new Pair<>(number >= event.getChosen().size() + event.getRegistered().size(), "Participant limit cannot be less than number of people chosen and registered!");
-                }
-            });
-            popup.show(getActivity().getSupportFragmentManager(), "popup");
-        });
 
         // call the member function.
         // its a function so that we can do unit tests on it!!!
