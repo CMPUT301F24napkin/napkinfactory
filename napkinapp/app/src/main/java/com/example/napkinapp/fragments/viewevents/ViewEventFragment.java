@@ -120,7 +120,7 @@ public class ViewEventFragment extends Fragment {
                     return;
                 }
                 organizerName.setText(data.getName());
-                organization.setText(data.getPhoneNumber());
+                organization.setText(data.getEmail());
                 if(data.getProfileImageUri() != null) {
                     try {
                         if(data.getProfileImageUri() != null){
