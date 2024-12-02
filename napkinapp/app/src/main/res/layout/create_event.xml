@@ -8,193 +8,213 @@
 
 
     <!-- Event Name Input -->
-    <EditText
-        android:id="@+id/event_name"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Unnamed Event"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp" />
-23
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/event_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Unnamed Event"
+                android:padding="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/event_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Event Date Not Set"
+                    android:inputType="date"
+                    android:padding="12dp" />
+
+                <ImageButton
+                    android:id="@+id/event_date_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:inputType="date"
+                    android:src="@drawable/baseline_edit_calendar_24" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/lottery_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Lottery Date Not Set"
+                    android:inputType="date"
+                    android:padding="12dp" />
+
+                <ImageButton
+                    android:id="@+id/lottery_date_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:inputType="date"
+                    android:src="@drawable/baseline_edit_calendar_24" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="259dp"
+                android:layout_marginBottom="8dp"
+                android:background="#d0d0d0">
+
+                <!-- Image View for Displaying the Event Image -->
+                <ImageView
+                    android:id="@+id/event_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#d0d0d0"
+                    android:scaleType="centerCrop" />
+
+                <!-- Delete Button (Bottom Left) -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/delete_event_image_button"
+                    android:layout_width="58dp"
+                    android:layout_height="54dp"
+                    android:layout_gravity="bottom|start"
+                    android:layout_margin="8dp"
+                    android:clickable="true"
+                    app:backgroundTint="@color/colorRemove"
+                    app:srcCompat="@drawable/remove" />
+
+                <!-- Edit Button (Bottom Right) -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/edit_event_image_button"
+                    android:layout_width="58dp"
+                    android:layout_height="54dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="8dp"
+                    android:clickable="true"
+                    app:backgroundTint="@color/colorAdd"
+                    app:srcCompat="@android:drawable/ic_menu_edit" />
+            </FrameLayout>
+
+            <EditText
+                android:id="@+id/event_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Event Description"
+                android:padding="12dp" />
+
+            <EditText
+                android:id="@+id/entrant_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Registered Entrant Limit"
+                android:inputType="number"
+                android:padding="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/participant_limit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:alpha="0.5"
+                    android:enabled="false"
+                    android:hint="(Optional) Participant Limit"
+                    android:inputType="number"
+                    android:padding="12dp" />
+
+                <CheckBox
+                    android:id="@+id/participant_limit_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <!-- Searchable dropdown -->
+            <AutoCompleteTextView
+                android:id="@+id/tag_autocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Search and select tags"
+                android:inputType="text" />
+
+            <!-- ChipGroup to display selected tags -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/tag_chip_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:orientation="horizontal" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:text="Require Geolocation?"
+                    android:textSize="16sp" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/geolocation_switch"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/create_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="#6200EA"
+                android:padding="12dp"
+                android:text="Create" />
+        </LinearLayout>
+    </ScrollView>
+
     <!-- Event Date Input -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
-
-        <EditText
-            android:id="@+id/event_date"
-            android:layout_width="0dp"
-            android:inputType="date"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Event Date Not Set"
-            android:padding="12dp" />
-
-        <ImageButton
-            android:id="@+id/event_date_picker"
-            android:inputType="date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_edit_calendar_24"
-            android:background="?attr/selectableItemBackgroundBorderless" />
-    </LinearLayout>
 
     <!-- Lottery Date Input -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
-
-        <EditText
-            android:id="@+id/lottery_date"
-            android:inputType="date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Lottery Date Not Set"
-            android:padding="12dp" />
-
-        <ImageButton
-            android:id="@+id/lottery_date_picker"
-            android:inputType="date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/baseline_edit_calendar_24" />
-    </LinearLayout>
 
     <!-- Image Selection Area -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="259dp"
-        android:layout_marginBottom="8dp"
-        android:background="#d0d0d0">
-
-        <!-- Image View for Displaying the Event Image -->
-        <ImageView
-            android:id="@+id/event_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:background="#d0d0d0" />
-
-        <!-- Delete Button (Bottom Left) -->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/delete_event_image_button"
-            android:layout_width="58dp"
-            android:layout_height="54dp"
-            android:layout_gravity="bottom|start"
-            android:layout_margin="8dp"
-            android:clickable="true"
-            app:backgroundTint="@color/colorRemove"
-            app:srcCompat="@drawable/remove" />
-
-        <!-- Edit Button (Bottom Right) -->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/edit_event_image_button"
-            android:layout_width="58dp"
-            android:layout_height="54dp"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="8dp"
-            android:clickable="true"
-            app:backgroundTint="@color/colorAdd"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
-    </FrameLayout>
 
 
     <!-- Event Description Input -->
-    <EditText
-        android:id="@+id/event_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Event Description"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp" />
 
     <!-- Registered Entrant Limit -->
-    <EditText
-        android:id="@+id/entrant_limit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Registered Entrant Limit"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp"
-        android:inputType="number" />
 
     <!-- Participant Limit (Optional) -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
 
-        <EditText
-            android:id="@+id/participant_limit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="(Optional) Participant Limit"
-            android:padding="12dp"
-            android:inputType="number"
-            android:enabled="false"
-            android:alpha="0.5"/>
-
-        <CheckBox
-            android:id="@+id/participant_limit_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <!-- Searchable dropdown -->
-    <AutoCompleteTextView
-        android:id="@+id/tag_autocomplete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Search and select tags"
-        android:inputType="text" />
-
-    <!-- ChipGroup to display selected tags -->
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/tag_chip_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:orientation="horizontal" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="start"
-            android:text="Require Geolocation?"
-            android:textSize="16sp" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/geolocation_switch"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"/>
-    </LinearLayout>
+    <!-- Require Geolocation Toggle -->
 
     <!-- Create Button -->
-    <Button
-        android:id="@+id/create_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create"
-        android:layout_gravity="center"
-        android:backgroundTint="#6200EA"
-        android:padding="12dp" />
 
 
 </LinearLayout>
