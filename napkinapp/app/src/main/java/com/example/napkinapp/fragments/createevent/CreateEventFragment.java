@@ -180,7 +180,7 @@ public class CreateEventFragment extends Fragment {
         // Validate lottery date
         try {
             lottery = dateFormat.parse(lotteryDate.getText().toString());
-            if ((date != null && lottery.before(date)) || lottery.getTime() > maxTimeMillis) {
+            if ((date != null && lottery.after(date)) || lottery.getTime() > maxTimeMillis) {
                 lotteryDate.setError("Lottery date cannot be before the event date");
                 hasError = true;
             }
