@@ -81,16 +81,16 @@ public class User {
     }
 
     private void init() {
-        this.androidId = "placeholder_user";
-        this.name = "placeholder_name";
-        this.phoneNumber = "1234567890";
-        this.email = "placehodler@test.com";
-        this.address = "1234 Test St";
+        this.androidId = null;
+        this.name = null;
+        this.phoneNumber = null;
+        this.email = null;
+        this.address = null;
         this.enNotifications = false;
         this.enLocation = false;
         this.isAdmin = false;
         this.notifications = new ArrayList<>();
-        this.profileImageUri = "";
+        this.profileImageUri = null;
         this.waitlist = new ArrayList<>();
         this.chosen = new ArrayList<>();
         this.registered = new ArrayList<>();
