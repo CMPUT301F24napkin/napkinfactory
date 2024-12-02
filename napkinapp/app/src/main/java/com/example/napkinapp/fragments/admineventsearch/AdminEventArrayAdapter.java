@@ -85,15 +85,12 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
         TextView eventDate = view.findViewById(R.id.eventDate);
         ImageView eventImage = view.findViewById(R.id.image);
 
-        if(event.getEventImageUri() != null) {
-            try {
-                Glide.with(view).load(Uri.parse(event.getEventImageUri())).into(eventImage);
-                Log.i("Event", "Loaded event image url: " + event.getEventImageUri());
-            }
-            catch (Exception e){
-                Log.e("Event", "failed to load event image: ", e);
-            }
-        }
+        Glide.with(context)
+                .load(event.getEventImageUri() != null ? Uri.parse(event.getEventImageUri()) : null)
+                .placeholder(R.drawable.default_image)  //laceholder while loading
+                .error(R.drawable.default_image) // Fallback in case of error
+                .into(eventImage);
+        
         Button button = view.findViewById(R.id.button);
 
         eventName.setText(event.getName());

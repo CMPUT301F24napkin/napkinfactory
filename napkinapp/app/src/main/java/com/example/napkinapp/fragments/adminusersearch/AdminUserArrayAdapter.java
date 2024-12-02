@@ -5,16 +5,19 @@
 package com.example.napkinapp.fragments.adminusersearch;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.models.User;
 
@@ -74,9 +77,15 @@ public class AdminUserArrayAdapter extends ArrayAdapter<User> {
 
         userName.setText(user.getName());  // Display user name
         userEmail.setText(user.getEmail());  // Display user email or any other property
-
+        ImageView userImage = view.findViewById(R.id.userImage);
         // Customize the button behavior
         userListCustomizer.CustomizeUserCardButton(button);
+
+        Glide.with(context)
+                .load(user.getProfileImageUri() != null ? Uri.parse(user.getProfileImageUri()) : null)
+                .placeholder(R.drawable.default_image)  //laceholder while loading
+                .error(R.drawable.default_image) // Fallback in case of error
+                .into(userImage);
 
         // Set the user as the tag for the button to retrieve when clicked
         button.setTag(user);

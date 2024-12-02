@@ -88,15 +88,11 @@ public class AdminFacilityArrayAdapter extends ArrayAdapter<Facility> {
         TextView eventName = view.findViewById(R.id.eventName);
         TextView eventDate = view.findViewById(R.id.eventDate);
         ImageView facilityImage = view.findViewById(R.id.image);
-        if(facility.getImageUri() != null) {
-            try {
-                Glide.with(view).load(Uri.parse(facility.getImageUri())).into(facilityImage);
-                Log.i("Event", "Loaded event image url: " + facility.getImageUri());
-            }
-            catch (Exception e){
-                Log.e("Event", "failed to load event image: ", e);
-            }
-        }
+        Glide.with(context)
+                .load(facility.getImageUri() != null ? Uri.parse(facility.getImageUri()) : null)
+                .placeholder(R.drawable.default_image)  //laceholder while loading
+                .error(R.drawable.default_image) // Fallback in case of error
+                .into(facilityImage);
         Button button = view.findViewById(R.id.button);
 
         eventName.setText(facility.getName());
