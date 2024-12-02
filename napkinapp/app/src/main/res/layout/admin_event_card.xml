@@ -51,18 +51,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/neutralGray"
+                android:backgroundTint="@color/colorRemoveDark"
                 android:drawableStart="@drawable/add"
                 android:drawableTint="@color/white"
-                android:text="Remove"
-                android:layout_marginEnd="8dp" />
+                android:text="Delete" />
 
             <Button
                 android:id="@+id/clearQr"
@@ -72,7 +73,7 @@
                 android:backgroundTint="@color/neutralGray"
                 android:drawableStart="@drawable/add"
                 android:drawableTint="@color/white"
-                android:text="Clear QR"/>
+                android:text="Clear QR" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

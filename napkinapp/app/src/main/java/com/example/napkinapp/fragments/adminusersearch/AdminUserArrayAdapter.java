@@ -5,16 +5,20 @@
 package com.example.napkinapp.fragments.adminusersearch;
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.models.User;
 
@@ -69,6 +73,15 @@ public class AdminUserArrayAdapter extends ArrayAdapter<User> {
         // Assuming you're displaying user name and other info here
         TextView userName = view.findViewById(R.id.userName);  // Change to your specific user field
         TextView userEmail = view.findViewById(R.id.userEmail);  // Add other relevant fields if needed
+        ImageView userImage = view.findViewById(R.id.userImage);
+
+
+        Glide.with(context)
+                .load(user.getProfileImageUri() != null ? Uri.parse(user.getProfileImageUri()) : null)
+                .placeholder(R.drawable.default_image)  //laceholder while loading
+                .error(R.drawable.default_image) // Fallback in case of error
+                .into(userImage);
+
 
         Button button = view.findViewById(R.id.button);  // Assuming you're using a button to trigger actions
 
@@ -77,6 +90,12 @@ public class AdminUserArrayAdapter extends ArrayAdapter<User> {
 
         // Customize the button behavior
         userListCustomizer.CustomizeUserCardButton(button);
+
+        Glide.with(context)
+                .load(user.getProfileImageUri() != null ? Uri.parse(user.getProfileImageUri()) : null)
+                .placeholder(R.drawable.default_image)  //laceholder while loading
+                .error(R.drawable.default_image) // Fallback in case of error
+                .into(userImage);
 
         // Set the user as the tag for the button to retrieve when clicked
         button.setTag(user);
