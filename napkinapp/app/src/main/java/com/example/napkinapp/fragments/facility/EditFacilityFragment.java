@@ -212,22 +212,27 @@ public class EditFacilityFragment extends AbstractMapFragment {
             DB_Client db = new DB_Client();
 
             // guarantees to set the facility.getId() to non-null
-            if(facilityImageURI != null) {
-                if(facility.getId() != null) {
-                    // ready to upload facility
+            if(facility.getId() != null) {
+                if(facilityImageURI != null) {
+                    // need to reupload iamge
                     uploadFacilityImage(db);
                 } else {
-                    db.insertData("Facilities", facility, new DB_Client.DatabaseCallback<String>() {
-                        @Override
-                        public void onSuccess(@Nullable String generatedId) {
-                            facility.setId(generatedId);
-                            uploadFacilityImage(db);
-                        }
-                    });
+                    // don't need to reupload image, just save the rest of the fields
+                    saveFacilityAndUser(db);
                 }
             } else {
-                // no new image uploaded, just save the rest of the screen
-                saveFacilityAndUser(db);
+                // id is not initialized! insert
+                db.insertData("Facilities", facility, new DB_Client.DatabaseCallback<String>() {
+                    @Override
+                    public void onSuccess(@Nullable String generatedId) {
+                        facility.setId(generatedId);
+                        if(facilityImageURI != null) {
+                            uploadFacilityImage(db);
+                        } else {
+                            saveFacilityAndUser(db);
+                        }
+                    }
+                });
             }
             getParentFragmentManager().popBackStack();
         });
@@ -235,6 +240,7 @@ public class EditFacilityFragment extends AbstractMapFragment {
         return view;
     }
 
+    // calls saveFacilityAndUser(db); afterwards
     void uploadFacilityImage(DB_Client db) {
         imageUtils.uploadImage(facilityImageURI, facility.getId())
                 .addOnSuccessListener(uri -> {

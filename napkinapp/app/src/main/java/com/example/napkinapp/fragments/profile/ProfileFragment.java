@@ -129,10 +129,6 @@ public class ProfileFragment extends Fragment {
         // Update title
         titleUpdateListener.updateTitle("Profile Settings");
 
-        TextView nameText = view.findViewById(R.id.editTextName);
-        TextView emailText = view.findViewById(R.id.editTextEmailAddress);
-        TextView phoneText = view.findViewById(R.id.editTextPhone);
-        TextView addressText = view.findViewById(R.id.editTextAddress);
         nameText = view.findViewById(R.id.editTextName);
         emailText = view.findViewById(R.id.editTextEmailAddress);
         phoneText = view.findViewById(R.id.editTextPhone);
