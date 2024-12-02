@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.google.firebase.firestore.Query;
 
@@ -49,7 +50,9 @@ public class AdminListEventsFragment extends Fragment {
             Log.i("Button", String.format("List Events: Clicked on event %s\n", event.getName()));
 
             // Call the delete method with the event ID
+            Log.d("RegisteredEventsFragment", "Deleting event with ID: " + event.getId());
             deleteEvent(event);
+            Log.d("RegisteredEventsFragment", "Event deleted successfully.");
         });
     };
 
@@ -83,7 +86,7 @@ public class AdminListEventsFragment extends Fragment {
         titleUpdateListener.updateTitle("Event List");
 
         // Load all events initially
-        loadEvents(null);
+        loadEvents("");
 
         // Set up search button click listener
         searchButton.setOnClickListener(v -> {
@@ -95,7 +98,7 @@ public class AdminListEventsFragment extends Fragment {
         return view;
     }
 
-    private void loadEvents(String eventName) {
+    public void loadEvents(String eventName) {
         // Create a query with a "like" match on event names
         List<Function<Query, Query>> conditions = List.of(
                 query -> query.whereGreaterThanOrEqualTo("name", eventName),
@@ -123,14 +126,59 @@ public class AdminListEventsFragment extends Fragment {
                 Log.e("RegisteredEventsFragment", "Error loading events: " + e.getMessage(), e);
             }
         }, Event.class);
-
     }
 
-    private void
-    deleteEvent(Event event) {
+    public void deleteEvent(Event event) {
         if (event.getId() == null || event.getId().isEmpty()) {
             Log.e("RegisteredEventsFragment", "Event ID is null or empty. Cannot delete event.");
             return;
+        }
+
+        // remove from users waitlists first
+        String eventId = event.getId();
+        ArrayList<String> userIds = event.getWaitlist();
+        userIds.addAll(event.getRegistered());
+        userIds.addAll(event.getChosen());
+
+        Log.d("RegisteredEventsFragment", "User Ids: " + userIds);
+
+        for (String userID : userIds) {
+            Map<String, Object> filters = new HashMap<>();
+            filters.put("androidId", userID);
+            Log.d("RegisteredEventsFragment", "User ID: " + userID);
+
+            db.findOne("Users", filters, new DB_Client.DatabaseCallback<User>() {
+                @Override
+                public void onSuccess(@Nullable User user) {
+                    if (user != null) {
+                        List<String> waitlist = (List<String>) user.getWaitlist();
+                        Log.d("RegisteredEventsFragment", "waitlist" + waitlist);
+                        List<String> registered = (List<String>) user.getRegistered();
+                        Log.d("RegisteredEventsFragment", "regisered" + registered);
+                        List<String> chosen = (List<String>) user.getChosen();
+                        // adjust the waitlist
+                        waitlist.remove(eventId);
+                        Log.d("RegisteredEventsFragment", "removed waitlist" + waitlist);
+                        registered.remove(eventId);
+                        Log.d("RegisteredEventsFragment", "removed regisered" + registered);
+                        chosen.remove(eventId);
+
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("waitlist", waitlist);
+                        updates.put("registered", registered);
+                        updates.put("chosen", chosen);
+                        Log.d("RegisteredEventsFragment", "updates" + updates);
+                        db.updateAll("Users", filters, updates, new DB_Client.DatabaseCallback<Void>() {
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(mContext, "Failed to get event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("RegisteredEventsFragment", "Error getting evnet", e);
+                }
+            }, User.class);
         }
 
         // Set up the filter to find the event by its ID
@@ -141,10 +189,12 @@ public class AdminListEventsFragment extends Fragment {
         db.deleteOne("Events", filters, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(mContext, "Event deleted successfully", Toast.LENGTH_SHORT).show();
-                events.remove(event); // Remove the event from the local list
-                eventArrayAdapter.notifyDataSetChanged(); // Update the adapter
-                Log.d("RegisteredEventsFragment", "Event deleted from Firestore and list updated.");
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(mContext, "Event deleted successfully", Toast.LENGTH_SHORT).show();
+                    events.remove(event); // Remove the event from the local list
+                    eventArrayAdapter.notifyDataSetChanged(); // Update the adapter
+                    Log.d("RegisteredEventsFragment", "Event deleted from Firestore and list updated.");
+                });
             }
 
             @Override

@@ -81,7 +81,7 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         this.event = event;
     }
 
-    private void sendNotification(@NonNull List<String> androidIds, Notification notification) {
+    public void sendNotification(@NonNull List<String> androidIds, Notification notification) {
         for (String androidId : androidIds) {
             DB_Client db = new DB_Client();
             HashMap<String, Object> filter = new HashMap<>();
@@ -100,7 +100,15 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
 
         // If the keyboard is open, hide it
         imm.hideSoftInputFromWindow(getActivity().findViewById(R.id.content_fragmentcontainer).getWindowToken(), 0);
-        Toast.makeText(mContext, String.format("Sent notification to %d users!", androidIds.size()), Toast.LENGTH_SHORT).show();
+        getActivity().runOnUiThread(() -> {
+            Toast.makeText(mContext, String.format("Sent notification to %d users!", androidIds.size()), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    public void shuffleWaitlist(){
+        ArrayList<String> waitlistCopy = new ArrayList<>(event.getWaitlist());
+        Collections.shuffle(waitlistCopy);
+        doLottery(waitlistCopy);
     }
 
     /**
@@ -108,12 +116,8 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
      * Sends notifications to the chosen users telling them they were chosen
      * Sends notifications to the un-chosen users telling them they were not
      */
-    private void doLottery() {
-
-        ArrayList<String> waitlistCopy = new ArrayList<>(event.getWaitlist());
+    public void doLottery(ArrayList<String> waitlistCopy) {
         ArrayList<String> chosenListCopy = new ArrayList<>(event.getChosen()); // empty
-
-        Collections.shuffle(waitlistCopy);
 
         // minimum between size of waitlist and space left in chosen list.
         // FIX THIS SO THAT IT DOESN'T GRAB 0 DUDES
@@ -318,7 +322,7 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
             public void onSuccess(@Nullable User data) {
                 if (data != null) {
                     organizerName.setText(data.getName());
-                    organization.setText(data.getPhoneNumber());
+                    organization.setText(data.getEmail());
                     if(data.getProfileImageUri() != null) {
                         try {
                             if(data.getProfileImageUri() != null){
@@ -349,12 +353,14 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         requireGeolocation.setChecked(event.isRequireGeolocation());
 
         editEventName.setOnClickListener(v -> {
-            EditTextPopupFragment popup = new EditTextPopupFragment("Edit Event Name", eventName.getText().toString(), text -> {
-                event.setName(text);
-                eventName.setText(text);
-                db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
-                });
-            });
+            EditTextPopupFragment popup = new EditTextPopupFragment(
+                    "Edit Event Name",
+                    eventName.getText().toString(),
+                    newName -> {
+                        eventName.setText(newName);
+                        updateEventName(newName);
+                    }
+            );
             popup.show(getActivity().getSupportFragmentManager(), "popup");
         });
 
@@ -365,43 +371,46 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
 
         // Description
         editEventDetails.setOnClickListener(v -> {
-            EditTextPopupFragment popup = new EditTextPopupFragment("Edit Event Details", eventDetails.getText().toString(), text -> {
-                event.setDescription(text);
-                eventDetails.setText(text);
-                db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
-                });
-            });
+            EditTextPopupFragment popup = new EditTextPopupFragment(
+                    "Edit Event Details",
+                    eventDetails.getText().toString(),
+                    newDescription -> {
+                        eventDetails.setText(newDescription);
+                        updateEventDescription(newDescription);
+                    }
+            );
             popup.show(getActivity().getSupportFragmentManager(), "popup");
         });
 
         // Event Date
         editEventDate.setOnClickListener(v -> {
-            DatePickerDialog popup = new DatePickerDialog(mContext, (view1, year, month, dayOfMonth) -> {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month - 1, dayOfMonth); // Month is 0-based
-                Date date = calendar.getTime();
-                eventDate.setText(formatter.format(date));
-
-                // update db
-                event.setEventDate(date);
-                db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
-                });
-            }, 2024, 9, 11);
+            DatePickerDialog popup = new DatePickerDialog(
+                    mContext,
+                    (view1, year, month, dayOfMonth) -> {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(year, month, dayOfMonth);
+                        Date newDate = calendar.getTime();
+                        eventDate.setText(formatter.format(newDate));
+                        updateEventDate(newDate);
+                    },
+                    2024, 9, 11
+            );
             popup.show();
         });
 
         // Lottery Date
         editLotteryDate.setOnClickListener(v -> {
-            DatePickerDialog popup = new DatePickerDialog(mContext, (view1, year, month, dayOfMonth) -> {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month - 1, dayOfMonth); // Month is 0-based
-                Date date = calendar.getTime();
-                lotteryDate.setText(formatter.format(date));
-                // update db
-                event.setLotteryDate(date);
-                db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
-                });
-            }, 2024, 9, 11);
+            DatePickerDialog popup = new DatePickerDialog(
+                    mContext,
+                    (view1, year, month, dayOfMonth) -> {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(year, month, dayOfMonth);
+                        Date newDate = calendar.getTime();
+                        lotteryDate.setText(formatter.format(newDate));
+                        updateLotteryDate(newDate);
+                    },
+                    2024, 9, 11
+            );
             popup.show();
         });
 
@@ -451,7 +460,7 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         // call the member function.
         // its a function so that we can do unit tests on it!!!
         doLottery.setOnClickListener(v -> {
-            doLottery();
+            shuffleWaitlist();
         });
 
         if (event.getQrHashCode() != null) {
@@ -469,13 +478,9 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
             startActivity(Intent.createChooser(shareIntent, null));
         });
 
-        requireGeolocation.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Toast.makeText(mContext, "Require Geolocation " + (isChecked ? "Enabled" : "Disabled"), Toast.LENGTH_SHORT).show();
-            // update db
-            event.setRequireGeolocation(isChecked);
-            db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
-            });
-        });
+        requireGeolocation.setOnCheckedChangeListener((buttonView, isChecked) ->
+                updateRequireGeolocation(isChecked));
+
 
         // Do chips
         ArrayList<User> users = new ArrayList<>();
@@ -612,5 +617,90 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
 
         return view;
     }
+
+    public void updateEventName(String newName) {
+        DB_Client db = new DB_Client();
+        event.setName(newName);
+        db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                Log.i("UpdateEventName", "Event name updated successfully");
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("UpdateEventName", "Failed to update event name", e);
+            }
+        });
+    }
+
+    public void updateEventDescription(String newDescription) {
+        DB_Client db = new DB_Client();
+        event.setDescription(newDescription);
+        db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                Log.i("UpdateEventDescription", "Event description updated successfully");
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("UpdateEventDescription", "Failed to update event description", e);
+            }
+        });
+    }
+
+    public void updateEventDate(Date newDate) {
+        DB_Client db = new DB_Client();
+        event.setEventDate(newDate);
+        db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                Log.i("UpdateEventDate", "Event date updated successfully");
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("UpdateEventDate", "Failed to update event date", e);
+            }
+        });
+    }
+
+    public void updateLotteryDate(Date newDate) {
+        DB_Client db = new DB_Client();
+        event.setLotteryDate(newDate);
+        db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                Log.i("UpdateLotteryDate", "Lottery date updated successfully");
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("UpdateLotteryDate", "Failed to update lottery date", e);
+            }
+        });
+    }
+
+    public void updateRequireGeolocation(boolean isChecked) {
+        DB_Client db = new DB_Client();
+        getActivity().runOnUiThread(() -> {
+            Toast.makeText(mContext, "Require Geolocation " + (isChecked ? "Enabled" : "Disabled"), Toast.LENGTH_SHORT).show();
+        });
+        event.setRequireGeolocation(isChecked);
+        db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void data) {
+                Log.i("UpdateGeolocation", "Require Geolocation updated successfully");
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("UpdateGeolocation", "Failed to update Require Geolocation", e);
+            }
+        });
+    }
+
+
 
 }

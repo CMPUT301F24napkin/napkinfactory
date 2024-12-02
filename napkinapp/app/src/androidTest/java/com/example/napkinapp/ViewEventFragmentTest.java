@@ -46,7 +46,7 @@ public class ViewEventFragmentTest extends AbstractFragmentTest<ViewEventFragmen
         mockOrganizer.setPhoneNumber("9876543210");
 
         // Set DB_Client mock data
-        DB_Client.setFindOneData(mockOrganizer);
+        DB_Client.addFindOneData(mockOrganizer);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class ViewEventFragmentTest extends AbstractFragmentTest<ViewEventFragmen
 
         // Verify organizer details are displayed correctly
         onView(withId(R.id.organizer_name)).check(matches(withText(mockOrganizer.getName()))); // Replace with actual mock organizer name
-        onView(withId(R.id.organization)).check(matches(withText(mockOrganizer.getPhoneNumber())));
+        onView(withId(R.id.organization)).check(matches(withText(mockOrganizer.getEmail())));
     }
 
     @Test

@@ -89,7 +89,7 @@
             android:layout_marginTop="16dp"
             android:background="#D3D3D3"
             android:contentDescription="Event Image"
-            android:src="@mipmap/default_event"
+            android:src="@drawable/default_image"
             android:scaleType="centerCrop"/>
 
         <!-- Event Name and Date -->

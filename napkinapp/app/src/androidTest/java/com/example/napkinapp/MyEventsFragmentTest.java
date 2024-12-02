@@ -54,7 +54,7 @@ public class MyEventsFragmentTest extends AbstractFragmentTest<MyEventsFragment>
         mockEvents.add(mockEvent1);
         mockEvents.add(mockEvent2);
 
-        DB_Client.setFindAllData(mockEvents);
+        DB_Client.addFindAllData(mockEvents);
     }
 
     @Override

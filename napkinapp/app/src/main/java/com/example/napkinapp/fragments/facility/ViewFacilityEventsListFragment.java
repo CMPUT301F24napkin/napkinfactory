@@ -87,7 +87,7 @@ public class ViewFacilityEventsListFragment extends Fragment {
 
         eventArrayAdapter = new EventArrayAdapter(mContext, events, customizer);
         facilityEventsListView.setAdapter(eventArrayAdapter);
-
+        eventArrayAdapter.notifyDataSetChanged();
         displayFacilityEvents();
 
         return view;
@@ -99,6 +99,10 @@ public class ViewFacilityEventsListFragment extends Fragment {
         db.findOne("Users", Map.of("facility", facility.getId()), new DB_Client.DatabaseCallback<User>() {
             @Override
             public void onSuccess(@Nullable User organizer) {
+                if (organizer == null){
+                    Log.d("ViewFacilityEventList","Can't find facility organizer");
+                    return;
+                }
                 db.findAll("Events", Map.of("organizerId", organizer.getAndroidId()), new DB_Client.DatabaseCallback<List<Event>>() {
                     @Override
                     public void onSuccess(@Nullable List<Event> data) {

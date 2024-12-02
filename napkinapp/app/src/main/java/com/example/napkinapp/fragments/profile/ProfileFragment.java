@@ -54,7 +54,8 @@ public class ProfileFragment extends Fragment {
     private TextView emailText;
     private TextView phoneText;
     private TextView addressText;
-    Switch notificationSwitch;
+    private Switch notificationSwitch;
+    private Button createFacilityButton;
 
     private ImageUtils imageUtils = new ImageUtils(ImageUtils.PROFILE);
 
@@ -115,6 +116,7 @@ public class ProfileFragment extends Fragment {
             Log.i("Profile", "Generated user profile");
         }
     }
+
     private boolean isValidEmail(String email) {
         String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         return email.matches(emailPattern);
@@ -124,18 +126,15 @@ public class ProfileFragment extends Fragment {
     // update the User model based on the values in the UI elements.
     // upload the updated user to the DB
 
-    private void updateUserInfo(User user) {
-        nameText.setError(null);
-        emailText.setError(null);
+    public void updateUserInfo(String name, String email, String phoneNumber, String address) {
         boolean hasError = false;
 
-        if (nameText.getText().toString().trim().isEmpty()){
+        if (name.trim().isEmpty()) {
             nameText.setError("Name is required");
             hasError = true;
         }
 
-        String email = emailText.getText().toString().trim();
-        if (email.isEmpty()) {
+        if (email.trim().isEmpty()) {
             emailText.setError("Email is required");
             hasError = true;
         } else if (!isValidEmail(email)) {
@@ -147,10 +146,13 @@ public class ProfileFragment extends Fragment {
             return;
         }
 
-        user.setName(nameText.getText().toString());
-        user.setEmail(emailText.getText().toString());
-        user.setPhoneNumber(phoneText.getText().toString());
-        user.setAddress(addressText.getText().toString());
+        user.setName(name);
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
+        user.setAddress(address);
+
+        createFacilityButton.setVisibility(View.VISIBLE);
+
 
         DB_Client db = new DB_Client();
         db.writeData("Users", user.getAndroidId(), user, new DB_Client.DatabaseCallback<Void>() {
@@ -163,10 +165,13 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onSuccess(@Nullable Void data) {
                 Log.i("User update/creation", "User updated/created");
-                Toast.makeText(getContext(), "Successfully updated your profile!", Toast.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "Successfully updated your profile!", Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }
+
 
     @Nullable
     @Override
@@ -248,32 +253,36 @@ public class ProfileFragment extends Fragment {
                 });
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
-        confirmButton.setOnClickListener((v) -> {
-            if(profileImageUri != null) {
+        confirmButton.setOnClickListener(v -> {
+            String name = nameText.getText().toString();
+            String email = emailText.getText().toString();
+            String phoneNumber = phoneText.getText().toString();
+            String address = addressText.getText().toString();
+
+            if (profileImageUri != null) {
                 imageUtils.uploadImage(profileImageUri, user.getAndroidId())
                         .addOnSuccessListener(uri -> {
                             user.setProfileImageUri(uri.toString());
-                            updateUserInfo(user);
-                            if (user.getProfileImageUri() == null) {
-                                removeProfileImage.setVisibility(View.GONE);
-                            } else {
-                                removeProfileImage.setVisibility(View.VISIBLE);
-                            }
+                            updateUserInfo(name, email, phoneNumber, address);
+                            removeProfileImage.setVisibility(user.getProfileImageUri() == null ? View.GONE : View.VISIBLE);
                         })
                         .addOnFailureListener(e -> {
                             Log.e("UploadImage", "Failed to upload image: " + e.getMessage());
                             Toast.makeText(getContext(), "Failed uploading image! Please try again!", Toast.LENGTH_SHORT).show();
                         });
-            }
-            else{
-                updateUserInfo(user);
+            } else {
+                updateUserInfo(name, email, phoneNumber, address);
                 loadProfileImage(view);
             }
         });
 
+
         // facility stuff
-        Button createFacilityButton = view.findViewById(R.id.create_facility_button);
+        createFacilityButton = view.findViewById(R.id.create_facility_button);
         String facilityId = user.getFacility();
+        if (user.getName().isBlank() || user.getEmail().isBlank()){
+            createFacilityButton.setVisibility(View.GONE);
+        }
 
         DB_Client db = new DB_Client();
         HashMap<String, Object> filters = new HashMap<>();

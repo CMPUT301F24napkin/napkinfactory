@@ -120,7 +120,7 @@ public class ViewEventFragment extends Fragment {
                     return;
                 }
                 organizerName.setText(data.getName());
-                organization.setText(data.getPhoneNumber());
+                organization.setText(data.getEmail());
                 if(data.getProfileImageUri() != null) {
                     try {
                         if(data.getProfileImageUri() != null){
@@ -439,7 +439,7 @@ public class ViewEventFragment extends Fragment {
                 @Override
                 public void onSuccess(@Nullable Void data) {
                     getActivity().runOnUiThread(() -> {
-                            Toast.makeText(getContext(), "Added event to waitlist! " + event.getName(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Joined the waitlist for " + event.getName(), Toast.LENGTH_SHORT).show();
                     });
                     user.addEventToWaitlist(event.getId());
                     // Update person
@@ -447,7 +447,7 @@ public class ViewEventFragment extends Fragment {
                         @Override
                         public void onSuccess(@Nullable Void data) {
                             getActivity().runOnUiThread(() -> {
-                                Toast.makeText(getContext(), "Added event to users waitlist! " + user.getName(), Toast.LENGTH_SHORT).show();
+                                Log.d( "Adding Event to waitlist", "Added event to users waitlist! " + user.getName());
                             });
                         }
 

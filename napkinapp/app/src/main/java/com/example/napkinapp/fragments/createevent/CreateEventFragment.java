@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -32,16 +34,22 @@ import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.models.Tag;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.ImageUtils;
 import com.example.napkinapp.utils.QRCodeUtils;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class CreateEventFragment extends Fragment {
@@ -53,6 +61,11 @@ public class CreateEventFragment extends Fragment {
     private SwitchCompat geolocationSwitch;
     private Button createButton;
     private User loggedInUser;
+    private AutoCompleteTextView tagAutoComplete;
+    private ChipGroup tagChipGroup;
+    private ArrayList<String> predefinedTags = new ArrayList<>();
+    private ArrayList<String> selectedTags = new ArrayList<>();
+    private ArrayAdapter<String> tagArrayAdapter;
 
     private ImageUtils imageUtils = new ImageUtils(ImageUtils.EVENT);
     private Uri eventImageUri = null;
@@ -104,6 +117,10 @@ public class CreateEventFragment extends Fragment {
         participantLimitCheckbox = view.findViewById(R.id.participant_limit_checkbox);
         createButton = view.findViewById(R.id.create_button);
         geolocationSwitch = view.findViewById(R.id.geolocation_switch);
+        tagAutoComplete = view.findViewById(R.id.tag_autocomplete);
+        tagChipGroup = view.findViewById(R.id.tag_chip_group);
+
+        setUpTags();
 
         participantLimitCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             participantLimit.setEnabled(isChecked);
@@ -141,6 +158,74 @@ public class CreateEventFragment extends Fragment {
         createButton.setOnClickListener(v -> onCreateButtonClick());
 
         return view;
+    }
+
+    private void setUpTags(){
+        tagArrayAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, predefinedTags);
+        tagAutoComplete.setAdapter(tagArrayAdapter);
+        tagAutoComplete.setThreshold(0); // Displays filtered results when 0+ characters entered
+
+        // Onclick handles displaying anytime they click AFTER they've gained focus
+        // Focus handles displaying when they initially click
+
+        // When textview clicked shows dropdown
+        tagAutoComplete.setOnClickListener(v -> {
+            // Check if anything entered
+            if(!tagAutoComplete.getText().toString().isEmpty()){
+                tagArrayAdapter.getFilter().filter(tagAutoComplete.getText().toString());
+            }else{
+                tagAutoComplete.showDropDown();
+            }
+        });
+
+        // When focused show drop down
+        tagAutoComplete.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && tagAutoComplete.getText().toString().isEmpty()) {
+                tagAutoComplete.showDropDown(); // Show all items if no input yet
+            }
+        });
+
+        tagAutoComplete.setOnItemClickListener((parent, v, position, id) -> {
+            String selectedTag = parent.getItemAtPosition(position).toString();
+            Log.d("TAG SELECTED", "Tag selected: " + selectedTag);
+            if (!selectedTags.contains(selectedTag)) {
+                selectedTags.add(selectedTag);
+                addChip(tagChipGroup, selectedTag);
+                Log.d("TAG ADDED", "Tag added: " + selectedTags + " Remaining: " + predefinedTags);
+            }
+            tagAutoComplete.setText(""); // Clear input after selection
+            // Re-displays the dropdown
+            tagAutoComplete.postDelayed(tagAutoComplete::showDropDown, 200);
+        });
+
+        // Get the tags
+        DB_Client db = new DB_Client();
+        db.findAll("Tags", null, new DB_Client.DatabaseCallback<List<Tag>>() {
+            @Override
+            public void onSuccess(@Nullable List<Tag> data) {
+                if(data == null)
+                    return;
+
+                data.forEach(tag -> predefinedTags.add(tag.getName()));
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                DB_Client.DatabaseCallback.super.onFailure(e);
+            }
+        }, Tag.class);
+    }
+
+    private void addChip(ChipGroup chipGroup, String tag) {
+        Chip chip = new Chip(requireContext());
+        chip.setText(tag);
+        chip.setCloseIconVisible(true);
+        chip.setOnCloseIconClickListener(v -> {
+            selectedTags.remove(tag);
+            chipGroup.removeView(chip);
+            Log.d("TAG REMOVED", "Tags: " + selectedTags + " Remaining: " + predefinedTags);
+        });
+        chipGroup.addView(chip);
     }
 
     private void onCreateButtonClick() {
@@ -252,7 +337,8 @@ public class CreateEventFragment extends Fragment {
                 participantLimit,
                 geolocationEnabled
         );
-
+      
+        event.setTags(selectedTags);
         // Insert the event into the database
         DB_Client db = new DB_Client();
         db.insertData("Events", event, new DB_Client.DatabaseCallback<String>() {
