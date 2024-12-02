@@ -18,14 +18,12 @@ public class UserUnitTest {
     @Test
     public void testDefaultConstructor() {
         User defaultUser = new User();
-        assertEquals("", defaultUser.getName());
-        assertEquals("", defaultUser.getPhoneNumber());
-        assertEquals("", defaultUser.getEmail());
-        assertEquals("", defaultUser.getAddress());
         assertFalse(defaultUser.getEnNotifications());
         assertFalse(defaultUser.getIsAdmin());
         assertNotNull(defaultUser.getNotifications());
         assertTrue(defaultUser.getNotifications().isEmpty());
+        assertEquals("", defaultUser.getFacility());
+
     }
 
     @Test

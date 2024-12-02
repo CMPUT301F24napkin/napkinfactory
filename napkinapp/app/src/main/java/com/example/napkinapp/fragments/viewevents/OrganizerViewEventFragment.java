@@ -4,16 +4,20 @@
 
 package com.example.napkinapp.fragments.viewevents;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -29,6 +33,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -38,6 +43,7 @@ import com.example.napkinapp.fragments.EditTextPopupFragment;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
+import com.example.napkinapp.utils.AbstractMapFragment;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.ImageGenUtils;
 import com.example.napkinapp.utils.ImageUtils;
@@ -45,6 +51,12 @@ import com.example.napkinapp.utils.QRCodeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputLayout;
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,7 +68,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class OrganizerViewEventFragment extends Fragment {
+public class OrganizerViewEventFragment extends AbstractMapFragment {
     private Context mContext;
     private Event event;
     private TitleUpdateListener titleUpdateListener;
@@ -283,8 +295,10 @@ public class OrganizerViewEventFragment extends Fragment {
         Button editEventDate = view.findViewById(R.id.edit_event_date);
         Button editLotteryDate = view.findViewById(R.id.edit_lottery_date);
         Button shareQRCode = view.findViewById(R.id.share_qr_code);
-        SwitchCompat requireGeolocation = view.findViewById(R.id.require_geolocation);
         Button doLottery = view.findViewById(R.id.do_lottery);
+        SwitchCompat requireGeolocation = view.findViewById(R.id.require_geolocation);
+
+        MapView map = view.findViewById(R.id.map);
 
         Chip waitlistChip = view.findViewById(R.id.chip_waitlist);
         Chip chosenChip = view.findViewById(R.id.chip_chosen);
@@ -508,6 +522,32 @@ public class OrganizerViewEventFragment extends Fragment {
             }
         });
 
+        if(event.isRequireGeolocation()) {
+            map.setTileSource(TileSourceFactory.MAPNIK);
+            requestMapPermissions();
+            map.setMultiTouchControls(true);
+            IMapController mapController = map.getController();
+            mapController.setZoom(15.0);
+            GeoPoint startPoint = new GeoPoint(53.527309714453466, -113.52931950296305);
+            mapController.setCenter(startPoint);
+            map.setOnTouchListener((v, event) -> {
+                // Request parent to not intercept touch events when MapView is touched
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;  // Let the MapView handle the touch event
+            });
+
+            // populate map
+            for(ArrayList<Double> location : event.getEntrantLocations().values()) {
+                if(location.size() < 2) {
+                    Log.e("Map", "Event Entrant Locations coordinate has less than 2 elements! expecting 2, one for longitude and latitude.");
+                }
+                addMarker(map, getDefaultIcon(), location.get(0), location.get(1));
+            }
+        } else {
+            map.setVisibility(View.GONE);
+        }
+
         return view;
     }
+
 }

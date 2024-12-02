@@ -2,6 +2,6 @@
 <resources>
     <dimen name="margin">4dp</dimen>
     <dimen name="padding">10dp</dimen>
-    <dimen name="text_size_primary">14sp</dimen>
-    <dimen name="text_size_secondary">12sp</dimen>
+    <dimen name="text_size_primary">18sp</dimen>
+    <dimen name="text_size_secondary">14sp</dimen>
 </resources>

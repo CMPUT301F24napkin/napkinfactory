@@ -45,7 +45,7 @@
                     android:id="@+id/organizer_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Unamed Organizer"
+                    android:hint="Unnamed Organizer"
                     android:textColor="@color/text_primary"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -98,7 +98,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="Unamed Event"
+            android:hint="Unnamed Event"
             android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold" />

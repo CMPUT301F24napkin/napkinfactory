@@ -19,6 +19,7 @@ public class ImageUtils {
     public static final String DEFAULT = "VARIOUS";
     public static final String EVENT = "EVENTS";
     public static final String PROFILE = "PROFILES";
+    public static final String FACILITY = "FACILITIES";
 
     /**
      * This constructor will set directory to the default folder

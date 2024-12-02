@@ -20,11 +20,12 @@ import androidx.work.WorkManager;
 
 import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
-import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
+import com.example.napkinapp.fragments.adminmenu.AdminNavigationFragment;
 import com.example.napkinapp.fragments.myevents.MyEventsFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.notifications.ListNotificationsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
+import com.example.napkinapp.fragments.map.MapFragment;
 
 import com.example.napkinapp.fragments.qrscanner.QRScannerFragment;
 import com.example.napkinapp.fragments.registeredevents.RegisteredEventsFragment;
@@ -33,8 +34,6 @@ import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.ListenForUserUpdatesWorker;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick,
@@ -48,11 +47,19 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
 
     public static final String CHANNEL_ID = "napkin_app_notifications";
 
-
     public void updateHeaderNotificationIcon() {
         if (header != null) {
             header.updateNotificationIcon();
         }
+    }
+
+    public void openProfileView(){
+        footer.resetButtons();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_fragmentcontainer, new ProfileFragment(user))
+                .addToBackStack(null)
+                .commit();
+
     }
 
     /**
@@ -61,6 +68,10 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
      */
     @Override
     public void handleFooterButtonClick(int btnid) {
+        if (user.getEmail().isBlank() || user.getName().isBlank()){
+            openProfileView();
+            return;
+        }
         // add functionality to get a user from the database or instantiate if this is the first log-on
         Fragment selectedFragment = null;
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
@@ -73,11 +84,13 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 selectedFragment = new RegisteredEventsFragment(user);
                 break;
             case 2:
-                // map
+                selectedFragment = new MapFragment(user);
                 break;
             case 3:
                 // QRscanner
                 selectedFragment = new QRScannerFragment(user);
+//                Facility facility = new Facility("Bobs house", "This is susch a sd a sdaklsjd laksj d eoi akdj lkas dm,vzhow v wjhf wioulsh zxnv hs no. , viu;w ehjwn,mNASIuh sd ms,d.", List.of(53.527309714453466, -113.52931950296305));
+//                selectedFragment = new ViewFacilityFragment(facility, user);
                 break;
             case 4:
                 // Myevents
@@ -114,6 +127,10 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
      */
     @Override
     public void handleNotificationButtonClick() {
+        if (user.getEmail().isBlank() || user.getName().isBlank()){
+            openProfileView();
+            return;
+        }
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
 
         if(currFrag instanceof ListNotificationsFragment){
@@ -134,15 +151,19 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
      */
     @Override
     public void handleHamburgerButtonClick() {
+        if (user.getEmail().isBlank() || user.getName().isBlank()){
+            openProfileView();
+            return;
+        }
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
 
-        if(currFrag instanceof AdminNavagationFragment){
+        if(currFrag instanceof AdminNavigationFragment){
             // do nothing if already in admin screen
             return;
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_fragmentcontainer, new AdminNavagationFragment(user))
+                .replace(R.id.content_fragmentcontainer, new AdminNavigationFragment(user))
                 .addToBackStack(null)
                 .commit();
 
@@ -191,8 +212,6 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.footer_fragmentcontainer, footer)
                 .commit();
-
-
     }
 
     /**
@@ -218,8 +237,11 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                     listenForUserUpdates();
                     Toast.makeText(getBaseContext(), "Welcome back " + user.getName(), Toast.LENGTH_SHORT).show();
 
-                    // Load list events
-                    OpenListEvents();
+                    if (user.getEmail().isBlank() || user.getName().isBlank()){
+                        openProfileView();
+                    } else {
+                        OpenListEvents();
+                    }
 
                     scheduleUserUpdateListener();
 
