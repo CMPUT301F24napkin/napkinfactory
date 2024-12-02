@@ -184,16 +184,6 @@ public class AdminListUsersFragment extends Fragment {
                             updates.put("chosen", chosen);
                             db.updateAll("Users", filters, updates, new DB_Client.DatabaseCallback<Void>() {});
                         }
-
-                        /*
-                        Map<String, Object> updates = new HashMap<>();
-                        updates.put("waitlist", waitlist);
-                        updates.put("registered", registered);
-                        updates.put("chosen", chosen);
-                        Log.d("AdminUserSearchFragment", "updates" + updates);
-                        */
-
-
                     }
                 }
 
@@ -213,7 +203,9 @@ public class AdminListUsersFragment extends Fragment {
         db.deleteOne("Events", filters, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(mContext, "Event deleted successfully", Toast.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(mContext, "Event deleted successfully", Toast.LENGTH_SHORT).show();
+                });
             }
 
             @Override
@@ -263,7 +255,7 @@ public class AdminListUsersFragment extends Fragment {
         }, Event.class);
     }
 
-    private void deleteUser(User user) {
+    public void deleteUser(User user) {
         if (user.getAndroidId() == null || user.getAndroidId().isEmpty()) {
             Log.e("RegisteredEventsFragment", "Event ID is null or empty. Cannot delete event.");
             return;
@@ -332,9 +324,11 @@ public class AdminListUsersFragment extends Fragment {
         db.deleteOne("Users", filters, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(mContext, "User deleted successfully", Toast.LENGTH_SHORT).show();
-                users.remove(user); // Remove the event from the local list
-                userArrayAdapter.notifyDataSetChanged(); // Update the adapter
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(mContext, "User deleted successfully", Toast.LENGTH_SHORT).show();
+                    users.remove(user); // Remove the event from the local list
+                    userArrayAdapter.notifyDataSetChanged(); // Update the adapter
+                });
                 Log.d("RegisteredEventsFragment", "User deleted from Firestore and list updated.");
             }
 
