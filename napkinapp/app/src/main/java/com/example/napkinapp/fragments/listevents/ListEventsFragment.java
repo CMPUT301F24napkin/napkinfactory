@@ -166,7 +166,7 @@ public class ListEventsFragment extends Fragment {
      * Removes the logged in user from the event deeply.
      * @param event the event to delete.
      */
-    private void removeEventFromWaitlist(Event event) {
+    public void removeEventFromWaitlist(Event event) {
         event.removeUserFromWaitList(loggedInUser.getAndroidId());
         loggedInUser.removeEventFromWaitList(event.getId());
 
@@ -176,7 +176,9 @@ public class ListEventsFragment extends Fragment {
         db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(@Nullable Void data) {
-                Toast.makeText(mContext, "Left waitlist for " + event.getName() + "!", Toast.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(mContext, "Left waitlist for " + event.getName() + "!", Toast.LENGTH_SHORT).show();
+                });
                 Log.d("ListEventsFragment", "Removed event from waitlist! " + event.getName() + " id: " + event.getId() + loggedInUser.getName());
             }
 
@@ -207,7 +209,7 @@ public class ListEventsFragment extends Fragment {
      * Add a event to waitlist. Adds it to both copies of waitlist, on the Event and User.
      * @param event event to add current logged in user to.
      */
-    private void addEventToWaitlist(Event event) {
+    public void addEventToWaitlist(Event event) {
         DB_Client db = new DB_Client();
         event.addUserToWaitlist(loggedInUser.getAndroidId());
 
@@ -271,13 +273,17 @@ public class ListEventsFragment extends Fragment {
             db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
                 @Override
                 public void onSuccess(@Nullable Void data) {
-                    Toast.makeText(mContext, "Added event to waitlist! " + event.getName(), Toast.LENGTH_SHORT).show();
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(mContext, "Added event to waitlist! " + event.getName(), Toast.LENGTH_SHORT).show();
+                    });
                     loggedInUser.addEventToWaitlist(event.getId());
                     // Update person
                     db.writeData("Users", loggedInUser.getAndroidId(), loggedInUser, new DB_Client.DatabaseCallback<Void>() {
                         @Override
                         public void onSuccess(@Nullable Void data) {
-                            Toast.makeText(mContext, "Added event to users waitlist! " + loggedInUser.getName(), Toast.LENGTH_SHORT).show();
+                            getActivity().runOnUiThread(() -> {
+                                Toast.makeText(mContext, "Added event to users waitlist! " + loggedInUser.getName(), Toast.LENGTH_SHORT).show();
+                            });
                         }
 
                         @Override
