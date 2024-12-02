@@ -271,7 +271,7 @@ public class ListEventsFragment extends Fragment {
             db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
                 @Override
                 public void onSuccess(@Nullable Void data) {
-                    Toast.makeText(mContext, "Added event to waitlist! " + event.getName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Joined the waitlist for " + event.getName(), Toast.LENGTH_SHORT).show();
                     loggedInUser.addEventToWaitlist(event.getId());
                     // Update person
                     db.writeData("Users", loggedInUser.getAndroidId(), loggedInUser, new DB_Client.DatabaseCallback<Void>() {
