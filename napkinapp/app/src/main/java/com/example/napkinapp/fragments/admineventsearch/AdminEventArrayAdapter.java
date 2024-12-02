@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,8 +22,11 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.models.Event;
+import com.example.napkinapp.utils.DB_Client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Adapter class which allows Events to be displayed in lists.
@@ -68,16 +72,19 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
         View view;
 
         if(convertView == null){
-            view = LayoutInflater.from(context).inflate(R.layout.event_card, parent,false);
+            view = LayoutInflater.from(context).inflate(R.layout.admin_event_card, parent,false);
         }else {
             view = convertView;
         }
+
+        DB_Client db = new DB_Client();
 
         Event event = events.get(position);
 
         TextView eventName = view.findViewById(R.id.eventName);
         TextView eventDate = view.findViewById(R.id.eventDate);
         ImageView eventImage = view.findViewById(R.id.image);
+
         if(event.getEventImageUri() != null) {
             try {
                 Glide.with(view).load(Uri.parse(event.getEventImageUri())).into(eventImage);
@@ -93,6 +100,18 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
         eventDate.setText(event.getEventDate().toString());
 
         eventListCustomizer.CustomizeEventCardButton(button);
+
+        Button clearQRButton = view.findViewById(R.id.clearQr);
+
+        clearQRButton.setOnClickListener(v -> {
+            Map<String, Object> filters = new HashMap<>();
+            filters.put("id", event.getId());
+
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("qrHashCode", null);
+            db.updateAll("Events", filters, updates, new DB_Client.DatabaseCallback<Void>() {});
+            Toast.makeText(this.getContext(), "QR code data cleared for event: " + event.getName(), Toast.LENGTH_SHORT).show();
+        });
 
         button.setTag(event); // store the event on this button so the event listener can grab it!
 
