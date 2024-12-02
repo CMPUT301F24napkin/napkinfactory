@@ -447,7 +447,7 @@ public class ViewEventFragment extends Fragment {
                         @Override
                         public void onSuccess(@Nullable Void data) {
                             getActivity().runOnUiThread(() -> {
-                                Toast.makeText(getContext(), "Added event to users waitlist! " + user.getName(), Toast.LENGTH_SHORT).show();
+                                Log.d( "Adding Event to waitlist", "Added event to users waitlist! " + user.getName());
                             });
                         }
 
