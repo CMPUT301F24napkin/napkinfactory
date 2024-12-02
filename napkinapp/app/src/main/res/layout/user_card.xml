@@ -58,6 +58,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin"
             android:layout_weight="1"
+            android:textSize="@dimen/text_size_secondary"
+            android:backgroundTint="@color/neutralGray"
             android:drawableStart="@drawable/add"
             android:drawableTint="@color/white"
             android:text="remove" />

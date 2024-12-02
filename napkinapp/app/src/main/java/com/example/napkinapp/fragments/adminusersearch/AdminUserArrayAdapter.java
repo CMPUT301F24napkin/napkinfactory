@@ -5,16 +5,20 @@
 package com.example.napkinapp.fragments.adminusersearch;
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.models.User;
 
@@ -69,6 +73,17 @@ public class AdminUserArrayAdapter extends ArrayAdapter<User> {
         // Assuming you're displaying user name and other info here
         TextView userName = view.findViewById(R.id.userName);  // Change to your specific user field
         TextView userEmail = view.findViewById(R.id.userEmail);  // Add other relevant fields if needed
+        ImageView userImage = view.findViewById(R.id.userImage);
+        if(user.getProfileImageUri() != null) {
+            try {
+                Glide.with(view).load(Uri.parse(user.getProfileImageUri())).into(userImage);
+                Log.i("User", "Loaded user image url: " + user.getProfileImageUri());
+            }
+            catch (Exception e){
+                Log.e("User", "failed to load User image: ", e);
+            }
+        }
+
 
         Button button = view.findViewById(R.id.button);  // Assuming you're using a button to trigger actions
 
