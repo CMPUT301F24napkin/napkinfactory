@@ -80,21 +80,6 @@ public class EditFacilityFragment extends AbstractMapFragment {
         mContext = context;
     }
 
-    /**
-     * Custom customizer for the button in the event card. Makes it open the event view screen.
-     */
-    EventArrayAdapter.EventListCustomizer customizer = (button, event) -> {
-        button.setText("View");
-        button.setOnClickListener(v->{
-            Log.i("Button", String.format("My Events: Clicked on event %s\n", event.getName()));
-
-
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.content_fragmentcontainer, new ViewEventFragment(event, user))
-                    .addToBackStack(null)
-                    .commit();
-        });
-    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

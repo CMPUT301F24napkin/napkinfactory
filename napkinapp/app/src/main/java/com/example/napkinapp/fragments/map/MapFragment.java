@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.facility.EditFacilityFragment;
 import com.example.napkinapp.fragments.facility.ViewFacilityFragment;
 import com.example.napkinapp.fragments.viewevents.OrganizerViewEventFragment;
 import com.example.napkinapp.models.Facility;
@@ -46,8 +47,11 @@ import org.osmdroid.views.overlay.OverlayItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 public class MapFragment extends AbstractMapFragment {
     private final User user;
@@ -110,8 +114,13 @@ public class MapFragment extends AbstractMapFragment {
             if(facility == null) {
                 facility = new Facility();
             }
+
+            Fragment nextFragment = (user.getFacility().equals(facility.getId()))
+                    ? new EditFacilityFragment(facility, user) // this is the user's facility
+                    : new ViewFacilityFragment(facility, user); // this is someone else's facility
+
             getParentFragmentManager().beginTransaction()
-                    .replace(R.id.content_fragmentcontainer, new ViewFacilityFragment(facility, user)) // Use your actual container ID
+                    .replace(R.id.content_fragmentcontainer, nextFragment) // Use your actual container ID
                     .addToBackStack(null) // Allows user to go back to ListEventsFragment
                     .commit();
 
@@ -120,10 +129,10 @@ public class MapFragment extends AbstractMapFragment {
         // if permissions not granted
         requestMapPermissions();
 
-        // add my location overlay DOESN"T WORK
-//        MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(m_context), map);
-//        mLocationOverlay.enableMyLocation();
-//        map.getOverlays().add(mLocationOverlay);
+        // add my location overlay WORKS but in simulator you appear in SF
+        MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(m_context), map);
+        mLocationOverlay.enableMyLocation();
+        map.getOverlays().add(mLocationOverlay);
 
         // add default controls and gestures support
         map.setBuiltInZoomControls(true);

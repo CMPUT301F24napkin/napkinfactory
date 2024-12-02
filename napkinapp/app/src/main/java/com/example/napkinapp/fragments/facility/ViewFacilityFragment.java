@@ -3,6 +3,7 @@ package com.example.napkinapp.fragments.facility;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.fragments.createevent.CreateEventFragment;
@@ -64,22 +67,6 @@ public class ViewFacilityFragment extends AbstractMapFragment {
         mContext = context;
     }
 
-    /**
-     * Custom customizer for the button in the event card. Makes it open the event view screen.
-     */
-    EventArrayAdapter.EventListCustomizer customizer = (button, event) -> {
-        button.setText("View");
-        button.setOnClickListener(v->{
-            Log.i("Button", String.format("My Events: Clicked on event %s\n", event.getName()));
-
-
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.content_fragmentcontainer, new ViewEventFragment(event, user))
-                    .addToBackStack(null)
-                    .commit();
-        });
-    };
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -90,28 +77,26 @@ public class ViewFacilityFragment extends AbstractMapFragment {
         TextView nameTextView = view.findViewById(R.id.facility_name);
         TextView descriptionTextView = view.findViewById(R.id.facility_description);
         MapView map = view.findViewById(R.id.map);
-        Button deleteFacilityButton = view.findViewById(R.id.button);
+        ImageView facilityImage = view.findViewById(R.id.image);
 
         nameTextView.setText(facility.getName());
         descriptionTextView.setText(facility.getDescription());
 
-        // set button callback to delete this facility
-        deleteFacilityButton.setOnClickListener(v -> {
-            DB_Client db = new DB_Client();
+        // do image
+        // load profile pick
+        if(facility.getImageUri() != null) {
+            try {
+                Glide.with(view).load(Uri.parse(facility.getImageUri())).into(facilityImage);
+                Log.i("Facility", "Loaded image url: " + facility.getImageUri());
+            }
+            catch (Exception e){
+                Log.e("Facility", "failed to load image: ", e);
+            }
+        }
 
-            HashMap<String, Object> filter = new HashMap<>();
-            filter.put("id", facility.getId());
-            db.deleteAll("Facilites", filter, DB_Client.IGNORE);
+        // setup the delete button (show only if admin)
+        setupDeleteButton(view);
 
-            // Update the event's waitlist and chosen list
-            Map<String, Object> userUpdates = Map.of(
-                    "facility", ""
-            );
-
-            db.updateAll("Users", Map.of("id", user.getAndroidId()), userUpdates, DB_Client.IGNORE);
-
-            getParentFragmentManager().popBackStack();
-        });
         // do map
         Configuration.getInstance().setUserAgentValue("NapkinApp/1.0 (Android; OS Version; Device Model)");
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -134,5 +119,32 @@ public class ViewFacilityFragment extends AbstractMapFragment {
         addMarker(map, getDefaultIcon(), location.get(0), location.get(1));
 
         return view;
+    }
+
+    // only show delete button if admin
+    void setupDeleteButton(View view) {
+        Button deleteFacilityButton = view.findViewById(R.id.button);
+
+        if(!user.getIsAdmin()) {
+            deleteFacilityButton.setVisibility(View.GONE);
+            return;
+        }
+        // set button callback to delete this facility
+        deleteFacilityButton.setOnClickListener(v -> {
+            DB_Client db = new DB_Client();
+
+            HashMap<String, Object> filter = new HashMap<>();
+            filter.put("id", facility.getId());
+            db.deleteAll("Facilities", filter, DB_Client.IGNORE);
+
+            // Update the user's facility to be empty string
+            Map<String, Object> userUpdates = Map.of(
+                    "facility", ""
+            );
+
+            db.updateAll("Users", Map.of("id", user.getAndroidId()), userUpdates, DB_Client.IGNORE);
+
+            getParentFragmentManager().popBackStack();
+        });
     }
 }
