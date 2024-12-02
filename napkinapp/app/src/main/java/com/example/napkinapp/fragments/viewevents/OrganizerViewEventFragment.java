@@ -38,6 +38,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.EditNumberPopupFragment;
 import com.example.napkinapp.fragments.EditTextPopupFragment;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.Notification;
@@ -271,7 +272,8 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         TextView eventDate = view.findViewById(R.id.event_date);
         TextView lotteryDate = view.findViewById(R.id.lottery_date);
         TextView eventDetails = view.findViewById(R.id.event_details);
-
+        TextView entrantLimit = view.findViewById(R.id.entrant_limit);
+        TextView participantLimit = view.findViewById(R.id.participant_limit);
         ImageView organizerProfile = view.findViewById(R.id.organizer_profile);
 
         eventImage = view.findViewById(R.id.event_image);
@@ -292,6 +294,8 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         Button editEventDetails = view.findViewById(R.id.edit_event_details);
         Button editEventDate = view.findViewById(R.id.edit_event_date);
         Button editLotteryDate = view.findViewById(R.id.edit_lottery_date);
+        Button editEntrantLimit = view.findViewById(R.id.edit_entrant_limit);
+        Button editParticipantLimit = view.findViewById(R.id.edit_participant_limit);
         Button shareQRCode = view.findViewById(R.id.share_qr_code);
         Button doLottery = view.findViewById(R.id.do_lottery);
         SwitchCompat requireGeolocation = view.findViewById(R.id.require_geolocation);
@@ -398,6 +402,44 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
                 });
             }, 2024, 9, 11);
             popup.show();
+        });
+
+        entrantLimit.setText(String.valueOf(event.getEntrantLimit()));
+        editEntrantLimit.setOnClickListener(v->{
+            EditNumberPopupFragment popup = new EditNumberPopupFragment("Edit Entrant Limit", entrantLimit.getText().toString(),
+                    new EditNumberPopupFragment.ButtonCallbacks() {
+                        @Override
+                        public void onPositive(Integer number) {
+                            event.setEntrantLimit(number);
+                            entrantLimit.setText(number.toString());
+                            db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+                            });
+                        }
+
+                        @Override
+                        public void onNegative() {
+                            EditNumberPopupFragment.ButtonCallbacks.super.onNegative();
+                        }
+
+                        @Override
+                        public boolean checkValid(Integer number) {
+                            return number >= event.getWaitlist().size();
+                        }
+                    });
+
+            popup.show(getActivity().getSupportFragmentManager(), "popup");
+        });
+
+        // participant count
+        participantLimit.setText(String.valueOf(event.getParticipantLimit()));
+        editParticipantLimit.setOnClickListener(v->{
+            EditNumberPopupFragment popup = new EditNumberPopupFragment("Edit Participant Limit", participantLimit.getText().toString(), number -> {
+                event.setParticipantLimit(number);
+                participantLimit.setText(number.toString());
+                db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+                });
+            });
+            popup.show(getActivity().getSupportFragmentManager(), "popup");
         });
 
         // call the member function.
