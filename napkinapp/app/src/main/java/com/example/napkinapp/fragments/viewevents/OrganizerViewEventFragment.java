@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -352,26 +353,22 @@ public class OrganizerViewEventFragment extends Fragment {
             popup.show();
         });
 
-        entrantLimit.setText(String.valueOf(event.getEntrantLimit()));
+        entrantLimit.setHint("Unlimited");
+        if(event.getEntrantLimit() != Integer.MAX_VALUE) entrantLimit.setText(String.valueOf(event.getEntrantLimit()));
         editEntrantLimit.setOnClickListener(v->{
             EditNumberPopupFragment popup = new EditNumberPopupFragment("Edit Entrant Limit", entrantLimit.getText().toString(),
                     new EditNumberPopupFragment.ButtonCallbacks() {
                         @Override
                         public void onPositive(Integer number) {
                             event.setEntrantLimit(number);
-                            entrantLimit.setText(number.toString());
+                            entrantLimit.setText((number == Integer.MAX_VALUE) ? "" : number.toString());
                             db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
                             });
                         }
 
                         @Override
-                        public void onNegative() {
-                            EditNumberPopupFragment.ButtonCallbacks.super.onNegative();
-                        }
-
-                        @Override
-                        public boolean checkValid(Integer number) {
-                            return number >= event.getWaitlist().size();
+                        public Pair<Boolean, String> checkValid(Integer number) {
+                            return new Pair<>(number >= event.getWaitlist().size(), "Entrant limit cannot be less than number of people already waitlisted!");
                         }
                     });
 
@@ -379,13 +376,22 @@ public class OrganizerViewEventFragment extends Fragment {
         });
 
         // participant count
-        participantLimit.setText(String.valueOf(event.getParticipantLimit()));
+        participantLimit.setHint("Unlimited");
+        if(event.getParticipantLimit() != Integer.MAX_VALUE) participantLimit.setText(String.valueOf(event.getParticipantLimit()));
         editParticipantLimit.setOnClickListener(v->{
-            EditNumberPopupFragment popup = new EditNumberPopupFragment("Edit Participant Limit", participantLimit.getText().toString(), number -> {
-                event.setParticipantLimit(number);
-                participantLimit.setText(number.toString());
-                db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
-                });
+            EditNumberPopupFragment popup = new EditNumberPopupFragment("Edit Participant Limit", participantLimit.getText().toString(), new EditNumberPopupFragment.ButtonCallbacks() {
+                @Override
+                public void onPositive(Integer number) {
+                    event.setParticipantLimit(number);
+                    participantLimit.setText((number == Integer.MAX_VALUE) ? "" : number.toString());
+                    db.writeData("Events", event.getId(), event, new DB_Client.DatabaseCallback<Void>() {
+                    });
+                }
+
+                @Override
+                public Pair<Boolean, String> checkValid(Integer number) {
+                    return new Pair<>(number >= event.getRegistered().size(), "Entrant limit cannot be less than number of people already registered!");
+                }
             });
             popup.show(getActivity().getSupportFragmentManager(), "popup");
         });
