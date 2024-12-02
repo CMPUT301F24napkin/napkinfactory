@@ -251,13 +251,14 @@ public class ProfileFragment extends Fragment {
         HashMap<String, Object> filters = new HashMap<>();
         filters.put("id", facilityId);
 
+        createFacilityButton.setText((user.getFacility() != null && !user.getFacility().isBlank()) ? "Edit Facility" : "Create Facility");
+
         db.findOne("Facilities", filters, new DB_Client.DatabaseCallback<Facility>() {
             @Override
             public void onSuccess(@Nullable Facility data) {
                 // Replace fragment
                 if(data != null) {
                     facility = data;
-                    createFacilityButton.setText("Edit Facility");
                 }
             }
         }, Facility.class);
@@ -266,7 +267,7 @@ public class ProfileFragment extends Fragment {
         createFacilityButton.setOnClickListener(v -> {
 
             if(facility == null) {
-                facility = new Facility("Facility Name", "Facility Description", List.of(53.527309714453466, -113.52931950296305));
+                facility = new Facility("", "", List.of(53.527309714453466, -113.52931950296305));
             }
 
             getParentFragmentManager().beginTransaction()
