@@ -102,17 +102,24 @@ public class AdminEventArrayAdapter extends ArrayAdapter<Event> {
         eventListCustomizer.CustomizeEventCardButton(button);
 
         Button clearQRButton = view.findViewById(R.id.clearQr);
+        if (event.getQrHashCode() == null) {
+            clearQRButton.setVisibility(View.GONE); // Hide the button
+        }
+        else {
+            clearQRButton.setVisibility(View.VISIBLE); // Show the button
 
-        clearQRButton.setOnClickListener(v -> {
-            Map<String, Object> filters = new HashMap<>();
-            filters.put("id", event.getId());
+            clearQRButton.setOnClickListener(v -> {
+                Map<String, Object> filters = new HashMap<>();
+                filters.put("id", event.getId());
 
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("qrHashCode", null);
-            db.updateAll("Events", filters, updates, new DB_Client.DatabaseCallback<Void>() {});
-            Toast.makeText(this.getContext(), "QR code data cleared for event: " + event.getName(), Toast.LENGTH_SHORT).show();
-        });
-
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("qrHashCode", null);
+                db.updateAll("Events", filters, updates, new DB_Client.DatabaseCallback<Void>() {
+                });
+                Toast.makeText(this.getContext(), "QR code data cleared for event: " + event.getName(), Toast.LENGTH_SHORT).show();
+                clearQRButton.setVisibility(View.GONE); // Hide the button
+            });
+        }
         button.setTag(event); // store the event on this button so the event listener can grab it!
 
         return view;
