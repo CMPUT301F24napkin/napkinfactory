@@ -16,7 +16,7 @@
         android:layout_height="120dp"
         android:focusableInTouchMode="false"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher"
+        android:src="@mipmap/default_event"
         app:shapeAppearanceOverlay="@style/rounded_corners" />
 
     <LinearLayout

@@ -35,7 +35,8 @@
                 android:id="@+id/organizer_profile"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/blank_profile" />
+                android:src="@drawable/blank_profile"
+                android:scaleType="centerCrop"/>
 
             </androidx.cardview.widget.CardView>
 
@@ -122,12 +123,13 @@
 
             <ImageView
                 android:id="@+id/event_image"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edit_event_image"
-                tools:srcCompat="@tools:sample/avatars" />
+                android:src="@mipmap/default_event"
+                android:scaleType="centerCrop"/>
 
             <TextView
                 android:id="@+id/event_image_text_view"

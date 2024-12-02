@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -44,6 +45,7 @@ import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.AbstractMapFragment;
 import com.example.napkinapp.utils.DB_Client;
+import com.example.napkinapp.utils.ImageGenUtils;
 import com.example.napkinapp.utils.ImageUtils;
 import com.example.napkinapp.utils.QRCodeUtils;
 import com.google.android.material.chip.Chip;
@@ -319,17 +321,20 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
                     organization.setText(data.getPhoneNumber());
                     if(data.getProfileImageUri() != null) {
                         try {
-                            Glide.with(view).load(Uri.parse(data.getProfileImageUri())).into(organizerProfile);
-                            Log.i("Profile", "Loaded organizer profile url: " + data.getProfileImageUri());
+                            if(data.getProfileImageUri() != null){
+                                Glide.with(view).load(Uri.parse(data.getProfileImageUri())).into(organizerProfile);
+                                Log.i("Profile", "Loaded organizer profile url: " + data.getProfileImageUri());
+                            }
                         }
                         catch (Exception e){
                             Log.e("Profile", "failed to load profile image: ", e);
                         }
                     }
-
-                } else {
-                    organizerName.setText("Unknown Organizer");
-                    organization.setText("Unknown Organization");
+                    else {
+                        Bitmap genProfile = ImageGenUtils.genProfleBitmap(data);
+                        organizerProfile.setImageBitmap(genProfile);
+                        Log.i("Profile", "profile image generated");
+                    }
                 }
 
             }
