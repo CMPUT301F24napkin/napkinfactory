@@ -97,7 +97,7 @@ public class AdminListEventsFragmentTest extends AbstractFragmentTest<AdminListE
         Map<String, Object> deleteFilters = new HashMap<>();
         deleteFilters.put("id", mockEvent1.getId());
 
-        assertEquals(DB_Client.getDeletedData().get(0), deleteFilters);
+        assertEquals(DB_Client.getDeletedFilters().get(0), deleteFilters);
     }
 
 

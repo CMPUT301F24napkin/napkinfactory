@@ -190,7 +190,7 @@ public class RegisteredEventsFragment extends Fragment {
      * helper function to register the currently logged in user in an event. Does it deeply.
      * @param event the event to register in
      */
-    private void registerUser(Event event) {
+    public void registerUser(Event event) {
         loggedInUser.addEventToRegistered(event.getId());
         loggedInUser.removeEventFromChosen(event.getId());
 
@@ -226,7 +226,9 @@ public class RegisteredEventsFragment extends Fragment {
             }
         });
 
-        eventArrayAdapter.notifyDataSetChanged();
+        getActivity().runOnUiThread(() -> {
+            eventArrayAdapter.notifyDataSetChanged();
+        });
     }
 
     /**
@@ -234,7 +236,7 @@ public class RegisteredEventsFragment extends Fragment {
      * Works by moving the currently logged in user's androidId out of the chosen list into the cancelled list.
      * @param event the event to decline
      */
-    private void declineEvent(Event event) {
+    public void declineEvent(Event event) {
         loggedInUser.removeEventFromChosen(event.getId());
         event.addUserToCancelled(loggedInUser.getAndroidId());
         event.removeUserFromChosen(loggedInUser.getAndroidId());
@@ -268,6 +270,8 @@ public class RegisteredEventsFragment extends Fragment {
             }
         });
 
-        eventArrayAdapter.notifyDataSetChanged();
+        getActivity().runOnUiThread(() -> {
+            eventArrayAdapter.notifyDataSetChanged();
+        });
     }
 }

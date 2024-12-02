@@ -43,7 +43,7 @@ public class DB_Client {
     private static List<?> executeQueryListData;
     private static List<Object> insertedData = new ArrayList<>();
     private static List<Object> writtenData = new ArrayList<>();
-    private static List<Object> deletedData = new ArrayList<>();
+    private static List<Object> deletedFilters = new ArrayList<>();
     private static List<Map<String, Object>> updatedFilters = new ArrayList<>();
     private static List<Map<String, Object>> updatedData = new ArrayList<>();
     private static Exception exceptionToThrow;
@@ -95,8 +95,8 @@ public class DB_Client {
         return writtenData;
     }
 
-    public static List<Object> getDeletedData() {
-        return deletedData;
+    public static List<Object> getDeletedFilters() {
+        return deletedFilters;
     }
 
     public static List<Map<String, Object>> getUpdatedFilters() {
@@ -122,7 +122,7 @@ public class DB_Client {
         executeQueryListData = null;
         insertedData.clear();
         writtenData.clear();
-        deletedData.clear();
+        deletedFilters.clear();
         updatedFilters.clear();
         updatedData.clear();
         exceptionToThrow = null;
@@ -278,7 +278,16 @@ public class DB_Client {
             return;
         }
 
-        deletedData.add(filters);
+        deletedFilters.add(filters);
+        callback.onSuccess(null);
+    }
+
+    public void deleteAll(String collection, Map<String, Object> filters, DatabaseCallback<Void> callback) {        if (exceptionToThrow != null) {
+            callback.onFailure(exceptionToThrow);
+            return;
+        }
+
+        deletedFilters.add(filters);
         callback.onSuccess(null);
     }
 
