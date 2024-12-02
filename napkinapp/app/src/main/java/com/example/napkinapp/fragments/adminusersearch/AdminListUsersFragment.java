@@ -6,6 +6,7 @@
 package com.example.napkinapp.fragments.adminusersearch;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
@@ -47,6 +49,7 @@ public class AdminListUsersFragment extends Fragment {
 
     AdminUserArrayAdapter.UserListCustomizer customizer = button -> {
         button.setText("Remove");
+        button.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorRemoveDark)));
         button.setOnClickListener(v -> {
             User user = (User) v.getTag();
             Log.i("Button", String.format("List Events: Clicked on event %s\n", user.getName()));
