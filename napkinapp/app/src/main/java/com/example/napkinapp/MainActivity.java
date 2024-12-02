@@ -53,12 +53,25 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         }
     }
 
+    public void openProfileView(){
+        footer.resetButtons();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_fragmentcontainer, new ProfileFragment(user))
+                .addToBackStack(null)
+                .commit();
+
+    }
+
     /**
      * This function implementation will handle when the footer is clicked.
      * @param btnid the id of the button that is clicked.
      */
     @Override
     public void handleFooterButtonClick(int btnid) {
+        if (user.getEmail().isBlank() || user.getName().isBlank()){
+            openProfileView();
+            return;
+        }
         // add functionality to get a user from the database or instantiate if this is the first log-on
         Fragment selectedFragment = null;
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
@@ -114,6 +127,10 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
      */
     @Override
     public void handleNotificationButtonClick() {
+        if (user.getEmail().isBlank() || user.getName().isBlank()){
+            openProfileView();
+            return;
+        }
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
 
         if(currFrag instanceof ListNotificationsFragment){
@@ -134,6 +151,10 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
      */
     @Override
     public void handleHamburgerButtonClick() {
+        if (user.getEmail().isBlank() || user.getName().isBlank()){
+            openProfileView();
+            return;
+        }
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
 
         if(currFrag instanceof AdminNavigationFragment){
@@ -216,8 +237,11 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                     listenForUserUpdates();
                     Toast.makeText(getBaseContext(), "Welcome back " + user.getName(), Toast.LENGTH_SHORT).show();
 
-                    // Load list events
-                    OpenListEvents();
+                    if (user.getEmail().isBlank() || user.getName().isBlank()){
+                        openProfileView();
+                    } else {
+                        OpenListEvents();
+                    }
 
                     scheduleUserUpdateListener();
 

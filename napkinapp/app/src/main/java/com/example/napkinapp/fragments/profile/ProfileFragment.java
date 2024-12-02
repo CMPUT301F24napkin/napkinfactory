@@ -115,10 +115,38 @@ public class ProfileFragment extends Fragment {
             Log.i("Profile", "Generated user profile");
         }
     }
+    private boolean isValidEmail(String email) {
+        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        return email.matches(emailPattern);
+    }
+
 
     // update the User model based on the values in the UI elements.
     // upload the updated user to the DB
+
     private void updateUserInfo(User user) {
+        nameText.setError(null);
+        emailText.setError(null);
+        boolean hasError = false;
+
+        if (nameText.getText().toString().trim().isEmpty()){
+            nameText.setError("Name is required");
+            hasError = true;
+        }
+
+        String email = emailText.getText().toString().trim();
+        if (email.isEmpty()) {
+            emailText.setError("Email is required");
+            hasError = true;
+        } else if (!isValidEmail(email)) {
+            emailText.setError("Invalid email format");
+            hasError = true;
+        }
+
+        if (hasError) {
+            return;
+        }
+
         user.setName(nameText.getText().toString());
         user.setEmail(emailText.getText().toString());
         user.setPhoneNumber(phoneText.getText().toString());
