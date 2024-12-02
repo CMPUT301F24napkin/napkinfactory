@@ -38,6 +38,35 @@ public class TestActivity extends AppCompatActivity implements TitleUpdateListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main); // Reuse the same layout
+
+        header = new HeaderFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.header_fragmentcontainer, header)
+                .commit();
+        // To properly update footer buttons on back button press
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
+
+            // Update the selected button in footer based on the current fragment
+            if (currentFragment instanceof ListEventsFragment) {
+                footer.setSelectedButtonById(0);
+            } else if (currentFragment instanceof RegisteredEventsFragment) {
+                footer.setSelectedButtonById(1);
+            } /*else if (currentFragment instanceof MapFragment) {
+                footer.setSelectedButtonById(2);
+            }*/ else if (currentFragment instanceof QRScannerFragment) {
+                footer.setSelectedButtonById(3);
+            }
+            else if (currentFragment instanceof MyEventsFragment) {
+                footer.setSelectedButtonById(4);
+            }
+        });
+
+        // Load footer fragment
+        footer = new FooterFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.footer_fragmentcontainer, footer)
+                .commit();
     }
 
     @Override

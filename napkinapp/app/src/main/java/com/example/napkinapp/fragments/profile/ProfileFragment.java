@@ -35,6 +35,7 @@ import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
+import com.example.napkinapp.utils.ImageGenUtils;
 import com.example.napkinapp.utils.ImageUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -88,6 +89,25 @@ public class ProfileFragment extends Fragment {
         );
     }
 
+    private void loadProfileImage(View view){
+        if(user.getProfileImageUri() != null) {
+            try {
+                Glide.with(view).load(Uri.parse(user.getProfileImageUri())).into(profileImage);
+                Log.i("Profile", "Loaded user profile url: " + user.getProfileImageUri());
+            }
+            catch (Exception e){
+                Log.e("Profile", "failed to load profile image: ", e);
+                profileImage.setImageBitmap(ImageGenUtils.genProfleBitmap(user));
+                Log.i("Profile", "Generated user profile");
+            }
+        }
+        // Generate one for them
+        else if(!user.getName().isEmpty()){
+            profileImage.setImageBitmap(ImageGenUtils.genProfleBitmap(user));
+            Log.i("Profile", "Generated user profile");
+        }
+    }
+
     private void updateUserInfo(User user) {
         user.setName(nameText.getText().toString());
         user.setEmail(emailText.getText().toString());
@@ -132,15 +152,7 @@ public class ProfileFragment extends Fragment {
         addressText.setText(user.getAddress());
 
         // load profile pick
-        if(user.getProfileImageUri() != null) {
-            try {
-                Glide.with(view).load(Uri.parse(user.getProfileImageUri())).into(profileImage);
-                Log.i("Profile", "Loaded user profile url: " + user.getProfileImageUri());
-            }
-            catch (Exception e){
-                Log.e("Profile", "failed to load profile image: ", e);
-            }
-        }
+        loadProfileImage(view);
 
         notificationSwitch = view.findViewById(R.id.notification_switch);
         notificationSwitch.setChecked(user.getEnNotifications());
@@ -177,7 +189,6 @@ public class ProfileFragment extends Fragment {
             profileImageUri = null;
             user.setProfileImageUri(null);
             updateUserInDB("Removed Profile Picture");
-            profileImage.setImageURI(profileImageUri);
             try {
                 new ImageUtils().deleteImage(imageUri);
                 if (user.getProfileImageUri() == null) {
@@ -188,7 +199,7 @@ public class ProfileFragment extends Fragment {
             } catch (Exception e) {
                 Log.e("ImageUtils", "Failed to delete the image, image may already be deleted", e);
             }
-
+            loadProfileImage(view);
             removeProfileImage.setVisibility(View.GONE);
         });
 
@@ -218,6 +229,7 @@ public class ProfileFragment extends Fragment {
             }
             else{
                 updateUserInfo(user);
+                loadProfileImage(view);
             }
         });
 
