@@ -357,8 +357,12 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
                     "Edit Event Name",
                     eventName.getText().toString(),
                     newName -> {
-                        eventName.setText(newName);
-                        updateEventName(newName);
+                        if (newName.isBlank()){
+                            Toast.makeText(mContext, "Event must be named", Toast.LENGTH_SHORT).show();
+                        } else {
+                            eventName.setText(newName);
+                            updateEventName(newName);
+                        }
                     }
             );
             popup.show(getActivity().getSupportFragmentManager(), "popup");
