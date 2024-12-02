@@ -78,7 +78,6 @@ public class AdminListFacilitiesFragment extends Fragment implements AdminFacili
         searchButton.setOnClickListener(v -> {
             String query = searchEventName.getText().toString().trim();
             loadFacilities(query);
-            //searchEventsByName(query);
         });
 
         return view;
