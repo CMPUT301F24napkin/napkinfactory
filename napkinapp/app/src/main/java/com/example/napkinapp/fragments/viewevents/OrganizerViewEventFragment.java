@@ -92,9 +92,10 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
             db.findOne("Users", filter, new DB_Client.DatabaseCallback<User>() {
                 @Override
                 public void onSuccess(@Nullable User data) {
-                    assert data != null;
-                    data.addNotification(notification);
-                    db.writeData("Users", androidId, data, DB_Client.IGNORE);
+                    if(data != null) {
+                        data.addNotification(notification);
+                        db.writeData("Users", androidId, data, DB_Client.IGNORE);
+                    }
                 }
             }, User.class);
         }
