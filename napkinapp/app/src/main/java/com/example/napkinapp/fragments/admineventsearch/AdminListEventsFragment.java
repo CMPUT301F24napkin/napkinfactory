@@ -98,7 +98,7 @@ public class AdminListEventsFragment extends Fragment {
         return view;
     }
 
-    private void loadEvents(String eventName) {
+    public void loadEvents(String eventName) {
         // Create a query with a "like" match on event names
         List<Function<Query, Query>> conditions = List.of(
                 query -> query.whereGreaterThanOrEqualTo("name", eventName),
@@ -128,7 +128,7 @@ public class AdminListEventsFragment extends Fragment {
         }, Event.class);
     }
 
-    private void deleteEvent(Event event) {
+    public void deleteEvent(Event event) {
         if (event.getId() == null || event.getId().isEmpty()) {
             Log.e("RegisteredEventsFragment", "Event ID is null or empty. Cannot delete event.");
             return;
@@ -189,10 +189,12 @@ public class AdminListEventsFragment extends Fragment {
         db.deleteOne("Events", filters, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(mContext, "Event deleted successfully", Toast.LENGTH_SHORT).show();
-                events.remove(event); // Remove the event from the local list
-                eventArrayAdapter.notifyDataSetChanged(); // Update the adapter
-                Log.d("RegisteredEventsFragment", "Event deleted from Firestore and list updated.");
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(mContext, "Event deleted successfully", Toast.LENGTH_SHORT).show();
+                    events.remove(event); // Remove the event from the local list
+                    eventArrayAdapter.notifyDataSetChanged(); // Update the adapter
+                    Log.d("RegisteredEventsFragment", "Event deleted from Firestore and list updated.");
+                });
             }
 
             @Override
