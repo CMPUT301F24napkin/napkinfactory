@@ -97,7 +97,6 @@ public class AdminListUsersFragment extends Fragment {
             String query = searchUserName.getText().toString().trim();
 
             loadUsers(query);
-            Toast.makeText(mContext, "search Event", Toast.LENGTH_SHORT).show();
             //searchEventsByName(query);
         });
 
