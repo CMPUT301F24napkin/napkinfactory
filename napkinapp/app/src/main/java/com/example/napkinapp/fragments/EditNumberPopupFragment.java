@@ -25,12 +25,12 @@ public class EditNumberPopupFragment extends DialogFragment {
 
     private ButtonCallbacks callbacks;
     private String title;
-    private String hint;
+    private String defaultText;
 
-    public EditNumberPopupFragment(String title, String hint, ButtonCallbacks callbacks) {
+    public EditNumberPopupFragment(String title, String defaultText, ButtonCallbacks callbacks) {
         this.callbacks = callbacks;
         this.title = title;
-        this.hint = hint;
+        this.defaultText = defaultText;
     }
 
     /**
@@ -49,7 +49,8 @@ public class EditNumberPopupFragment extends DialogFragment {
 
         View view = inflater.inflate(R.layout.enter_text_dialog, null);
         EditText editText = view.findViewById(R.id.edit_text);
-        editText.setText(this.hint);
+        editText.setText(this.defaultText);
+        editText.setHint("Unlimited");
         editText.setInputType(InputType.TYPE_CLASS_NUMBER); // make it numbers only!
 
         // Use the Builder class for convenient dialog construction.
@@ -68,12 +69,21 @@ public class EditNumberPopupFragment extends DialogFragment {
         dialog.setOnShowListener(d -> {
             Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             positiveButton.setOnClickListener(v -> {
-                Integer number = Integer.parseInt(editText.getText().toString());
-                if(callbacks.checkValid(number).first) {
+
+                // if there is a number format exception, just take INT MAX (unlimited participants)
+                Integer number = Integer.MAX_VALUE;
+                try {
+                    number = Integer.parseInt(editText.getText().toString());
+                } catch(NumberFormatException e) {
+                    e.printStackTrace();
+                }
+
+                Pair<Boolean, String> result = callbacks.checkValid(number);
+                if(result.first) {
                     callbacks.onPositive(number);
                     dialog.dismiss();
                 } else {
-                    event
+                    editText.setError(result.second);
                 }
             });
         });
