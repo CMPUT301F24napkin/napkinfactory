@@ -190,7 +190,7 @@ public class CreateEventFragment extends Fragment {
                 hasError = true;
             }
             if ((date != null && lottery.after(date))) {
-                lotteryDate.setError("Lottery date cannot be before the event date");
+                lotteryDate.setError("Lottery date cannot be after the event date");
                 hasError = true;
             }
         } catch (ParseException e) {
