@@ -119,18 +119,21 @@ public class adminImageFragment extends Fragment implements ImageAdapter.OnButto
                 Log.e("FindAllImages", "Error fetching images", e);
             }
         }, User.class);
-        /*
-        // facility images
+
+        // facilities images
         db.findAll("Facilities", filters, new DB_Client.DatabaseCallback<List<Facility>>() {
             @Override
-            public void onSuccess(@Nullable List<Facility> facilitys) {
-                if (facilitys != null) {
-                    for (Facility facility : facilitys) {
-                        Log.d("FindAllImages", "facility Images: ");
+            public void onSuccess(@Nullable List<Facility> facilities) {
+                if (facilities != null) {
+                    for (Facility facility : facilities) {
+                        Log.d("FindAllImages", "Event Images: ");
                         // Assuming Image class has a method getUrl() to fetch the image URL
-                        if (facility.get != null) {
-                            imageUrls.add(user.getProfileImageUri());
-                            urlTypes.add("Users");
+                        if (facility.getImageUri() != null) {
+                            imageUrlType.add("imageUri");
+                            imageUrls.add(facility.getImageUri());
+                            urlCollection.add("Facilities");
+                            imageIdType.add("id");
+                            imageID.add(facility.getId());
                         }
                     }
                     imageAdapter.notifyDataSetChanged(); // Refresh the RecyclerView
@@ -142,9 +145,7 @@ public class adminImageFragment extends Fragment implements ImageAdapter.OnButto
             public void onFailure(Exception e) {
                 Log.e("FindAllImages", "Error fetching images", e);
             }
-        }, User.class);
-
-         */
+        }, Facility.class);
 
 
     }
