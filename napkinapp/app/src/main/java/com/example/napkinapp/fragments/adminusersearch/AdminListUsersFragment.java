@@ -30,6 +30,7 @@ import com.example.napkinapp.fragments.admineventsearch.AdminListEventsFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -142,47 +143,65 @@ public class AdminListUsersFragment extends Fragment {
 
         // remove from users waitlists first
         String eventId = event.getId();
-        ArrayList<String> userIds = event.getWaitlist();
+        LinkedHashSet<String> userIds = new LinkedHashSet<>(event.getWaitlist());
         userIds.addAll(event.getRegistered());
         userIds.addAll(event.getChosen());
 
-        Log.d("RegisteredEventsFragment", "User Ids: " + userIds);
+        Log.d("AdminUserSearchFragment", "User Ids: " + userIds);
 
         for (String userID : userIds) {
             Map<String, Object> filters = new HashMap<>();
             filters.put("androidId", userID);
-            Log.d("RegisteredEventsFragment", "User ID: " + userID);
+            Log.d("AdminUserSearchFragment", "User ID: " + userID);
 
             db.findOne("Users", filters, new DB_Client.DatabaseCallback<User>() {
                 @Override
                 public void onSuccess(@Nullable User user) {
                     if (user != null) {
-                        List<String> waitlist = (List<String>) user.getWaitlist();
-                        Log.d("RegisteredEventsFragment", "waitlist" + waitlist);
-                        List<String> registered = (List<String>) user.getRegistered();
-                        Log.d("RegisteredEventsFragment", "regisered" + registered);
-                        List<String> chosen = (List<String>) user.getChosen();
-                        // adjust the waitlist
-                        waitlist.remove(eventId);
-                        Log.d("RegisteredEventsFragment", "removed waitlist" + waitlist);
-                        registered.remove(eventId);
-                        Log.d("RegisteredEventsFragment", "removed regisered" + registered);
-                        chosen.remove(eventId);
+                        Log.d("AdminUserSearchFragment", "eventID" + eventId);
 
+                        List<String> waitlist = (List<String>) user.getWaitlist();
+                        Log.d("AdminUserSearchFragment", "waitlist" + waitlist);
+                        List<String> registered = (List<String>) user.getRegistered();
+                        Log.d("AdminUserSearchFragment", "regisered" + registered);
+                        List<String> chosen = (List<String>) user.getChosen();
+
+
+                        // adjust the waitlist
+                        if(waitlist.remove(eventId)) {
+                            Map<String, Object> updates = new HashMap<>();
+                            updates.put("waitlist", waitlist);
+                            db.updateAll("Users", filters, updates, new DB_Client.DatabaseCallback<Void>() {});
+                        }
+                        Log.d("AdminUserSearchFragment", "removed waitlist" + waitlist);
+                        if(registered.remove(eventId)) {
+                            Map<String, Object> updates = new HashMap<>();
+                            updates.put("registered", registered);
+                            db.updateAll("Users", filters, updates, new DB_Client.DatabaseCallback<Void>() {});
+                        }
+                        Log.d("AdminUserSearchFragment", "removed regisered" + registered);
+                        if(chosen.remove(eventId)) {
+                            Map<String, Object> updates = new HashMap<>();
+                            updates.put("chosen", chosen);
+                            db.updateAll("Users", filters, updates, new DB_Client.DatabaseCallback<Void>() {});
+                        }
+
+                        /*
                         Map<String, Object> updates = new HashMap<>();
                         updates.put("waitlist", waitlist);
                         updates.put("registered", registered);
                         updates.put("chosen", chosen);
-                        Log.d("RegisteredEventsFragment", "updates" + updates);
-                        db.updateAll("Users", filters, updates, new DB_Client.DatabaseCallback<Void>() {
-                        });
+                        Log.d("AdminUserSearchFragment", "updates" + updates);
+                        */
+
+
                     }
                 }
 
                 @Override
                 public void onFailure(Exception e) {
                     Toast.makeText(mContext, "Failed to get event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.e("RegisteredEventsFragment", "Error getting evnet", e);
+                    Log.e("AdminUserSearchFragment", "Error getting evnet", e);
                 }
             }, User.class);
         }
