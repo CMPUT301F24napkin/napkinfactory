@@ -177,48 +177,63 @@ public class EditFacilityFragment extends AbstractMapFragment {
             marker = addMarker(map, getDefaultIcon(), location.get(0), location.get(1));
         }
 
-        savebutton.setOnClickListener(v-> {
-            DB_Client db = new DB_Client();
-
+        savebutton.setOnClickListener(v -> {
             facilityName.setError(null);
 
-            if (facilityName.getText().toString().isBlank()){
+            String name = facilityName.getText().toString().trim();
+            String description = facilityDescription.getText().toString().trim();
+            List<Double> locationCoordinates = facility.getLocation();
+
+            if (name.isEmpty()) {
                 facilityName.setError("Facility needs a name");
                 return;
             }
 
-            facility.setName(facilityName.getText().toString());
-            facility.setDescription(facilityDescription.getText().toString());
-
-
-            // guarantees to set the facility.getId() to non-null
-            if(facility.getId() != null) {
-                if(facilityImageURI != null) {
-                    // need to reupload iamge
-                    uploadFacilityImage(db);
-                } else {
-                    // don't need to reupload image, just save the rest of the fields
-                    saveFacilityAndUser(db);
-                }
-            } else {
-                // id is not initialized! insert
-                db.insertData("Facilities", facility, new DB_Client.DatabaseCallback<String>() {
-                    @Override
-                    public void onSuccess(@Nullable String generatedId) {
-                        facility.setId(generatedId);
-                        if(facilityImageURI != null) {
-                            uploadFacilityImage(db);
-                        } else {
-                            saveFacilityAndUser(db);
-                        }
-                    }
-                });
-            }
+            saveFacility(name, description, locationCoordinates);
             getParentFragmentManager().popBackStack();
         });
 
+
         return view;
     }
+
+    public void saveFacility(String name, String description, List<Double> location) {
+        facility.setName(name);
+        facility.setDescription(description);
+        facility.setLocation(location);
+
+        DB_Client db = new DB_Client();
+
+        if (facility.getId() != null) {
+            if (facilityImageURI != null) {
+                // Need to re-upload the image
+                uploadFacilityImage(db);
+            } else {
+                // Save the facility data without re-uploading the image
+                saveFacilityAndUser(db);
+            }
+        } else {
+            // Facility ID is not initialized, insert new facility
+            db.insertData("Facilities", facility, new DB_Client.DatabaseCallback<String>() {
+                @Override
+                public void onSuccess(@Nullable String generatedId) {
+                    facility.setId(generatedId);
+                    if (facilityImageURI != null) {
+                        uploadFacilityImage(db);
+                    } else {
+                        saveFacilityAndUser(db);
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e("Facility", "Failed to insert new facility: " + e.getMessage(), e);
+                    Toast.makeText(mContext, "Error saving facility! Please try again.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
 
     // calls saveFacilityAndUser(db); afterwards
     void uploadFacilityImage(DB_Client db) {
