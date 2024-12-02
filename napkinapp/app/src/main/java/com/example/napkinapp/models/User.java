@@ -81,11 +81,11 @@ public class User {
     }
 
     private void init() {
-        this.androidId = null;
-        this.name = null;
-        this.phoneNumber = null;
-        this.email = null;
-        this.address = null;
+        this.androidId = "";
+        this.name = "";
+        this.phoneNumber = "";
+        this.email = "";
+        this.address = "";
         this.enNotifications = false;
         this.enLocation = false;
         this.isAdmin = false;
