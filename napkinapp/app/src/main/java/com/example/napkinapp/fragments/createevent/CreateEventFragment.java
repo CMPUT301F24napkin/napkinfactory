@@ -4,6 +4,7 @@
 
 package com.example.napkinapp.fragments.createevent;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -162,13 +163,17 @@ public class CreateEventFragment extends Fragment {
             hasError = true;
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         Date date = null, lottery = null;
 
         // Validate event date
         try {
             date = dateFormat.parse(eventDate.getText().toString());
-            if (date.before(new Date()) || date.getTime() > maxTimeMillis) {
+            if (date.getTime() > maxTimeMillis){
+                eventDate.setError("Invalid event date");
+                hasError = true;
+            }
+            if (date.before(new Date())) {
                 eventDate.setError("Event date cannot be in the past");
                 hasError = true;
             }
@@ -180,7 +185,11 @@ public class CreateEventFragment extends Fragment {
         // Validate lottery date
         try {
             lottery = dateFormat.parse(lotteryDate.getText().toString());
-            if ((date != null && lottery.after(date)) || lottery.getTime() > maxTimeMillis) {
+            if (lottery.getTime() > maxTimeMillis){
+                lotteryDate.setError("Invalid lottery date");
+                hasError = true;
+            }
+            if ((date != null && lottery.after(date))) {
                 lotteryDate.setError("Lottery date cannot be before the event date");
                 hasError = true;
             }
@@ -254,16 +263,23 @@ public class CreateEventFragment extends Fragment {
 
                 if (eventImageUri != null) {
                     imageUtils.uploadImage(eventImageUri, eventId)
-                            .addOnSuccessListener(uri -> db.updateAll("Events", Map.of("id", eventId), Map.of("eventImageUri", uri.toString()), new DB_Client.DatabaseCallback<Void>() {}))
+                            .addOnSuccessListener(uri -> db.updateAll("Events", Map.of("id", eventId), Map.of("eventImageUri", uri.toString()), new DB_Client.DatabaseCallback<Void>() {
+                                @Override
+                                public void onSuccess(@Nullable Void data) {
+                                    getParentFragmentManager().popBackStack();
+                                }
+                            }))
                             .addOnFailureListener(e -> {
                                 Log.e("UploadImage", "Failed to upload image: " + e.getMessage());
                                 Toast.makeText(getContext(), "Failed uploading image! Please try again!", Toast.LENGTH_SHORT).show();
                             });
+                } else {
+                    getParentFragmentManager().popBackStack();
                 }
             }
         });
 
-        getParentFragmentManager().popBackStack();
+
     }
 
 
