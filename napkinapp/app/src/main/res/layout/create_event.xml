@@ -15,7 +15,7 @@
         android:hint="Unnamed Event"
         android:padding="12dp"
         android:layout_marginBottom="8dp" />
-
+23
     <!-- Event Date Input -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,6 +26,7 @@
         <EditText
             android:id="@+id/event_date"
             android:layout_width="0dp"
+            android:inputType="date"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Event Date Not Set"
@@ -33,6 +34,7 @@
 
         <ImageButton
             android:id="@+id/event_date_picker"
+            android:inputType="date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/baseline_edit_calendar_24"

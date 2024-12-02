@@ -152,6 +152,10 @@ public class CreateEventFragment extends Fragment {
         entrantLimit.setError(null);
         participantLimit.setError(null);
 
+        // Define a reasonable timestamp range
+        long currentTimeMillis = System.currentTimeMillis();
+        long maxTimeMillis = currentTimeMillis + (100L * 365 * 24 * 60 * 60 * 1000);
+
         // Validate event name
         if (eventName.getText().toString().trim().isEmpty()) {
             eventName.setError("Event name cannot be empty");
@@ -164,7 +168,7 @@ public class CreateEventFragment extends Fragment {
         // Validate event date
         try {
             date = dateFormat.parse(eventDate.getText().toString());
-            if (date.before(new Date())) {
+            if (date.before(new Date()) || date.getTime() > maxTimeMillis) {
                 eventDate.setError("Event date cannot be in the past");
                 hasError = true;
             }
@@ -176,7 +180,7 @@ public class CreateEventFragment extends Fragment {
         // Validate lottery date
         try {
             lottery = dateFormat.parse(lotteryDate.getText().toString());
-            if (date != null && lottery.before(date)) {
+            if ((date != null && lottery.before(date)) || lottery.getTime() > maxTimeMillis) {
                 lotteryDate.setError("Lottery date cannot be before the event date");
                 hasError = true;
             }
