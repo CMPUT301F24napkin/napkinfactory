@@ -60,7 +60,6 @@ public class EditFacilityFragment extends AbstractMapFragment {
     private ImageView facilityImage;
     private ImageUtils imageUtils = new ImageUtils(ImageUtils.FACILITY);
 
-
     // map stuff
     Marker marker;
 
@@ -136,7 +135,6 @@ public class EditFacilityFragment extends AbstractMapFragment {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             imagePickerLauncher.launch(intent);
         });
-
 
         // do map
         Configuration.getInstance().setUserAgentValue("NapkinApp/1.0 (Android; OS Version; Device Model)");
