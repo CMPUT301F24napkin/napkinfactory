@@ -6,6 +6,7 @@
 package com.example.napkinapp.fragments.adminusersearch;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.napkinapp.R;
@@ -47,6 +49,7 @@ public class AdminListUsersFragment extends Fragment {
 
     AdminUserArrayAdapter.UserListCustomizer customizer = button -> {
         button.setText("Remove");
+        button.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorRemoveDark)));
         button.setOnClickListener(v -> {
             User user = (User) v.getTag();
             Log.i("Button", String.format("List Events: Clicked on event %s\n", user.getName()));
@@ -184,16 +187,6 @@ public class AdminListUsersFragment extends Fragment {
                             updates.put("chosen", chosen);
                             db.updateAll("Users", filters, updates, new DB_Client.DatabaseCallback<Void>() {});
                         }
-
-                        /*
-                        Map<String, Object> updates = new HashMap<>();
-                        updates.put("waitlist", waitlist);
-                        updates.put("registered", registered);
-                        updates.put("chosen", chosen);
-                        Log.d("AdminUserSearchFragment", "updates" + updates);
-                        */
-
-
                     }
                 }
 
@@ -213,7 +206,9 @@ public class AdminListUsersFragment extends Fragment {
         db.deleteOne("Events", filters, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(mContext, "Event deleted successfully", Toast.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(mContext, "Event deleted successfully", Toast.LENGTH_SHORT).show();
+                });
             }
 
             @Override
@@ -263,7 +258,7 @@ public class AdminListUsersFragment extends Fragment {
         }, Event.class);
     }
 
-    private void deleteUser(User user) {
+    public void deleteUser(User user) {
         if (user.getAndroidId() == null || user.getAndroidId().isEmpty()) {
             Log.e("RegisteredEventsFragment", "Event ID is null or empty. Cannot delete event.");
             return;
@@ -332,9 +327,11 @@ public class AdminListUsersFragment extends Fragment {
         db.deleteOne("Users", filters, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(mContext, "User deleted successfully", Toast.LENGTH_SHORT).show();
-                users.remove(user); // Remove the event from the local list
-                userArrayAdapter.notifyDataSetChanged(); // Update the adapter
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(mContext, "User deleted successfully", Toast.LENGTH_SHORT).show();
+                    users.remove(user); // Remove the event from the local list
+                    userArrayAdapter.notifyDataSetChanged(); // Update the adapter
+                });
                 Log.d("RegisteredEventsFragment", "User deleted from Firestore and list updated.");
             }
 

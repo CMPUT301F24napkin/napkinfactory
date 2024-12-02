@@ -6,10 +6,10 @@
     android:padding="16dp">
 
     <EditText
-        android:id="@+id/search_user_name"
+        android:id="@+id/search_facility_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter user name (blank for all events)" />
+        android:hint="Enter facility name (blank for all facilities)" />
 
     <Button
         android:id="@+id/search_button"
@@ -21,7 +21,7 @@
         android:layout_marginTop="8dp" />
 
     <ListView
-        android:id="@+id/user_list_view"
+        android:id="@+id/facilities_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    </LinearLayout>
+</LinearLayout>
