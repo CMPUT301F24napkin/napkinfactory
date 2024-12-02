@@ -189,7 +189,6 @@ public class ProfileFragment extends Fragment {
             profileImageUri = null;
             user.setProfileImageUri(null);
             updateUserInDB("Removed Profile Picture");
-            profileImage.setImageURI(profileImageUri);
             try {
                 new ImageUtils().deleteImage(imageUri);
                 if (user.getProfileImageUri() == null) {
@@ -200,7 +199,7 @@ public class ProfileFragment extends Fragment {
             } catch (Exception e) {
                 Log.e("ImageUtils", "Failed to delete the image, image may already be deleted", e);
             }
-
+            loadProfileImage(view);
             removeProfileImage.setVisibility(View.GONE);
         });
 
