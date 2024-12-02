@@ -91,6 +91,12 @@ public class AdminUserArrayAdapter extends ArrayAdapter<User> {
         // Customize the button behavior
         userListCustomizer.CustomizeUserCardButton(button);
 
+        Glide.with(context)
+                .load(user.getProfileImageUri() != null ? Uri.parse(user.getProfileImageUri()) : null)
+                .placeholder(R.drawable.default_image)  //laceholder while loading
+                .error(R.drawable.default_image) // Fallback in case of error
+                .into(userImage);
+
         // Set the user as the tag for the button to retrieve when clicked
         button.setTag(user);
 
