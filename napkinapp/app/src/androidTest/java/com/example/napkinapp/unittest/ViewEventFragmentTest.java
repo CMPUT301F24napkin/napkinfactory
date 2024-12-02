@@ -42,7 +42,7 @@ public class ViewEventFragmentTest extends AbstractFragmentTest<ViewEventFragmen
         mockOrganizer.setPhoneNumber("9876543210");
 
         // Set DB_Client mock data
-        DB_Client.setFindOneData(mockOrganizer);
+        DB_Client.addFindOneData(mockOrganizer);
     }
 
     @Override
