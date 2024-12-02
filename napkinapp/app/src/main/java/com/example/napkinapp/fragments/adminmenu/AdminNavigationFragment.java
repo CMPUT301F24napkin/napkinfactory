@@ -20,15 +20,15 @@ import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.fragments.adminusersearch.AdminListUsersFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
-import com.example.napkinapp.fragments.viewevents.ViewEventFragment;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.fragments.admineventsearch.AdminListEventsFragment;
+import com.example.napkinapp.fragments.adminimagesearch.AdminImageFragment;
 
-public class AdminNavagationFragment extends Fragment {
+public class AdminNavigationFragment extends Fragment {
 
     private User user;
 
-    public AdminNavagationFragment(User user) {
+    public AdminNavigationFragment(User user) {
         this.user = user;
     }
 
@@ -111,6 +111,12 @@ public class AdminNavagationFragment extends Fragment {
 
         browseImagesButton.setOnClickListener(v -> {
             Log.d("AdminNavagationFragment", "Browse Images button clicked");
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragmentcontainer, new AdminImageFragment())
+                    .addToBackStack(null)
+                    .commit();
+
         });
 
         editProfileButton.setOnClickListener(v -> {

@@ -97,4 +97,6 @@ public class CreateEventFragmentTest extends AbstractFragmentTest<CreateEventFra
             assertTrue(((EditText) view).isEnabled());
         });
     }
+
+
 }
