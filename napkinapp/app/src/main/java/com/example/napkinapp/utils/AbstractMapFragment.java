@@ -70,7 +70,7 @@ public class AbstractMapFragment extends Fragment {
         return marker;
     }
 
-    public static Marker addMarker(MapView map, Drawable icon, String title, String description, double longitude, double latitude, CustomInfoWindow customInfoWindow) {
+    public static Marker addMarker(MapView map, Drawable icon, String title, String description, double longitude, double latitude, CustomInfoWindow customInfoWindow, Object markerUserData) {
         icon.setTint(Color.parseColor("#FF007AFF"));
 
         Marker marker = new Marker(map);
@@ -78,6 +78,7 @@ public class AbstractMapFragment extends Fragment {
         marker.setTitle(title);
         marker.setSnippet(description);
         marker.setInfoWindow(customInfoWindow);
+        marker.setRelatedObject(markerUserData);
 
         marker.setIcon(icon);
 
