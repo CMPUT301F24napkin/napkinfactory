@@ -9,7 +9,7 @@ import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
 import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
-import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
+import com.example.napkinapp.fragments.adminmenu.AdminNavigationFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.myevents.MyEventsFragment;
 import com.example.napkinapp.fragments.notifications.ListNotificationsFragment;
@@ -129,13 +129,13 @@ public class TestActivity extends AppCompatActivity implements TitleUpdateListen
     public void handleHamburgerButtonClick() {
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
 
-        if(currFrag instanceof AdminNavagationFragment){
+        if(currFrag instanceof AdminNavigationFragment){
             // do nothing if already in admin screen
             return;
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_fragmentcontainer, new AdminNavagationFragment(user))
+                .replace(R.id.content_fragmentcontainer, new AdminNavigationFragment(user))
                 .addToBackStack(null)
                 .commit();
 

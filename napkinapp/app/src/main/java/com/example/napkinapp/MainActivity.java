@@ -20,8 +20,7 @@ import androidx.work.WorkManager;
 
 import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
-import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
-import com.example.napkinapp.fragments.facility.ViewFacilityFragment;
+import com.example.napkinapp.fragments.adminmenu.AdminNavigationFragment;
 import com.example.napkinapp.fragments.myevents.MyEventsFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.notifications.ListNotificationsFragment;
@@ -30,14 +29,11 @@ import com.example.napkinapp.fragments.map.MapFragment;
 
 import com.example.napkinapp.fragments.qrscanner.QRScannerFragment;
 import com.example.napkinapp.fragments.registeredevents.RegisteredEventsFragment;
-import com.example.napkinapp.models.Facility;
 import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.ListenForUserUpdatesWorker;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements HeaderFragment.OnHeaderButtonClick,
@@ -140,13 +136,13 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
     public void handleHamburgerButtonClick() {
         Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
 
-        if(currFrag instanceof AdminNavagationFragment){
+        if(currFrag instanceof AdminNavigationFragment){
             // do nothing if already in admin screen
             return;
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_fragmentcontainer, new AdminNavagationFragment(user))
+                .replace(R.id.content_fragmentcontainer, new AdminNavigationFragment(user))
                 .addToBackStack(null)
                 .commit();
 

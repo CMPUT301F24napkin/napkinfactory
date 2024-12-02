@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,18 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.napkinapp.R;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.Facility;
-import com.example.napkinapp.models.Image;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
-import com.google.firebase.firestore.FieldValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.AbstractMap.SimpleEntry;
 
-public class adminImageFragment extends Fragment implements ImageAdapter.OnButtonClickListener {
+public class AdminImageFragment extends Fragment implements ImageAdapter.OnButtonClickListener {
 
     private RecyclerView recyclerView;
     private ImageAdapter imageAdapter;
