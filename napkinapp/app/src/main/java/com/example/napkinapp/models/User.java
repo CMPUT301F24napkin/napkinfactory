@@ -68,7 +68,6 @@ public class User {
                  String address, Boolean enNotifications, Boolean isAdmin,
                  ArrayList<Notification> notifications, ArrayList<String> waitlist, ArrayList<String> chosen,
                  ArrayList<String> cancelled, ArrayList<String> registered, Boolean enLocation, String profileImageUri){
-
         this.androidId = androidId;
         this.name = name;
         this.phoneNumber = phoneNumber;
