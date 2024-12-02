@@ -67,6 +67,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class OrganizerViewEventFragment extends AbstractMapFragment {
@@ -100,20 +101,6 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
                 }
             }, User.class);
         }
-        // Get the InputMethodManager system service
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        // If the keyboard is open, hide it
-        imm.hideSoftInputFromWindow(getActivity().findViewById(R.id.content_fragmentcontainer).getWindowToken(), 0);
-        getActivity().runOnUiThread(() -> {
-            Toast.makeText(mContext, String.format("Sent notification to %d users!", androidIds.size()), Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    public void shuffleWaitlist(){
-        ArrayList<String> waitlistCopy = new ArrayList<>(event.getWaitlist());
-        Collections.shuffle(waitlistCopy);
-        doLottery(waitlistCopy);
     }
 
     /**
@@ -121,31 +108,45 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
      * Sends notifications to the chosen users telling them they were chosen
      * Sends notifications to the un-chosen users telling them they were not
      */
-    public void doLottery(ArrayList<String> waitlistCopy) {
-        ArrayList<String> chosenListCopy = new ArrayList<>(event.getChosen()); // empty
+    public void doLottery() {
+
+        ArrayList<String> shuffledWaitlist = new ArrayList<>(event.getWaitlist());
+        Collections.shuffle(shuffledWaitlist);
+        Log.i("DoLottery", "initial shuffledWaitlist.size() " + shuffledWaitlist.size());
+
+        ArrayList<String> newlyChosen = new ArrayList<>(); // on first call, will be empty, otherwise, could have elements
 
         // minimum between size of waitlist and space left in chosen list.
         // FIX THIS SO THAT IT DOESN'T GRAB 0 DUDES
         // ALSO CHECK IF 0 DUDES AND BLOCK
         // DO SOME THING TO CHECK IF LOTTERY BEEN CALLED AND SOTP?
-        int numUsersToMove = Math.min(waitlistCopy.size(), event.getParticipantLimit() - chosenListCopy.size());
+        int numUsersToMove = Math.min(shuffledWaitlist.size(), event.getEntrantLimit() - event.getChosen().size() - event.getRegistered().size());
         int i = numUsersToMove;
-        Iterator<String> iterator = waitlistCopy.iterator();
+        Iterator<String> iterator = shuffledWaitlist.iterator();
         while (i > 0 && iterator.hasNext()) {
             String element = iterator.next();
-            chosenListCopy.add(element);
+            newlyChosen.add(element);
             iterator.remove();
             i--;
         }
-        event.setWaitlist(waitlistCopy);
-        event.setChosen(chosenListCopy);
+        ArrayList<String> chosen = new ArrayList<>(event.getChosen());
+        chosen.addAll(newlyChosen);
+
+        Log.i("DoLottery", "num Users to move is " + numUsersToMove);
+        Log.i("DoLottery", "newlyChosen.size() is " + newlyChosen.size());
+        Log.i("DoLottery", "chosen.size() " + chosen.size());
+        Log.i("DoLottery", "final shuffledWaitlist.size() " + shuffledWaitlist.size());
+
+
+        event.setWaitlist(shuffledWaitlist);
+        event.setChosen(chosen);
 
         DB_Client db = new DB_Client();
 
         // Update the event's waitlist and chosen list
         Map<String, Object> eventUpdates = Map.of(
-                "waitlist", waitlistCopy,
-                "chosen", chosenListCopy
+                "waitlist", shuffledWaitlist,
+                "chosen", chosen
         );
 
         db.updateAll("Events", Map.of("id", event.getId()), eventUpdates, new DB_Client.DatabaseCallback<Void>() {
@@ -153,9 +154,9 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
             public void onSuccess(Void data) {
                 Log.d("UPDATING EVENT LIST", "Event waitlist and chosen lists updated");
 
-                // Update users in the chosen list
-                for (String userId : chosenListCopy) {
-                    // Retrieve a user
+                // Update newly chosen users' waitlists and chosen lists
+                for (String userId : newlyChosen) {
+                    // Retrieve a newly chosen user
                     db.findOne("Users", Map.of("androidId", userId), new DB_Client.DatabaseCallback<User>() {
                         @Override
                         public void onSuccess(@Nullable User data) {
@@ -164,7 +165,7 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
                                 return;
                             }
 
-                            // Update user list
+                            // Update newly chosen user's lists
                             data.removeEventFromWaitList(event.getId());
                             data.addEventToChosen(event.getId());
 
@@ -201,16 +202,19 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
             }
         });
 
-        // notify everyone in waitlist. notify everyone in chosenListCopy.
-        sendNotification(waitlistCopy, new Notification(
-                getText(R.string.notification_not_chosen_name).toString() + event.getName(),
-                getText(R.string.notification_not_chosen_description).toString(), false, event.getId(), false));
+        // notify everyone in still in waitlist (not chosen)
+        sendNotification(shuffledWaitlist, new Notification(
+                getText(R.string.notification_not_chosen_name) + event.getName(),
+                getText(R.string.notification_not_chosen_description) + event.getName(), false, event.getId(), false));
 
-        sendNotification(chosenListCopy, new Notification(
-                getText(R.string.notification_chosen_name).toString() + event.getName(),
-                getText(R.string.notification_chosen_description).toString() + event.getName(), false, event.getId(), false));
+        // notify everyone who was newly chosen
+        sendNotification(newlyChosen, new Notification(
+                getText(R.string.notification_chosen_name) + event.getName(),
+                getText(R.string.notification_chosen_description) + event.getName(), false, event.getId(), false));
 
-
+        getActivity().runOnUiThread(() -> {
+            Toast.makeText(mContext, String.format(Locale.CANADA, "Sent notification to %d users", shuffledWaitlist.size() + newlyChosen.size()), Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override
@@ -449,7 +453,15 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         // call the member function.
         // its a function so that we can do unit tests on it!!!
         doLottery.setOnClickListener(v -> {
-            shuffleWaitlist();
+
+            // Get the InputMethodManager system service
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            // If the keyboard is open, hide it
+            imm.hideSoftInputFromWindow(getActivity().findViewById(R.id.content_fragmentcontainer).getWindowToken(), 0);
+
+            // do lottery
+            doLottery();
         });
 
         if (event.getQrHashCode() != null) {
