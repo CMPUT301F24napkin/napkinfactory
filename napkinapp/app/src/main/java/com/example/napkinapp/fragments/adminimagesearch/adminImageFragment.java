@@ -151,38 +151,50 @@ public class adminImageFragment extends Fragment implements ImageAdapter.OnButto
     }
     @Override
     public void onButtonClick(int position) {
-        // Handle the button click here, using the position
+        // Log the clicked position
         Log.d("ButtonClicked", "Button clicked at position: " + position);
 
+        // Log the values for debugging
         Log.d("delete", imageUrls.get(position));
         Log.d("delete", urlCollection.get(position));
         Log.d("delete", imageID.get(position));
 
+        // Create filters for DB update
         Map<String, Object> filters = new HashMap<>();
         filters.put(imageIdType.get(position), imageID.get(position));
 
+        // Prepare the update to set the image URL to null
         Map<String, Object> updates = new HashMap<>();
         updates.put(imageUrlType.get(position), null);
 
+        // Perform the DB update
         db.updateAll(urlCollection.get(position), filters, updates, new DB_Client.DatabaseCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
-                // Successfully removed the imageUrl
+                // Log success
                 Log.d("UpdateEvent", "Image URL removed from event.");
 
+                // Remove the item from the lists and notify the adapter
                 imageUrlType.remove(position);
                 imageUrls.remove(position);
                 urlCollection.remove(position);
                 imageIdType.remove(position);
                 imageID.remove(position);
+
+                // Notify adapter about item removal at the correct position
                 imageAdapter.notifyItemRemoved(position);
+
+                imageAdapter.notifyDataSetChanged();
+                // Adjust the adapter's position if necessary (if multiple items are removed)
+                // imageAdapter.notifyDataSetChanged(); // Optionally use this if you need a full refresh
             }
 
             @Override
             public void onFailure(Exception e) {
-                // Failed to remove the imageUrl
+                // Log failure
                 Log.e("UpdateEvent", "Error removing image URL from event", e);
             }
         });
     }
+
 }
