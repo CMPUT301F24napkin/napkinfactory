@@ -318,7 +318,7 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
             public void onSuccess(@Nullable User data) {
                 if (data != null) {
                     organizerName.setText(data.getName());
-                    organization.setText(data.getPhoneNumber());
+                    organization.setText(data.getEmail());
                     if(data.getProfileImageUri() != null) {
                         try {
                             if(data.getProfileImageUri() != null){
