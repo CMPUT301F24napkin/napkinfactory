@@ -74,12 +74,25 @@ public class AdminNavigationFragment extends Fragment {
         Button editProfileButton = view.findViewById(R.id.editProfileButton);
         editProfileButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.blank_profile, 0, 0, 0);
 
-        // Update header title
-        titleUpdateListener.updateTitle("Admin Navigation");
+        userSearchButton.setVisibility(View.GONE);
+        eventSearchButton.setVisibility(View.GONE);
+        facilitiesMapButton.setVisibility(View.GONE);
+        browseImagesButton.setVisibility(View.GONE);
+
+        if (user.getIsAdmin()){
+            userSearchButton.setVisibility(View.VISIBLE);
+            eventSearchButton.setVisibility(View.VISIBLE);
+            facilitiesMapButton.setVisibility(View.VISIBLE);
+            browseImagesButton.setVisibility(View.VISIBLE);
+            titleUpdateListener.updateTitle("Admin Navigation");
+
+        } else {
+            titleUpdateListener.updateTitle("User Settings");
+        }
 
         // Set up click listeners for each button
         userSearchButton.setOnClickListener(v -> {
-            Log.d("AdminNavagationFragment", "User Search button clicked");
+            Log.d("AdminNavigationFragment", "User Search button clicked");
 
             Fragment currFrag = requireActivity().getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
 
