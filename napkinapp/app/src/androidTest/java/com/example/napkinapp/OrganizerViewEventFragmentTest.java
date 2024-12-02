@@ -120,7 +120,7 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
         onView(withId(R.id.participant_limit)).check(matches(withText(expectedParticipantString))); // Replace with actual mock description if set
 
         // Verify that the QR code image is displayed (or the error image if QR code is null)
-        onView(withId(R.id.qr_code)).check(matches(isDisplayed()));
+        onView(withId(R.id.qr_code)).perform(scrollTo()).check(matches(isDisplayed()));
 
         // Verify organizer details are displayed correctly
         onView(withId(R.id.organizer_name)).check(matches(withText(mockOrganizer.getName()))); // Replace with actual mock organizer name
@@ -359,7 +359,7 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
     @Test
     public void testShareQRCodeButton() {
         // Ensure the button is visible and clickable
-        onView(withId(R.id.share_qr_code)).check(matches(isDisplayed()));
+        onView(withId(R.id.share_qr_code)).perform(scrollTo()).check(matches(isDisplayed()));
         onView(withId(R.id.share_qr_code)).perform(click());
     }
 
