@@ -57,6 +57,8 @@ public class CreateEventFragmentTest extends AbstractFragmentTest<CreateEventFra
         onView(withId(R.id.event_name)).check(matches(isDisplayed()));
         onView(withId(R.id.event_date)).check(matches(isDisplayed()));
         onView(withId(R.id.lottery_date)).check(matches(isDisplayed()));
+        onView(withId(R.id.event_image)).check(matches(isDisplayed()));
+        onView(withId(R.id.edit_event_image_button)).check(matches(isDisplayed()));
         onView(withId(R.id.event_description)).check(matches(isDisplayed()));
         onView(withId(R.id.entrant_limit)).check(matches(isDisplayed()));
         onView(withId(R.id.participant_limit_checkbox)).check(matches(isDisplayed()));
@@ -119,4 +121,6 @@ public class CreateEventFragmentTest extends AbstractFragmentTest<CreateEventFra
             assertTrue(((EditText) view).isEnabled());
         });
     }
+
+
 }

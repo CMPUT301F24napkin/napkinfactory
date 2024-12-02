@@ -61,10 +61,11 @@ public abstract class AbstractFragmentTest<T extends Fragment> {
     protected T getFragment() {
         final Fragment[] fragment = new Fragment[1];
         activityScenario.onActivity(activity -> {
-            fragment[0] = activity.getSupportFragmentManager().findFragmentById(android.R.id.content);
+            fragment[0] = activity.getSupportFragmentManager().findFragmentById(R.id.content_fragmentcontainer);
         });
         return (T) fragment[0];
     }
+
 
     /**
      * Refresh the fragment with updated data by replacing the current fragment.

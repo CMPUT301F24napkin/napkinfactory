@@ -4,13 +4,20 @@
 
 package com.example.napkinapp.fragments.viewevents;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -26,6 +33,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -35,11 +43,20 @@ import com.example.napkinapp.fragments.EditTextPopupFragment;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
+import com.example.napkinapp.utils.AbstractMapFragment;
 import com.example.napkinapp.utils.DB_Client;
+import com.example.napkinapp.utils.ImageGenUtils;
+import com.example.napkinapp.utils.ImageUtils;
 import com.example.napkinapp.utils.QRCodeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputLayout;
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,15 +68,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class OrganizerViewEventFragment extends Fragment {
+public class OrganizerViewEventFragment extends AbstractMapFragment {
     private Context mContext;
     private Event event;
     private TitleUpdateListener titleUpdateListener;
     ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     // this guy needs to be global so that the callback defined in onAttach can access it.
     ImageView eventImage;
     Uri eventImageURI;
+    private ImageUtils imageUtils = new ImageUtils(ImageUtils.EVENT);
 
     public OrganizerViewEventFragment(Event event) {
         this.event = event;
@@ -213,6 +232,30 @@ public class OrganizerViewEventFragment extends Fragment {
         this.mContext = context;
     }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        eventImageURI = result.getData().getData();
+                        eventImage.setImageURI(eventImageURI);
+                        DB_Client db = new DB_Client();
+
+                        imageUtils.uploadImage(eventImageURI, event.getId())
+                                .addOnSuccessListener(uri -> db.updateAll("Events", Map.of("id", event.getId()), Map.of("eventImageUri", uri.toString()), new DB_Client.DatabaseCallback<Void>() {}))
+                                .addOnFailureListener(e -> {
+                                    Log.e("UploadImage", "Failed to upload image: " + e.getMessage());
+                                    Toast.makeText(getContext(), "Failed uploading image! Please try again!", Toast.LENGTH_SHORT).show();
+                                });
+                    }
+                }
+        );
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -234,6 +277,16 @@ public class OrganizerViewEventFragment extends Fragment {
         ImageView organizerProfile = view.findViewById(R.id.organizer_profile);
 
         eventImage = view.findViewById(R.id.event_image);
+        if(event.getEventImageUri() != null) {
+            try {
+                Glide.with(view).load(Uri.parse(event.getEventImageUri())).into(eventImage);
+                Log.i("Event", "Loaded event image url: " + event.getEventImageUri());
+            }
+            catch (Exception e){
+                Log.e("Event", "failed to load event image: ", e);
+            }
+        }
+
         ImageView qrCode = view.findViewById(R.id.qr_code);
 
         Button editEventName = view.findViewById(R.id.edit_event_name);
@@ -242,8 +295,10 @@ public class OrganizerViewEventFragment extends Fragment {
         Button editEventDate = view.findViewById(R.id.edit_event_date);
         Button editLotteryDate = view.findViewById(R.id.edit_lottery_date);
         Button shareQRCode = view.findViewById(R.id.share_qr_code);
-        SwitchCompat requireGeolocation = view.findViewById(R.id.require_geolocation);
         Button doLottery = view.findViewById(R.id.do_lottery);
+        SwitchCompat requireGeolocation = view.findViewById(R.id.require_geolocation);
+
+        MapView map = view.findViewById(R.id.map);
 
         Chip waitlistChip = view.findViewById(R.id.chip_waitlist);
         Chip chosenChip = view.findViewById(R.id.chip_chosen);
@@ -263,20 +318,23 @@ public class OrganizerViewEventFragment extends Fragment {
             public void onSuccess(@Nullable User data) {
                 if (data != null) {
                     organizerName.setText(data.getName());
-                    organization.setText(data.getPhoneNumber());
+                    organization.setText(data.getEmail());
                     if(data.getProfileImageUri() != null) {
                         try {
-                            Glide.with(view).load(Uri.parse(data.getProfileImageUri())).into(organizerProfile);
-                            Log.i("Profile", "Loaded organizer profile url: " + data.getProfileImageUri());
+                            if(data.getProfileImageUri() != null){
+                                Glide.with(view).load(Uri.parse(data.getProfileImageUri())).into(organizerProfile);
+                                Log.i("Profile", "Loaded organizer profile url: " + data.getProfileImageUri());
+                            }
                         }
                         catch (Exception e){
                             Log.e("Profile", "failed to load profile image: ", e);
                         }
                     }
-
-                } else {
-                    organizerName.setText("Unknown Organizer");
-                    organization.setText("Unknown Organization");
+                    else {
+                        Bitmap genProfile = ImageGenUtils.genProfleBitmap(data);
+                        organizerProfile.setImageBitmap(genProfile);
+                        Log.i("Profile", "profile image generated");
+                    }
                 }
 
             }
@@ -301,9 +359,8 @@ public class OrganizerViewEventFragment extends Fragment {
         });
 
         editEventImage.setOnClickListener(v -> {
-            pickMedia.launch(new PickVisualMediaRequest.Builder()
-                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                    .build());
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            imagePickerLauncher.launch(intent);
         });
 
         // Description
@@ -465,6 +522,32 @@ public class OrganizerViewEventFragment extends Fragment {
             }
         });
 
+        if(event.isRequireGeolocation()) {
+            map.setTileSource(TileSourceFactory.MAPNIK);
+            requestMapPermissions();
+            map.setMultiTouchControls(true);
+            IMapController mapController = map.getController();
+            mapController.setZoom(15.0);
+            GeoPoint startPoint = new GeoPoint(53.527309714453466, -113.52931950296305);
+            mapController.setCenter(startPoint);
+            map.setOnTouchListener((v, event) -> {
+                // Request parent to not intercept touch events when MapView is touched
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;  // Let the MapView handle the touch event
+            });
+
+            // populate map
+            for(ArrayList<Double> location : event.getEntrantLocations().values()) {
+                if(location.size() < 2) {
+                    Log.e("Map", "Event Entrant Locations coordinate has less than 2 elements! expecting 2, one for longitude and latitude.");
+                }
+                addMarker(map, getDefaultIcon(), location.get(0), location.get(1));
+            }
+        } else {
+            map.setVisibility(View.GONE);
+        }
+
         return view;
     }
+
 }

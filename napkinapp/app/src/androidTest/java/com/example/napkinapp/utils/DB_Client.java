@@ -35,6 +35,10 @@ public class DB_Client {
     private static Object executeQueryData;
     private static List<?> executeQueryListData;
     private static List<Object> insertedData = new ArrayList<>();
+    private static List<Object> writtenData = new ArrayList<>();
+    private static List<Object> deletedData = new ArrayList<>();
+    private static List<Map<String, Object>> updatedFilters = new ArrayList<>();
+    private static List<Map<String, Object>> updatedData = new ArrayList<>();
     private static Exception exceptionToThrow;
 
     // Listeners for snapshot methods
@@ -81,6 +85,22 @@ public class DB_Client {
         return insertedData;
     }
 
+    public static List<Object> getWrittenData() {
+        return writtenData;
+    }
+
+    public static List<Object> getDeletedData() {
+        return deletedData;
+    }
+
+    public static List<Map<String, Object>> getUpdatedFilters() {
+        return updatedFilters;
+    }
+
+    public static List<Map<String, Object>> getUpdatedData() {
+        return updatedData;
+    }
+
     // Reset method to clear data between tests
     public static void reset() {
         findOneData = null;
@@ -89,6 +109,10 @@ public class DB_Client {
         executeQueryData = null;
         executeQueryListData = null;
         insertedData.clear();
+        writtenData.clear();
+        deletedData.clear();
+        updatedFilters.clear();
+        updatedData.clear();
         exceptionToThrow = null;
         documentSnapshotListeners.clear();
         collectionSnapshotListeners.clear();
@@ -207,7 +231,7 @@ public class DB_Client {
             return;
         }
 
-        insertedData.add(data);
+        writtenData.add(data);
         callback.onSuccess(null);
         triggerDocumentSnapshotListeners(data);
     }
@@ -230,6 +254,8 @@ public class DB_Client {
             return;
         }
 
+        updatedFilters.add(filters);
+        updatedData.add(updates);
         callback.onSuccess(null);
     }
 
@@ -239,17 +265,8 @@ public class DB_Client {
             return;
         }
 
+        deletedData.add(filters);
         callback.onSuccess(null);
-    }
-
-    public void count(String collection, Map<String, Object> filters, DatabaseCallback<Integer> callback) {
-        if (exceptionToThrow != null) {
-            callback.onFailure(exceptionToThrow);
-            return;
-        }
-
-        int count = findAllData != null ? findAllData.size() : 0;
-        callback.onSuccess(count);
     }
 
     public <T> void addDocumentSnapshotListener(String collection, String documentId, DatabaseCallback<T> callback, Class<T> returnType) {

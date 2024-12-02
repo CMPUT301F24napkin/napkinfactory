@@ -93,6 +93,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />
 
+      <Switch
+          android:id="@+id/location_switch"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:text="@string/location"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/editTextAddress" />
+
         <Switch
             android:id="@+id/notification_switch"
             android:layout_width="wrap_content"
@@ -101,17 +111,17 @@
             android:text="@string/notifications"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextAddress" />
+            app:layout_constraintTop_toBottomOf="@+id/location_switch" />
 
-        <Switch
-            android:id="@+id/location_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/location"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/notification_switch" />
+      <Button
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+        android:id="@+id/create_facility_button"
+          android:layout_marginTop="8dp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/notification_switch"
+          android:text="Create Facility" />
 
       <Button
           android:id="@+id/confirmButton"
@@ -122,7 +132,7 @@
           app:backgroundTint="@color/goodGreen"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/location_switch" />
+          app:layout_constraintTop_toBottomOf="@+id/create_facility_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

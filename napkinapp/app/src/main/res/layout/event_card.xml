@@ -16,7 +16,7 @@
         android:layout_height="120dp"
         android:focusableInTouchMode="false"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher"
+        android:src="@mipmap/default_event"
         app:shapeAppearanceOverlay="@style/rounded_corners" />
 
     <LinearLayout
@@ -33,7 +33,7 @@
             android:layout_margin="@dimen/margin"
             android:layout_weight="1"
             android:focusableInTouchMode="false"
-            android:hint="Unamed Event"
+            android:hint="Unnamed Event"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_size_primary" />
 

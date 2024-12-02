@@ -33,11 +33,17 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.facility.EditFacilityFragment;
+import com.example.napkinapp.fragments.viewevents.OrganizerViewEventFragment;
+import com.example.napkinapp.models.Facility;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
 import com.example.napkinapp.utils.ImageGenUtils;
 import com.example.napkinapp.utils.ImageUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class ProfileFragment extends Fragment {
     private final User user;
@@ -54,6 +60,8 @@ public class ProfileFragment extends Fragment {
 
     private Uri profileImageUri = null;
     private ImageView profileImage;
+
+    Facility facility = null;
 
     public ProfileFragment(){
         this.user = new User();
@@ -107,8 +115,38 @@ public class ProfileFragment extends Fragment {
             Log.i("Profile", "Generated user profile");
         }
     }
+    private boolean isValidEmail(String email) {
+        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        return email.matches(emailPattern);
+    }
+
+
+    // update the User model based on the values in the UI elements.
+    // upload the updated user to the DB
 
     private void updateUserInfo(User user) {
+        nameText.setError(null);
+        emailText.setError(null);
+        boolean hasError = false;
+
+        if (nameText.getText().toString().trim().isEmpty()){
+            nameText.setError("Name is required");
+            hasError = true;
+        }
+
+        String email = emailText.getText().toString().trim();
+        if (email.isEmpty()) {
+            emailText.setError("Email is required");
+            hasError = true;
+        } else if (!isValidEmail(email)) {
+            emailText.setError("Invalid email format");
+            hasError = true;
+        }
+
+        if (hasError) {
+            return;
+        }
+
         user.setName(nameText.getText().toString());
         user.setEmail(emailText.getText().toString());
         user.setPhoneNumber(phoneText.getText().toString());
@@ -233,9 +271,44 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        // facility stuff
+        Button createFacilityButton = view.findViewById(R.id.create_facility_button);
+        String facilityId = user.getFacility();
+
+        DB_Client db = new DB_Client();
+        HashMap<String, Object> filters = new HashMap<>();
+        filters.put("id", facilityId);
+
+        createFacilityButton.setText((user.getFacility() != null && !user.getFacility().isBlank()) ? "Edit Facility" : "Create Facility");
+
+        db.findOne("Facilities", filters, new DB_Client.DatabaseCallback<Facility>() {
+            @Override
+            public void onSuccess(@Nullable Facility data) {
+                // Replace fragment
+                if(data != null) {
+                    facility = data;
+                }
+            }
+        }, Facility.class);
+
+
+        createFacilityButton.setOnClickListener(v -> {
+
+            if(facility == null) {
+                facility = new Facility("", "", List.of(53.527309714453466, -113.52931950296305));
+            }
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragmentcontainer, new EditFacilityFragment(facility, user)) // Use your actual container ID
+                    .addToBackStack(null) // Allows user to go back to ListEventsFragment
+                    .commit();
+
+        });
+
         return view;
     }
 
+    // update the user stored in the DB with the member variable user.
     private void updateUserInDB(String successMessage){
         DB_Client db = new DB_Client();
 
