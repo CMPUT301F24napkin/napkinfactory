@@ -5,6 +5,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -91,7 +92,7 @@ public class CreateEventFragmentTest extends AbstractFragmentTest<CreateEventFra
         onView(withId(R.id.participant_limit)).perform(replaceText("50"));
 
         // Enter tagautocomplete and start typing
-        onView(withId(R.id.tag_autocomplete)).perform(scrollTo(), click(), replaceText("Ba"));
+        onView(withId(R.id.tag_autocomplete)).perform(scrollTo(), click(), typeText("Ba"));
 
         // Select basketball
         onData(equalTo("Basketball")).inRoot(RootMatchers.isPlatformPopup()).perform(click());
@@ -99,7 +100,7 @@ public class CreateEventFragmentTest extends AbstractFragmentTest<CreateEventFra
         // Check if displayed in chips - Needed or else it will click through all popups
         onView(allOf(
                 withParent(withId(R.id.tag_chip_group)),
-                withText("Basketball"))).check(matches(isDisplayed()));
+                withText("Basketball"))).perform(scrollTo()).check(matches(isDisplayed()));
 
         // Toggle geolocation switch
         onView(withId(R.id.geolocation_switch)).perform(scrollTo(), click());

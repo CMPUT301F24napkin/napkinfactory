@@ -4,7 +4,6 @@
 
 package com.example.napkinapp.fragments.viewevents;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -16,8 +15,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -33,6 +32,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
+
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import com.example.napkinapp.utils.DateUtils;
@@ -40,6 +40,7 @@ import com.example.napkinapp.utils.DateUtils;
 import com.bumptech.glide.Glide;
 import com.example.napkinapp.R;
 import com.example.napkinapp.TitleUpdateListener;
+import com.example.napkinapp.fragments.EditNumberPopupFragment;
 import com.example.napkinapp.fragments.EditTextPopupFragment;
 import com.example.napkinapp.models.Event;
 import com.example.napkinapp.models.Notification;
@@ -57,7 +58,6 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Marker;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -279,7 +279,8 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         TextView eventDate = view.findViewById(R.id.event_date);
         TextView lotteryDate = view.findViewById(R.id.lottery_date);
         TextView eventDetails = view.findViewById(R.id.event_details);
-
+        TextView entrantLimit = view.findViewById(R.id.entrant_limit);
+        TextView participantLimit = view.findViewById(R.id.participant_limit);
         ImageView organizerProfile = view.findViewById(R.id.organizer_profile);
 
         eventImage = view.findViewById(R.id.event_image);
@@ -437,6 +438,14 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
             popup.show();
         });
 
+        // entrant count
+        entrantLimit.setHint("Unlimited");
+        if(event.getEntrantLimit() != Integer.MAX_VALUE) entrantLimit.setText(String.valueOf(event.getEntrantLimit()));
+
+        // participant count
+        participantLimit.setHint("Unlimited");
+        if(event.getParticipantLimit() != Integer.MAX_VALUE) participantLimit.setText(String.valueOf(event.getParticipantLimit()));
+
         // call the member function.
         // its a function so that we can do unit tests on it!!!
         doLottery.setOnClickListener(v -> {
@@ -464,8 +473,27 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
 
         // Do chips
         ArrayList<User> users = new ArrayList<>();
+        // update db
+        ArrayList<String> androidIdList = new ArrayList<>();
+        androidIdList.addAll(event.getWaitlist());
+        androidIdList.addAll(event.getChosen());
+        androidIdList.addAll(event.getCancelled());
+        androidIdList.addAll(event.getRegistered());
         UserArrayAdapter userArrayAdapter = new UserArrayAdapter(mContext, users);
         entrantsListView.setAdapter(userArrayAdapter);
+
+        if (!androidIdList.isEmpty()) {
+            db.findAllIn("Users", "androidId", new ArrayList<>(androidIdList), new DB_Client.DatabaseCallback<List<User>>() {
+                @Override
+                public void onSuccess(@Nullable List<User> data) {
+                    users.clear();
+                    if(data != null) {
+                        users.addAll(data);
+                    }
+                    userArrayAdapter.notifyDataSetChanged();
+                }
+            }, User.class);
+        }
 
         ChipGroup.OnCheckedStateChangeListener listener = ((group, checkedIds) -> {
             ArrayList<String> arrayList = new ArrayList<>();
@@ -494,14 +522,15 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
                     Log.e("chipGroup.setOnCheckedStateChangeListener", String.format("unknown chip id %d", checkedIds.get(0)));
                 }
             }
-
             // update db
             if (!arrayList.isEmpty()) {
-                db.findAllIn("Users", "androidId", new ArrayList<Object>(arrayList), new DB_Client.DatabaseCallback<List<User>>() {
+                db.findAllIn("Users", "androidId", new ArrayList<>(arrayList), new DB_Client.DatabaseCallback<List<User>>() {
                     @Override
                     public void onSuccess(@Nullable List<User> data) {
                         users.clear();
-                        users.addAll(data);
+                        if(data != null) {
+                            users.addAll(data);
+                        }
                         userArrayAdapter.notifyDataSetChanged();
                     }
                 }, User.class);
