@@ -5,6 +5,7 @@
 package com.example.napkinapp.fragments.viewevents;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -42,6 +44,7 @@ import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.AbstractMapFragment;
 import com.example.napkinapp.utils.DB_Client;
+import com.example.napkinapp.utils.ImageUtils;
 import com.example.napkinapp.utils.QRCodeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -68,10 +71,12 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
     private Event event;
     private TitleUpdateListener titleUpdateListener;
     ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     // this guy needs to be global so that the callback defined in onAttach can access it.
     ImageView eventImage;
     Uri eventImageURI;
+    private ImageUtils imageUtils = new ImageUtils(ImageUtils.EVENT);
 
     public OrganizerViewEventFragment(Event event) {
         this.event = event;
@@ -225,6 +230,30 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         this.mContext = context;
     }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        eventImageURI = result.getData().getData();
+                        eventImage.setImageURI(eventImageURI);
+                        DB_Client db = new DB_Client();
+
+                        imageUtils.uploadImage(eventImageURI, event.getId())
+                                .addOnSuccessListener(uri -> db.updateAll("Events", Map.of("id", event.getId()), Map.of("eventImageUri", uri.toString()), new DB_Client.DatabaseCallback<Void>() {}))
+                                .addOnFailureListener(e -> {
+                                    Log.e("UploadImage", "Failed to upload image: " + e.getMessage());
+                                    Toast.makeText(getContext(), "Failed uploading image! Please try again!", Toast.LENGTH_SHORT).show();
+                                });
+                    }
+                }
+        );
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -246,6 +275,16 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         ImageView organizerProfile = view.findViewById(R.id.organizer_profile);
 
         eventImage = view.findViewById(R.id.event_image);
+        if(event.getEventImageUri() != null) {
+            try {
+                Glide.with(view).load(Uri.parse(event.getEventImageUri())).into(eventImage);
+                Log.i("Event", "Loaded event image url: " + event.getEventImageUri());
+            }
+            catch (Exception e){
+                Log.e("Event", "failed to load event image: ", e);
+            }
+        }
+
         ImageView qrCode = view.findViewById(R.id.qr_code);
 
         Button editEventName = view.findViewById(R.id.edit_event_name);
@@ -315,9 +354,8 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
         });
 
         editEventImage.setOnClickListener(v -> {
-            pickMedia.launch(new PickVisualMediaRequest.Builder()
-                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                    .build());
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            imagePickerLauncher.launch(intent);
         });
 
         // Description

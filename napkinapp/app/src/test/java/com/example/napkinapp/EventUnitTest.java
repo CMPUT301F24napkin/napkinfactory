@@ -26,6 +26,7 @@ public class EventUnitTest {
     private ArrayList<String> cancelled = new ArrayList<>();
     private ArrayList<String> registered = new ArrayList<>();
     private HashMap<String, ArrayList<Double>> entrantLocations = new HashMap<>();
+    private String eventImageUri = "testuri";
 
     @Test
     public void testConstructorWithRequiredFields() {
@@ -45,7 +46,7 @@ public class EventUnitTest {
     @Test
     public void testConstructorWithAllFields() {
         Event dbEvent = new Event("event1", organizerId, name, eventDate, lotteryDate, description, entrantLimit,
-                participantLimit, requireGeolocation, qrHashCode, waitlist, chosen, cancelled, registered, entrantLocations);
+                participantLimit, requireGeolocation, qrHashCode, waitlist, chosen, cancelled, registered, entrantLocations, eventImageUri);
         assertEquals("event1", dbEvent.getId());
         assertEquals(organizerId, dbEvent.getOrganizerId());
         assertEquals(name, dbEvent.getName());
@@ -61,6 +62,7 @@ public class EventUnitTest {
         assertEquals(cancelled, dbEvent.getCancelled());
         assertEquals(registered, dbEvent.getRegistered());
         assertEquals(entrantLocations, dbEvent.getEntrantLocations());
+        assertEquals(eventImageUri, dbEvent.getEventImageUri());
     }
 
     @Test
