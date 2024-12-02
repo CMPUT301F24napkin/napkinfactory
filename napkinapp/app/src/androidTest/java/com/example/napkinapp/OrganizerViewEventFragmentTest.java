@@ -76,9 +76,9 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
         mockEvent1.setDescription("This is a detailed description of Mock Event 1."); // Set description
         mockEvent1.setOrganizerId("organizer_user_id"); // Set organizer ID
         mockEvent1.setWaitlist(new ArrayList<>(List.of("1", "2", "3")));
-        mockEvent1.setChosen(new ArrayList<>(List.of("1", "2")));
+        mockEvent1.setChosen(new ArrayList<>());
         mockEvent1.setCancelled(new ArrayList<>(List.of("1")));
-        mockEvent1.setRegistered(new ArrayList<>());
+        mockEvent1.setRegistered(new ArrayList<>(List.of("1", "2")));
 
         mockEvent1.addUserToWaitlist(mockUser.getAndroidId()); // Add test user to waitlist
         mockUser.addEventToWaitlist(mockEvent1.getId());
@@ -253,7 +253,7 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
                 .check(matches(withText(participantLimitText)));
 
         // Set an invalid participant limit
-        String invalidLimit = "2";
+        String invalidLimit = "1";
         onView(withId(R.id.edit_text)).perform(replaceText(invalidLimit));
         onView(withText("OK")).perform(click());
 
@@ -376,7 +376,7 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
 
         // Select the 'Chosen' chip and check if the list updates to 2 items
         onView(withId(R.id.chip_chosen)).perform(click());
-        onView(withId(R.id.entrants_list_view)).check(matches(hasChildCount(2)));
+        onView(withId(R.id.entrants_list_view)).check(matches(hasChildCount(0)));
 
         // Select the 'Cancelled' chip and check if the list updates to 1 item
         onView(withId(R.id.chip_cancelled)).perform(click());
@@ -384,7 +384,7 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
 
         // Select the 'Registered' chip and check if the list updates to 4 items
         onView(withId(R.id.chip_registered)).perform(scrollTo(), click());
-        onView(withId(R.id.entrants_list_view)).check(matches(hasChildCount(0)));
+        onView(withId(R.id.entrants_list_view)).check(matches(hasChildCount(2)));
     }
 
     @Test
