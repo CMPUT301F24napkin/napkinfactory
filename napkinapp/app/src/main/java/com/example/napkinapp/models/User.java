@@ -27,25 +27,17 @@ public class User {
     private ArrayList<String> chosen;
     private ArrayList<String> registered;
 
+    private String facility;        // if this is uninitialized, set to empty string ""
+
     public User () {
-        androidId = "";
-        name = "";
-        phoneNumber = "";
-        email = "";
-        address = "";
-        enLocation = false;
-        enNotifications = false;
-        isAdmin = false;
-        notifications = new ArrayList<>();
-        waitlist = new ArrayList<>();
-        chosen = new ArrayList<>();
-        registered = new ArrayList<>();
-        profileImageUri = null;
+        init();
     }
 
     // New user
     public User (String androidId, String name, String phoneNumber, String email,
                  String address, Boolean enNotifications, Boolean isAdmin, Boolean enLocation){
+        init(); // initiailize with sensible defaults
+
         this.androidId = androidId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -68,6 +60,9 @@ public class User {
                  String address, Boolean enNotifications, Boolean isAdmin,
                  ArrayList<Notification> notifications, ArrayList<String> waitlist, ArrayList<String> chosen,
                  ArrayList<String> cancelled, ArrayList<String> registered, Boolean enLocation, String profileImageUri){
+
+        init(); // initiailize with sensible defaults
+
         this.androidId = androidId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -84,6 +79,24 @@ public class User {
         this.registered = registered;
         this.profileImageUri = profileImageUri;
     }
+
+    private void init() {
+        this.androidId = "placeholder_user";
+        this.name = "placeholder_name";
+        this.phoneNumber = "1234567890";
+        this.email = "placehodler@test.com";
+        this.address = "1234 Test St";
+        this.enNotifications = false;
+        this.enLocation = false;
+        this.isAdmin = false;
+        this.notifications = new ArrayList<>();
+        this.profileImageUri = "";
+        this.waitlist = new ArrayList<>();
+        this.chosen = new ArrayList<>();
+        this.registered = new ArrayList<>();
+        this.facility = "";
+    }
+
 
     public void setAndroidId(String id) { this.androidId = id; }
 
@@ -235,5 +248,13 @@ public class User {
 
     public boolean getEnLocation () {
         return this.enLocation;
+    }
+
+    public String getFacility() {
+        return facility;
+    }
+
+    public void setFacility(String facility) {
+        this.facility = facility;
     }
 }

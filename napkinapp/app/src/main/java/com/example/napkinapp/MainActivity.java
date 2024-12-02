@@ -21,13 +21,16 @@ import androidx.work.WorkManager;
 import com.example.napkinapp.fragments.FooterFragment;
 import com.example.napkinapp.fragments.HeaderFragment;
 import com.example.napkinapp.fragments.adminmenu.AdminNavagationFragment;
+import com.example.napkinapp.fragments.facility.ViewFacilityFragment;
 import com.example.napkinapp.fragments.myevents.MyEventsFragment;
 import com.example.napkinapp.fragments.listevents.ListEventsFragment;
 import com.example.napkinapp.fragments.notifications.ListNotificationsFragment;
 import com.example.napkinapp.fragments.profile.ProfileFragment;
+import com.example.napkinapp.fragments.map.MapFragment;
 
 import com.example.napkinapp.fragments.qrscanner.QRScannerFragment;
 import com.example.napkinapp.fragments.registeredevents.RegisteredEventsFragment;
+import com.example.napkinapp.models.Facility;
 import com.example.napkinapp.models.Notification;
 import com.example.napkinapp.models.User;
 import com.example.napkinapp.utils.DB_Client;
@@ -47,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
     public static String userID;
 
     public static final String CHANNEL_ID = "napkin_app_notifications";
-
 
     public void updateHeaderNotificationIcon() {
         if (header != null) {
@@ -86,11 +88,13 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
                 selectedFragment = new RegisteredEventsFragment(user);
                 break;
             case 2:
-                // map
+                selectedFragment = new MapFragment(user);
                 break;
             case 3:
                 // QRscanner
                 selectedFragment = new QRScannerFragment(user);
+//                Facility facility = new Facility("Bobs house", "This is susch a sd a sdaklsjd laksj d eoi akdj lkas dm,vzhow v wjhf wioulsh zxnv hs no. , viu;w ehjwn,mNASIuh sd ms,d.", List.of(53.527309714453466, -113.52931950296305));
+//                selectedFragment = new ViewFacilityFragment(facility, user);
                 break;
             case 4:
                 // Myevents
@@ -212,8 +216,6 @@ public class MainActivity extends AppCompatActivity implements HeaderFragment.On
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.footer_fragmentcontainer, footer)
                 .commit();
-
-
     }
 
     /**
