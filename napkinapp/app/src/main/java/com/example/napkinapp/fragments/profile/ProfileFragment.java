@@ -54,7 +54,8 @@ public class ProfileFragment extends Fragment {
     private TextView emailText;
     private TextView phoneText;
     private TextView addressText;
-    Switch notificationSwitch;
+    private Switch notificationSwitch;
+    private Button createFacilityButton;
 
     private ImageUtils imageUtils = new ImageUtils(ImageUtils.PROFILE);
 
@@ -115,6 +116,7 @@ public class ProfileFragment extends Fragment {
             Log.i("Profile", "Generated user profile");
         }
     }
+
     private boolean isValidEmail(String email) {
         String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         return email.matches(emailPattern);
@@ -146,6 +148,8 @@ public class ProfileFragment extends Fragment {
         if (hasError) {
             return;
         }
+
+        createFacilityButton.setVisibility(View.VISIBLE);
 
         user.setName(nameText.getText().toString());
         user.setEmail(emailText.getText().toString());
@@ -272,8 +276,11 @@ public class ProfileFragment extends Fragment {
         });
 
         // facility stuff
-        Button createFacilityButton = view.findViewById(R.id.create_facility_button);
+        createFacilityButton = view.findViewById(R.id.create_facility_button);
         String facilityId = user.getFacility();
+        if (user.getName().isBlank() || user.getEmail().isBlank()){
+            createFacilityButton.setVisibility(View.GONE);
+        }
 
         DB_Client db = new DB_Client();
         HashMap<String, Object> filters = new HashMap<>();
