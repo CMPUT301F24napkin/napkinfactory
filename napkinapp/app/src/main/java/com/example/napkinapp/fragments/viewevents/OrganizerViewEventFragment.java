@@ -442,7 +442,7 @@ public class OrganizerViewEventFragment extends AbstractMapFragment {
 
                 @Override
                 public Pair<Boolean, String> checkValid(Integer number) {
-                    return new Pair<>(number >= event.getRegistered().size(), "Entrant limit cannot be less than number of people already registered!");
+                    return new Pair<>(number >= event.getChosen().size() + event.getRegistered().size(), "Participant limit cannot be less than number of people chosen and registered!");
                 }
             });
             popup.show(getActivity().getSupportFragmentManager(), "popup");

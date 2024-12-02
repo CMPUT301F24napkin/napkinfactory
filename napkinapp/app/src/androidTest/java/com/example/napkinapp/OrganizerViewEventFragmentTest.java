@@ -101,8 +101,11 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
             arrayList.add(u);
             userNames.add(userName);
         }
-        DB_Client.setFindAllInData(arrayList);
+        DB_Client.setFindAllInData(arrayList); // all FindAllIn queries will return 3. So effectively there are 3 in each of waitlist, chosen, cancelled, registered.
         mockEvent1.setWaitlist(userNames);
+        mockEvent1.setChosen(userNames);
+        mockEvent1.setCancelled(userNames);
+        mockEvent1.setRegistered(userNames);
 
     }
 
@@ -249,6 +252,8 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
     @Test
     public void testEditParticipantLimit() {
 
+        onView(withId(R.id.nested_scroll_view)).perform(swipeUp());
+
         String participantLimitText = (mockEvent1.getParticipantLimit() == Integer.MAX_VALUE) ? "" : String.valueOf(mockEvent1.getParticipantLimit());
 
         // Ensure the initial text is correct
@@ -266,15 +271,15 @@ public class OrganizerViewEventFragmentTest extends AbstractFragmentTest<Organiz
                 .check(matches(withText(participantLimitText)));
 
         // Set an invalid participant limit
-        String invalidLimit = "1";
-        onView(withId(R.id.edit_text)).perform(replaceText(invalidLimit));
-        onView(withText("OK")).perform(click());
+        for(String s : List.of("0", "4", "5")) {
+            onView(withId(R.id.edit_text)).perform(replaceText(s));
+            onView(withText("OK")).perform(click());
 
-        // Ensure the dialog remains open on invalid input
-        onView(withId(R.id.edit_text)).check(matches(isDisplayed()));
-
+            // Ensure the dialog remains open on invalid input
+            onView(withId(R.id.edit_text)).check(matches(isDisplayed()));
+        }
         // Set a valid participant limit
-        String validLimit = "50";
+        String validLimit = "6";
         onView(withId(R.id.edit_text)).perform(replaceText(validLimit));
         onView(withText("OK")).perform(click());
 
