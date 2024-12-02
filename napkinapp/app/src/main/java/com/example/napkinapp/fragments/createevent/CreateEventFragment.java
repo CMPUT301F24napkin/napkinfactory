@@ -158,7 +158,8 @@ public class CreateEventFragment extends Fragment {
         long maxTimeMillis = currentTimeMillis + (100L * 365 * 24 * 60 * 60 * 1000);
 
         // Validate event name
-        if (eventName.getText().toString().trim().isEmpty()) {
+        String name = eventName.getText().toString().trim();
+        if (name.isEmpty()) {
             eventName.setError("Event name cannot be empty");
             hasError = true;
         }
@@ -169,7 +170,7 @@ public class CreateEventFragment extends Fragment {
         // Validate event date
         try {
             date = dateFormat.parse(eventDate.getText().toString());
-            if (date.getTime() > maxTimeMillis){
+            if (date.getTime() > maxTimeMillis) {
                 eventDate.setError("Invalid event date");
                 hasError = true;
             }
@@ -185,7 +186,7 @@ public class CreateEventFragment extends Fragment {
         // Validate lottery date
         try {
             lottery = dateFormat.parse(lotteryDate.getText().toString());
-            if (lottery.getTime() > maxTimeMillis){
+            if (lottery.getTime() > maxTimeMillis) {
                 lotteryDate.setError("Invalid lottery date");
                 hasError = true;
             }
@@ -231,16 +232,25 @@ public class CreateEventFragment extends Fragment {
             return;
         }
 
+        String description = eventDescription.getText().toString().trim();
+        boolean geolocationEnabled = geolocationSwitch.isChecked();
+
+        // Pass validated data to createEvent
+        createEvent(loggedInUser.getAndroidId(), name, date, lottery, description, entrantLimitValue, participantLimitValue, geolocationEnabled, eventImageUri);
+    }
+
+    public void createEvent(String organizerId, String name, Date eventDate, Date lotteryDate, String description,
+                            int entrantLimit, int participantLimit, boolean geolocationEnabled, Uri imageUri) {
         // Create the Event object
         Event event = new Event(
-                loggedInUser.getAndroidId(),
-                eventName.getText().toString().trim(),
-                date,
-                lottery,
-                eventDescription.getText().toString().trim(),
-                entrantLimitValue,
-                participantLimitValue,
-                geolocationSwitch.isChecked()
+                organizerId,
+                name,
+                eventDate,
+                lotteryDate,
+                description,
+                entrantLimit,
+                participantLimit,
+                geolocationEnabled
         );
 
         // Insert the event into the database
@@ -261,8 +271,8 @@ public class CreateEventFragment extends Fragment {
 
                 db.updateAll("Events", Map.of("id", eventId), Map.of("qrHashCode", hash), new DB_Client.DatabaseCallback<Void>() {});
 
-                if (eventImageUri != null) {
-                    imageUtils.uploadImage(eventImageUri, eventId)
+                if (imageUri != null) {
+                    imageUtils.uploadImage(imageUri, eventId)
                             .addOnSuccessListener(uri -> db.updateAll("Events", Map.of("id", eventId), Map.of("eventImageUri", uri.toString()), new DB_Client.DatabaseCallback<Void>() {
                                 @Override
                                 public void onSuccess(@Nullable Void data) {
@@ -278,9 +288,8 @@ public class CreateEventFragment extends Fragment {
                 }
             }
         });
-
-
     }
+
 
 
 
