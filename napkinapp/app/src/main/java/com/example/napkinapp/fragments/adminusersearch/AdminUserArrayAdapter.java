@@ -74,15 +74,13 @@ public class AdminUserArrayAdapter extends ArrayAdapter<User> {
         TextView userName = view.findViewById(R.id.userName);  // Change to your specific user field
         TextView userEmail = view.findViewById(R.id.userEmail);  // Add other relevant fields if needed
         ImageView userImage = view.findViewById(R.id.userImage);
-        if(user.getProfileImageUri() != null) {
-            try {
-                Glide.with(view).load(Uri.parse(user.getProfileImageUri())).into(userImage);
-                Log.i("User", "Loaded user image url: " + user.getProfileImageUri());
-            }
-            catch (Exception e){
-                Log.e("User", "failed to load User image: ", e);
-            }
-        }
+
+
+        Glide.with(context)
+                .load(user.getProfileImageUri() != null ? Uri.parse(user.getProfileImageUri()) : null)
+                .placeholder(R.drawable.default_image)  //laceholder while loading
+                .error(R.drawable.default_image) // Fallback in case of error
+                .into(userImage);
 
 
         Button button = view.findViewById(R.id.button);  // Assuming you're using a button to trigger actions

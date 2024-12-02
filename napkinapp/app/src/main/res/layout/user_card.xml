@@ -17,7 +17,6 @@
         android:layout_height="120dp"
         android:focusableInTouchMode="false"
         android:scaleType="centerCrop"
-        android:src="@drawable/default_image"
         app:shapeAppearanceOverlay="@style/rounded_corners" />
 
     <LinearLayout
