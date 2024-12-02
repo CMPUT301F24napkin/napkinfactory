@@ -150,6 +150,22 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+            <!-- Searchable dropdown -->
+            <AutoCompleteTextView
+                android:id="@+id/tag_autocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Search and select tags"
+                android:inputType="text" />
+
+            <!-- ChipGroup to display selected tags -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/tag_chip_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:orientation="horizontal" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
